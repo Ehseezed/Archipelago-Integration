@@ -83,8 +83,61 @@ am2r_regions: Dict[str, Set[str]] = {
 
     "A0M35_M": {"A0M35_L", "A0M35_R"},
 
+    "A1E01_M": {"A1E01_L", "A1E01_R", "A1E01_T"},
 
+    "A1E02_M": {"A1E02_L", "A1E02_TR", "A1E02_BR"},
 
+    "A1E03_M": {"A1E03_L", "A1E03_R"},
+
+    "A1E04_M": {"A1E04_L", "A1E04_R"},
+
+    "A1E05_M": {"A1E05_LL", "A1E05_LR", "A1E05_TRL", "A1E05_TRR", "A1E05_BRL", "A1E05_BRR"}, # I fucking hate this
+
+    "A1E06_M": {"A1E06_L", "A1E06_B"},
+
+    "A1E07_M1": {"A1E07_T1"},
+
+    "A1E07_M2": {"A1E07_L2"},
+
+    "A1E08_M": {"A1E08_L"},
+
+    "A1E09_M": {"A1E09_B", "A1E09_L"},
+
+    "A1E10_M": {"A1E10_R"},
+
+    "A1B01_M": {"A1B01_L", "A1B01_R"},
+
+    "A1B02_M": {"A1B02_TL", "A1B02_BL", "A1B02_TR", "A1B02_BR"},
+
+    "A1B03_M": {"A1B03_L"},
+
+    "A1B04_M": {"A1B04_R"},
+
+    "A1B05_M": {"A1B05_L"},
+
+    "A1M01_M": {"A1M01_L", "A1M01_R"},
+
+    "A1M02_M": {"A1M02_TL", "A1M02_BL", "A1M02_R"},
+
+    "A1M03_M": {"A1M03_L", "A1M03_R"},
+
+    "A1M04_M": {"A1M04_R"},
+
+    "A1M05_M": {"A1M05_L", "A1M05_R"},
+
+    "A1M06_M": {"A1M06_TL", "A1M06_L", "A1M06_BL", "A1M06_TR", "A1M06_R", "A1M06_BR"},
+
+    "A1M07_M": {"A1M07_L", "A1M07_R"},
+
+    "A1M08_M": {"A1M08_L", "A1M08_R"},
+
+    "A1M09_M": {"A1M09_R"},
+
+    "A1M10_M": {"A1M10_L", "A1M10_R"},
+
+    "A1M11_M": {"A1M11_P", "A1M11_R"},
+
+    "A1M12_M": {"A1M12_L"},
 
     "Research Station": set()
 }
