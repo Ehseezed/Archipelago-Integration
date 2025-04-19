@@ -1,5 +1,16 @@
 from typing import Dict, Set
 
+# L = left
+# R = right
+# U = upwards
+# D = downwards
+# TL = top left
+# TR = top right
+# BL = bottom left
+# BR = bottom right
+# LL = left side leftwards
+# LR = left side rightwards
+# RL = Right leftwards
 
 am2r_regions: Dict[str, Set[str]] = {
     "Menu": {"A0E01_M"}, # Menu to landing site
@@ -7,9 +18,9 @@ am2r_regions: Dict[str, Set[str]] = {
 
     "A0E02_M": {"A0E02_TR", "A0E02_BR", "A0E02_L"},
 
-    "A0E03_M": {"A0E03_TL", "A0E03_BL", "A0E03_B"},
+    "A0E03_M": {"A0E03_TL", "A0E03_BL", "A0E03_D"},
 
-    "A0M01_M": {"A0M01_T", "A0M01_L", "A0M01_R"},
+    "A0M01_M": {"A0M01_U", "A0M01_L", "A0M01_R"},
 
     "A0M02_M": {"A0M02_L", "A0M02_R"},
 
@@ -51,7 +62,7 @@ am2r_regions: Dict[str, Set[str]] = {
 
     "A0M19_M": {"A0M19_L", "A0M19_R"},
 
-    "A0M20_M": {"A0M20_BR", "A0M20_TR", "A0M20_T"},
+    "A0M20_M": {"A0M20_BR", "A0M20_TR", "A0M20_U"},
 
     "A0M21_M": {"A0M21_L", "A0M21_R"},
 
@@ -83,7 +94,7 @@ am2r_regions: Dict[str, Set[str]] = {
 
     "A0M35_M": {"A0M35_L", "A0M35_R"},
 
-    "A1E01_M": {"A1E01_L", "A1E01_R", "A1E01_T"},
+    "A1E01_M": {"A1E01_L", "A1E01_R", "A1E01_U"},
 
     "A1E02_M": {"A1E02_L", "A1E02_TR", "A1E02_BR"},
 
@@ -93,7 +104,7 @@ am2r_regions: Dict[str, Set[str]] = {
 
     "A1E05_M": {"A1E05_LL", "A1E05_LR", "A1E05_TRL", "A1E05_TRR", "A1E05_BRL", "A1E05_BRR"}, # I fucking hate this
 
-    "A1E06_M": {"A1E06_L", "A1E06_B"},
+    "A1E06_M": {"A1E06_L", "A1E06_D"},
 
     "A1E07_M1": {"A1E07_T1"},
 
@@ -101,7 +112,7 @@ am2r_regions: Dict[str, Set[str]] = {
 
     "A1E08_M": {"A1E08_L"},
 
-    "A1E09_M": {"A1E09_B", "A1E09_L"},
+    "A1E09_M": {"A1E09_D", "A1E09_L"},
 
     "A1E10_M": {"A1E10_R"},
 
@@ -138,6 +149,76 @@ am2r_regions: Dict[str, Set[str]] = {
     "A1M11_M": {"A1M11_P", "A1M11_R"},
 
     "A1M12_M": {"A1M12_L"},
+
+    "A2E01_M": {"A2E01_L", "A2E01_R"},
+
+    "A2E02_M": {"A2E02_RBL", "A2E02_RTL", "A2E02_D", "A2E02_LTL", "A2E02_LBL", "A2E02_LL", "A2E02_LTR", "A2E02_LR", "A2E02_LBR"},
+
+    "A2E03_M": {"A2E03_R"},
+
+    "A2E04_M": {"A2E04_L", "A2E04_BL", "A2E04_R", "A2E04_TR"},
+
+    "A2E05_M": {"A2E05_R"},
+
+    "A2B01_M": {"A2E06_L", "A2E06_R"},
+
+    "A2B02_M": {"A2B02_L", "A2B02_TR", "A2B02_BL", "A2B02_R"},
+
+    "A2B03_M": {"A2B03_L"},
+
+    "A2B04_M": {"A2B04_L", "A2B04_TR", "A2B04_BR"},
+
+    "A2B05_M": {"A2B05_U", "A2B05_R"},
+
+    "A2B06_M": {"A2B06_L", "A2B06_R"},
+
+    "A2B07_M": {"A2B07_L", "A2B07_R"},
+
+    "A2B08_M": {"A2B08_D", "A2B08_R"},
+
+    "A2M01_M": {"A2M01_L", "A2M01_R"},
+
+    "A2M02_M": {"A2M02_L", "A2M02_R"},
+
+    "A2M03_M": {"A2M03_L", "A2M03_R"},
+
+    "A2M04_M": {"A2M04_L", "A2M04_R"},
+
+    "A2M05_M": {"A2M05_L", "A2M05_R", "A2M05_U"},
+
+    "Level_339_M": {"Level_339_U", "Level_339_D",},
+
+    "Level_340_M1": {"Level_340_U1", "Level_340_D1",},
+
+    "Level_340_M2": {"Level_340_U2", "Level_340_D2",},
+
+    "A2M06_M": {"A2M06_L", "A2M06_D"},
+
+    "A2M07_M": {"A2M07_R"},
+
+    "A2M08_M": {"A2M08_L", "A2M08_D"},
+
+    "A2M09_M": {"A2M09_U", "A2M09_L", "A2M09_R"},
+
+    "A2M10_M": {"A2M10_R"},
+
+    "A2M11_M": {"A2M11_TL", "A2M11_BL", "A2M11_R"},
+
+    "A2M12_M": {"A2M12_TL", "A2M12_BL"},
+
+    "A2M13_M": {"A2M13_L", "A2M13_R"},
+
+    "A2M14_M": {"A2M14_L", "A2M14_R"},
+
+    "A2M15_M": {"A2M15_UL", "A2M15_BL"},
+
+    "A2M16_M1": {"A2M16_R1"},
+
+    "A2M16_M2": {"A2M16_L2"},
+
+    "A2M17_M": {"A2M17_L", "A2M17_U"},
+
+    "A2M18_M": {"A2M18_R"},
 
     "Research Station": set()
 }
