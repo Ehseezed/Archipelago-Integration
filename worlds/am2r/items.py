@@ -14,13 +14,13 @@ item_base_id = 8678000
 
 item_table: Dict[str, AM2RItemData] = {
     "Missile":                  AM2RItemData(ItemClassification.filler, 15, 0),
-    "Missile Launcher":         AM2RItemData(ItemClassification.progression, 300, 0),
+    # "Missile Launcher":         AM2RItemData(ItemClassification.progression, 300, 0),
 
     "Super Missile":            AM2RItemData(ItemClassification.filler, 16, 0),
-    "Super Missile Launcher":   AM2RItemData(ItemClassification.progression, 301, 0),
+    # "Main Super Missile":     AM2RItemData(ItemClassification.progression, 301, 0),
 
     "Power Bomb":               AM2RItemData(ItemClassification.filler, 18, 0),
-    "Power Bomb Launcher":      AM2RItemData(ItemClassification.progression, 302, 0),
+    # "Main Power Bombs":         AM2RItemData(ItemClassification.progression, 302, 0),
 
     "Energy Tank":              AM2RItemData(ItemClassification.filler, 17, 0),
 
@@ -38,7 +38,7 @@ item_table: Dict[str, AM2RItemData] = {
     "Varia Suit":               AM2RItemData(ItemClassification.progression, 5, 1),
     "Gravity Suit":             AM2RItemData(ItemClassification.progression, 9, 1),
 
-    "Arm Cannon":               AM2RItemData(ItemClassification.progression, 305, 0),
+    # "Arm Cannon Main":          AM2RItemData(ItemClassification.progression, 305, 0),
     "Charge Beam":              AM2RItemData(ItemClassification.progression, 10, 1),
     "Wave Beam":                AM2RItemData(ItemClassification.useful, 12, 1),
     "Spazer":                   AM2RItemData(ItemClassification.useful, 13, 1),
@@ -56,7 +56,19 @@ item_table: Dict[str, AM2RItemData] = {
     "Tower Activation":         AM2RItemData(ItemClassification.event, None, 0),
     "Geothermal":               AM2RItemData(ItemClassification.event, None, 0),
 
-    "Metroid":                  AM2RItemData(ItemClassification.progression_skip_balancing, 19, 0)
+    "Metroid":                  AM2RItemData(ItemClassification.progression_skip_balancing, 19, 0),
+
+
+    "Unknown Item SM":          AM2RItemData(ItemClassification.progression, 312, 0),
+    "Unknown Item IM":          AM2RItemData(ItemClassification.progression, 313, 0),
+    "Unknown Item PS":           AM2RItemData(ItemClassification.progression, 310, 0),
+    "Unknown Item CB":          AM2RItemData(ItemClassification.progression, 316, 0),
+    "Unknown Item SB":          AM2RItemData(ItemClassification.progression, 311, 0),
+    "Unknown Item SS":          AM2RItemData(ItemClassification.progression, 318, 0),
+    "Unknown Item DB":          AM2RItemData(ItemClassification.progression, 314, 0),
+    "Unknown Item FS":          AM2RItemData(ItemClassification.progression, 315, 0),
+    "Unknown Item DC":          AM2RItemData(ItemClassification.progression, 308, 0),
+    "Unknown Item LB":          AM2RItemData(ItemClassification.progression, 317, 0),
 
 }
 
