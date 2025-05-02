@@ -91,12 +91,22 @@ all_level_locations = [location for level in level_locations for location in lev
 
 standard_level_locations = [location for level in level_locations for location in level if "Drop" not in location]
 
+arrow_shop_locations = ["Arrow Shop Item Left", "Arrow Shop Item Middle", "Arrow Shop Item Right"]
+candle_shop_locations = ["Candle Shop Item Left", "Candle Shop Item Middle", "Candle Shop Item Right"]
+ring_shop_locations = ["Blue Ring Shop Item Left", "Blue Ring Shop Item Middle", "Blue Ring Shop Item Right"]
+shield_shop_locations = ["Shield Shop Item Left", "Shield Shop Item Middle", "Shield Shop Item Right"]
+potion_shop_locations = ["Potion Shop Item Left", "Potion Shop Item Middle", "Potion Shop Item Right"]
+
+shop_categories = {
+    "Arrow Shop": arrow_shop_locations,
+    "Candle Shop": candle_shop_locations,
+    "Blue Ring Shop": ring_shop_locations,
+    "Shield Shop": shield_shop_locations,
+    "Potion Shop": potion_shop_locations
+}
+
 shop_locations = [
-    "Arrow Shop Item Left", "Arrow Shop Item Middle", "Arrow Shop Item Right",
-    "Candle Shop Item Left", "Candle Shop Item Middle", "Candle Shop Item Right",
-    "Blue Ring Shop Item Left", "Blue Ring Shop Item Middle", "Blue Ring Shop Item Right",
-    "Shield Shop Item Left", "Shield Shop Item Middle", "Shield Shop Item Right",
-    "Potion Shop Item Left", "Potion Shop Item Middle", "Potion Shop Item Right"
+    *arrow_shop_locations, *candle_shop_locations, *ring_shop_locations, *shield_shop_locations, *potion_shop_locations
 ]
 
 take_any_locations = [
@@ -108,9 +118,13 @@ sword_cave_locations = [
 ]
 
 food_locations = [
-    "Level 7 Map", "Level 7 Boss", "Level 7 Triforce", "Level 7 Key Drop (Goriyas)",
+    "Level 7 Item (Red Candle)", "Level 7 Map", "Level 7 Boss", "Level 7 Triforce", "Level 7 Key Drop (Goriyas)",
     "Level 7 Bomb Drop (Moldorms North)", "Level 7 Bomb Drop (Goriyas North)",
     "Level 7 Bomb Drop (Dodongos)", "Level 7 Rupee Drop (Goriyas North)"
+]
+
+gohma_locations = [
+    "Level 6 Boss", "Level 6 Triforce", "Level 8 Item (Magical Key)", "Level 8 Bomb Drop (Darknuts North)"
 ]
 
 gleeok_locations = [
@@ -330,6 +344,10 @@ major_location_offsets = {
     "Ocean Heart Container": 0x5F
 }
 
+take_any_cave_offsets = {
+
+}
+
 overworld_locations = [
     "Starting Sword Cave",
     "White Sword Pond",
@@ -338,6 +356,8 @@ overworld_locations = [
     "Armos Knights",
     "Ocean Heart Container"
 ]
+
+cave_data_location_start = 0x18490
 
 underworld1_locations = [*floor_location_game_offsets_early.keys()]
 
