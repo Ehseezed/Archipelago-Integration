@@ -14,10 +14,10 @@ item_base_id = 108678000
 
 item_table: Dict[str, AM2RItemData] = {
     "Missile":                  AM2RItemData(ItemClassification.filler, 15, 0),
-    "Missile Launcher":         AM2RItemData(ItemClassification.progression, 300, 0),
+    "Main Missiles":            AM2RItemData(ItemClassification.progression, 300, 0),
 
     "Super Missile":            AM2RItemData(ItemClassification.filler, 16, 0),
-    "Main Super Missile":     AM2RItemData(ItemClassification.progression, 301, 0),
+    "Main Super Missile":       AM2RItemData(ItemClassification.progression, 301, 0),
 
     "Power Bomb":               AM2RItemData(ItemClassification.filler, 18, 0),
     "Main Power Bombs":         AM2RItemData(ItemClassification.progression, 302, 0),
@@ -33,6 +33,7 @@ item_table: Dict[str, AM2RItemData] = {
 
     "Space Jump":               AM2RItemData(ItemClassification.progression, 6, 1),
     "Speed Booster":            AM2RItemData(ItemClassification.progression, 7, 1),
+    "Shinespark":               AM2RItemData(ItemClassification.progression, 306, 1),
     "Screw Attack":             AM2RItemData(ItemClassification.progression, 8, 1),
 
     "Varia Suit":               AM2RItemData(ItemClassification.progression, 5, 1),
@@ -64,7 +65,6 @@ item_table: Dict[str, AM2RItemData] = {
     "Unknown Item PS":          AM2RItemData(ItemClassification.progression, 310, 0),
     "Unknown Item CB":          AM2RItemData(ItemClassification.progression, 316, 0),
     "Unknown Item SB":          AM2RItemData(ItemClassification.progression, 311, 0),
-    "Unknown Item SS":          AM2RItemData(ItemClassification.progression, 318, 0),
     "Unknown Item DB":          AM2RItemData(ItemClassification.progression, 314, 0),
     "Unknown Item FS":          AM2RItemData(ItemClassification.progression, 315, 0),
     "Unknown Item DC":          AM2RItemData(ItemClassification.progression, 308, 0),
