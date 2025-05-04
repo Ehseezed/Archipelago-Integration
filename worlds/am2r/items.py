@@ -17,10 +17,8 @@ item_table: Dict[str, AM2RItemData] = {
     "Main Missiles":            AM2RItemData(ItemClassification.progression, 300, 0),
 
     "Super Missile":            AM2RItemData(ItemClassification.filler, 16, 0),
-    "Main Super Missile":       AM2RItemData(ItemClassification.progression, 301, 0),
 
     "Power Bomb":               AM2RItemData(ItemClassification.filler, 18, 0),
-    "Main Power Bombs":         AM2RItemData(ItemClassification.progression, 302, 0),
 
     "Energy Tank":              AM2RItemData(ItemClassification.filler, 17, 0),
 
@@ -67,9 +65,9 @@ item_table: Dict[str, AM2RItemData] = {
     "Unknown Item SB":          AM2RItemData(ItemClassification.progression, 311, 0),
     "Unknown Item DB":          AM2RItemData(ItemClassification.progression, 314, 0),
     "Unknown Item FS":          AM2RItemData(ItemClassification.progression, 315, 0),
-    "Unknown Item DC":          AM2RItemData(ItemClassification.progression, 308, 0),
+    "Unknown Item DC":          AM2RItemData(ItemClassification.progression, 318, 0),
     "Unknown Item LB":          AM2RItemData(ItemClassification.progression, 317, 0),
-
+    "Unknown Item GB":          AM2RItemData(ItemClassification.progression, 319, 0),
 }
 
 item_name_to_id: Dict[str, int] = {name: item_base_id + data.game_id for name, data in item_table.items()}
