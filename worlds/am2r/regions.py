@@ -1,17 +1,5 @@
 from typing import Dict, Set
 
-# L = left
-# R = right
-# U = upwards
-# D = downwards
-# TL = top left
-# TR = top right
-# BL = bottom left
-# BR = bottom right
-# LL = left side leftwards
-# LR = left side rightwards
-# RL = Right leftwards
-
 am2r_regions: Dict[str, Set[str]] = {
     "Menu": {"A0E01_M"}, # Menu to landing site
     "A0E01_M": {"A0E01_R", "A0E01_L"},
@@ -220,6 +208,30 @@ am2r_regions: Dict[str, Set[str]] = {
 
     "A2M18_M": {"A2M18_R"},
 
+    "A3E01_M": {"A3E01_L", "A3E01_R"},
+
+    "A3E02_M": {"A3E02_BL", "A3E02_L", "A3E02_TL", "A3E02_LR", "A3E02_TR", "A3E02_D"},
+
+    "A3E03_M": {"A3E03_L", "A3E03_D"},
+
+    "A3E04_M": {"A3E04_L", "A3E04_R"},
+
+    "A3E05_ML": {},
+    # Semantic link between this one particularly large room
+    "A3E05_MR": {},
+
     "Research Station": set()
 }
-# todo: Have someone other than me verify this @(V)ariable
+# L = left
+# R = right
+# U = upwards
+# D = downwards
+# TL = top left
+# TR = top right
+# BL = bottom left
+# BR = bottom right
+# LL = left side leftwards
+# LR = left side rightwards
+# RL = right side leftwards
+# ML = Main left
+
