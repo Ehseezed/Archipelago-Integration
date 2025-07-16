@@ -216,9 +216,21 @@ am2r_regions: Dict[str, Set[str]] = {
 
     "A3E04_M": {"A3E04_L", "A3E04_R"},
 
-    "A3E05_ML": {},
-    # Semantic link between this one particularly large room
-    "A3E05_MR": {},
+    "A3E05_ML": {"A3E05_LL_L", "A3E05_RL_L" "A3E05_C_L"},
+    # Semantic link between this one particularly large room blocked by a check for vertical
+    "A3E05_MR": {"A3E05_TL_R", "A3E05_BL_R", "A3E05_C_R", "A3E05_TR_R", "A3E05_BR_R", "A3E05_D_R"},
+
+    "A3E06_M": {"A3E06_L", "A3E06_R"},
+
+    "A3E07_M": {"A3B01_L"},
+
+    "A3E08_M": {"A3B02_L"},
+
+    "A3M01_M": {"A3M01_R"},
+
+    "A3M02_M": {"A3M02_U", "A3M02_D"},
+
+    "A3M03_M": {"A3M03_U", "A3M03_R", "A3M03_L"},
 
     "Research Station": set()
 }
@@ -233,5 +245,6 @@ am2r_regions: Dict[str, Set[str]] = {
 # LL = left side leftwards
 # LR = left side rightwards
 # RL = right side leftwards
-# ML = Main left
-
+# RR = right side rightwards
+# M = Main
+# C = Semantic Connector
