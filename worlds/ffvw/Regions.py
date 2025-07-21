@@ -2,7 +2,7 @@ import typing
 from typing import TYPE_CHECKING
 #from BaseClasses import MultiWorld, Region, Entrance, Location
 from BaseClasses import MultiWorld, Region, Location
-from .Locations import FFVWLocation, location_table
+from .Locations import location_table
 
 if TYPE_CHECKING:
     from . import FFVWWorld

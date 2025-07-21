@@ -1,5 +1,12 @@
-from BaseClasses import Location
-from BaseClasses import ItemClassification
+from typing import List, Optional, NamedTuple, TYPE_CHECKING
+
+from worlds.generic.Rules import CollectionRule
+
+if TYPE_CHECKING:
+    from . import FFVWWorld
+
+
+# from BaseClasses import ItemClassification
 #from worlds.generic.Rules import add_item_rule
 #from .Items import arch_item_offset
 loc_id_start = 0
@@ -7,7 +14,7 @@ loc_id_start = 0
 LOC_TYPE_JOB = 1
 
 """class LocationData:
-    def __init__(self, name, address = None, parent = None, area = None, location_type="", type="Job"):
+    def __init__(self, name, address = None, parent = None, area = Non"", type="Job"):
         self.name = name
         self.address = address + loc_id_start
         self.address_hex = address
@@ -34,26 +41,38 @@ location_table = {
     "Kuzar 12": LocationData(0xC0000C, ItemClassification.useful, ["Jobs"]),
 }"""
 
+EventId: Optional[int] = None
+
+LOC_TYPE_JOB = 1
+
+class LocationData(NamedTuple):
+    name: str
+    id: Optional[int]
+    area: str
+    location_type: int
+    rule: CollectionRule = lambda state: True
 
 
-class FFVWLocation(Location):
-    game = "ffvw"
+def get_locations(world: Optional["FFVWWorld"]) -> List[LocationData]:
+    location_data = [
 
+        LocationData("Sealed Room, 1 O'Clock", 0xC00001, "Sealed Castle of Kuzar", LOC_TYPE_JOB),
+        LocationData("Sealed Room, 2 O'Clock", 0xC00002, "Sealed Castle of Kuzar", LOC_TYPE_JOB),
+        LocationData("Sealed Room, 3 O'Clock", 0xC00003, "Sealed Castle of Kuzar", LOC_TYPE_JOB),
 
-location_table = {
-    "Kuzar 1": 0xC00001,
-    "Kuzar 2": 0xC00002,
-    "Kuzar 3": 0xC00003,
-    "Kuzar 4": 0xC00004,
-    "Kuzar 5": 0xC00005,
-    "Kuzar 6": 0xC00006,
-    "Kuzar 7": 0xC00007,
-    "Kuzar 8": 0xC00008,
-    "Kuzar 9": 0xC00009,
-    "Kuzar 10": 0xC0000A,
-    "Kuzar 11": 0xC0000B,
-    "Kuzar 12": 0xC0000C,
-}
+        LocationData("Sealed Room, 4 O'Clock", 0xC00004, "Sealed Castle of Kuzar", LOC_TYPE_JOB),
+        LocationData("Sealed Room, 5 O'Clock", 0xC00005, "Sealed Castle of Kuzar", LOC_TYPE_JOB),
+        LocationData("Sealed Room, 6 O'Clock", 0xC00006, "Sealed Castle of Kuzar", LOC_TYPE_JOB),
+
+        LocationData("Sealed Room, 7 O'Clock", 0xC00007, "Sealed Castle of Kuzar", LOC_TYPE_JOB),
+        LocationData("Sealed Room, 8 O'Clock", 0xC00008, "Sealed Castle of Kuzar", LOC_TYPE_JOB),
+        LocationData("Sealed Room, 9 O'Clock", 0xC00009, "Sealed Castle of Kuzar", LOC_TYPE_JOB),
+
+        LocationData("Sealed Room, 10 O'Clock", 0xC0000A, "Sealed Castle of Kuzar", LOC_TYPE_JOB),
+        LocationData("Sealed Room, 11 O'Clock", 0xC0000B, "Sealed Castle of Kuzar", LOC_TYPE_JOB),
+        LocationData("Sealed Room, 12 O'Clock", 0xC0000C, "Sealed Castle of Kuzar", LOC_TYPE_JOB),
+    ]
+    return location_data
 
 """def __init__(self, player, location_data, parent=None, progression_checks_setting = 0):
     super(FFVWLocation, self).__init__(
@@ -70,21 +89,4 @@ location_table = {
     return_location = FFVWLocation(player, location_data, parent, progression_checks_setting)
     return return_location"""
 
-"""location_data = [
-
-LocationData("Sealed Room, 1 O'Clock", address = 0xC00001, area = "Sealed Castle of Kuzar", location_type=LOC_TYPE_JOB),
-LocationData("Sealed Room, 2 O'Clock", address = 0xC00002, area = "Sealed Castle of Kuzar", location_type=LOC_TYPE_JOB),
-LocationData("Sealed Room, 3 O'Clock", address = 0xC00003, area = "Sealed Castle of Kuzar", location_type=LOC_TYPE_JOB),
-
-LocationData("Sealed Room, 4 O'Clock", address = 0xC00004, area = "Sealed Castle of Kuzar", location_type=LOC_TYPE_JOB),
-LocationData("Sealed Room, 5 O'Clock", address = 0xC00005, area = "Sealed Castle of Kuzar", location_type=LOC_TYPE_JOB),
-LocationData("Sealed Room, 6 O'Clock", address = 0xC00006, area = "Sealed Castle of Kuzar", location_type=LOC_TYPE_JOB),
-
-LocationData("Sealed Room, 7 O'Clock", address = 0xC00007, area = "Sealed Castle of Kuzar", location_type=LOC_TYPE_JOB),
-LocationData("Sealed Room, 8 O'Clock", address = 0xC00008, area = "Sealed Castle of Kuzar", location_type=LOC_TYPE_JOB),
-LocationData("Sealed Room, 9 O'Clock", address = 0xC00009, area = "Sealed Castle of Kuzar", location_type=LOC_TYPE_JOB),
-
-LocationData("Sealed Room, 10 O'Clock", address = 0xC0000A, area = "Sealed Castle of Kuzar", location_type=LOC_TYPE_JOB),
-LocationData("Sealed Room, 11 O'Clock", address = 0xC0000B, area = "Sealed Castle of Kuzar", location_type=LOC_TYPE_JOB),
-LocationData("Sealed Room, 12 O'Clock", address = 0xC0000C, area = "Sealed Castle of Kuzar", location_type=LOC_TYPE_JOB),
-]"""
+""""""

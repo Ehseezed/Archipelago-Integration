@@ -10,7 +10,7 @@ from .Locations import location_table, FFVWLocation
 from .Regions import create_regions
 #from .Output import generate_output
 #from .Options import FFVWOptions
-from .Client import FFVWClient
+from .Client_SNI import FFVWClient
 
 
 class FFVWWebWorld(WebWorld):
