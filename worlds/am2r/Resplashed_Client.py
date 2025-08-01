@@ -159,8 +159,8 @@ def get_payload(ctx: AM2RContext):
 
     # 0b111 = full remote
     # 0b000 = bad
-    # 0b001 = good
-    # 0b010 = progression
+    # 0b001 = progression
+    # 0b010 = good
     # 0b100 = trap
 
     if ctx.client_requesting_scouts:
@@ -185,7 +185,7 @@ def get_payload(ctx: AM2RContext):
                         gameitem = random.randint(lower, upper)
                     else:
                         gameitem = item_id_to_game_id[netitem.item] + 20
-                elif netitem.flags & 0b010 == 0:
+                elif netitem.flags & 0b001 == 1:
                     gameitem = 102 #
                 else:
                     gameitem = 103
@@ -195,7 +195,7 @@ def get_payload(ctx: AM2RContext):
                         gameitem = random.randint(lower, upper)
                     else:
                         gameitem = item_id_to_game_id[netitem.item]
-                elif netitem.flags & 0b010 == 0:
+                elif netitem.flags & 0b001 == 1:
                     gameitem = 100
                 else:
                     gameitem = 101
