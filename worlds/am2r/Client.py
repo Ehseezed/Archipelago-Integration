@@ -142,8 +142,8 @@ async def parse_payload(ctx: AM2RContext, data_decoded):
 
 async def am2r_sync_task(ctx: AM2RContext):
     logger.info("Starting AM2R connector, use /am2r for status information.")
-    logger.info("Legacy Client for use with AM2R Multiworld Mod versions 1.1 or earlier. (Resplashed versions 1.3.2 or earlier)")
-    logger.info("Please use the Multisquared Mod or Resplased Multiworld 1.2 or newer for the best experience.")
+    logger.info("Legacy Client for use with AM2R Multiworld Mod versions 1.1 or earlier. (Resplashed Multiworld 1.1 or earlier)")
+    logger.info("Please use the Multisquared Mod by Steele or Resplased Multiworld 1.2 or newer for the best experience.")
     while not ctx.exit_event.is_set():
         error_status = None
         if ctx.am2r_streams:

@@ -70,6 +70,7 @@ class AM2RContext(CommonContext):
     
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
+        self.error = None
         self.waiting_for_client = False
         self.am2r_streams: (StreamReader, StreamWriter) = None
         self.am2r_sync_task = None
@@ -105,12 +106,18 @@ class AM2RContext(CommonContext):
     def on_package(self, cmd: str, args: dict):
         if cmd == "Connected":
             self.metroids_required = args["slot_data"]["MetroidsRequired"]
-            self.Tozos = args["slot_data"]["Tozos"]
-            self.TrapSprites = args["slot_data"]["TrapSprites"]
+            try:
+                self.Tozos = args["slot_data"]["Tozos"]
+                self.TrapSprites = args["slot_data"]["TrapSprites"]
+            except KeyError:
+                self.Tozos = False
+                self.TrapSprites = 5
+                self.error = True
         elif cmd == "LocationInfo":
             logger.info("Received Location Info")
-
-
+            if self.error:
+                self.ui.print_json([{"text": "Seed rolled on version without Tozos or Trap Sprites options, defaulting to old behavior", "type": "color", "color": "salmon"}])
+                self.ui.print_json([{"text": "Everything is fine just convince the host to update their AM2R for next time", "type": "color", "color": "salmon"}])
 
 def get_payload(ctx: AM2RContext):
     global upper, lower
@@ -127,31 +134,24 @@ def get_payload(ctx: AM2RContext):
         case 0:
             upper = 82
             lower = 20
-            print("Case 0 to 82-20")
         case 2:
             upper = 38
             lower = 20
-            print("Case 2 to 20-38")
         case 1:
             upper = 47
             lower = 40
-            print("Case 1 to 40-47")
         case 3:
             upper = 62
             lower = 50
-            print("Case 3 to 50-62")
         case 4:
             upper = 82
             lower = 70
-            print("Case 4 to 70-82")
         case 5:
             upper = 15
             lower = 0
-            print("Case 5 to 0-15")
         case _:
             upper = 15
             lower = 0
-            print("defaulting to 0-15")
 
     non_ids = [48,49,63,64,65,66,67,68,69]
 
@@ -194,7 +194,6 @@ def get_payload(ctx: AM2RContext):
         return json.dumps({
             'cmd':"locations", 'items': itemdict, 'metroids': ctx.metroids_required
     })
-    print(json.dumps({"cmd": "items", "items": items_to_give }))
     return json.dumps({
         "cmd": "items", "items": items_to_give 
     })
