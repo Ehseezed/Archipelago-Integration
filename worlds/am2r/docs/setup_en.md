@@ -7,7 +7,7 @@
   - [AM2R Multisquared](https://github.com/rm-steele/AM2R-Multisquared/releases/tag/1.0.0)
   - [AM2R Multiworld: Resplashed](https://github.com/AbyssalCreature/AM2R-Re-Splashed/releases/tag/v1.3.2-M)
 - Current Mods (New Trap Behavior)
-  - [AM2R Multisquared](https://github.com/rm-steele/AM2R-Multisquared/releases/latest)
+  - [AM2R Multiworld(²)](https://github.com/rm-steele/AM2R-Multisquared/releases/latest)
   - [AM2R Multiworld: Resplashed](https://github.com/AbyssalCreature/AM2R-Re-Splashed/releases?q=multiworld&expanded=true)
 - [AM2R Launcher](https://github.com/AM2R-Community-Developers/AM2RLauncher/releases/latest)
 - Your self provided copy of AM2R 1.1 for the launcher
@@ -15,7 +15,7 @@
 ## Optional Software
 - [Sublime Text](https://www.sublimetext.com/) or [Notepad++](https://notepad-plus-plus.org/downloads/) for easy editing of `.yaml` files
 - [Poptracker](https://github.com/black-sliver/PopTracker/releases) and the [AM2R Tracker](https://github.com/Ehseezed/AM2R-Tracker/releases) pack for a map tracker 
-- [Universal Tracker](https://github.com/FarisTheAncient/Archipelago/releases) for an updating list of available checks
+- [Universal Tracker](https://github.com/FarisTheAncient/Archipelago/releases?q=Tracker&expanded=true) for an updating list of available checks
 
 ## Installation Process
 
