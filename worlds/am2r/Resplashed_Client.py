@@ -123,8 +123,6 @@ def get_payload(ctx: AM2RContext):
             "cmd": "items", "items": items_to_give 
         })
 
-    print(f'A \n{ctx.Tozos}\n{ctx.TrapSprites}')
-
     match ctx.TrapSprites:
         case 0:
             upper = 82
@@ -165,19 +163,11 @@ def get_payload(ctx: AM2RContext):
 
     if ctx.client_requesting_scouts:
         itemdict = {}
-        print("A")
         for locationid, netitem in ctx.locations_info.items():
-            print("B")
-            print(lower)
-            print("C")
-            print(upper)
             itemid = randint(lower, upper)
-            print("D: " + str(itemid))
             while itemid in non_ids:
                 print("extremely loud incorrect buzzer")
                 itemid = randint(lower, upper)
-
-
             gamelocation = location_id_to_game_id[locationid]
             if ctx.Tozos:
                 if netitem.item in item_id_to_game_id:
