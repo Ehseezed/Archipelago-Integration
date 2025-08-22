@@ -6,6 +6,8 @@ from BaseClasses import MultiWorld, CollectionState, Item
 from ..Items import ManualItem
 from ..Locations import ManualLocation
 
+from ..external.starting_letters import generate_basic_starting_inventory
+
 # Raw JSON data from the Manual apworld, respectively:
 #          data/game.json, data/items.json, data/locations.json, data/regions.json
 #
@@ -16,6 +18,9 @@ from ..Helpers import is_option_enabled, get_option_value, format_state_prog_ite
 
 # calling logging.info("message") anywhere below in this file will output the message to both console and log file
 import logging
+
+from ...tloz.Items import progression
+
 
 ########################################################################################
 ## Order of method calls when the world generates:
@@ -71,7 +76,12 @@ def before_create_items_starting(item_pool: list, world: World, multiworld: Mult
 # The item pool after starting items are processed but before filler is added, in case you want to see the raw item pool at that stage
 def before_create_items_filler(item_pool: list, world: World, multiworld: MultiWorld, player: int) -> list:
     # Use this hook to remove items from the item pool
-    itemNamesToRemove: list[str] = []
+    gnerated_starting_password = generate_basic_starting_inventory()
+    itemNamesToRemove: list[str] = generate_basic_starting_inventory()
+
+    for item in itemNamesToRemove:
+        item = next(i for i in item_pool if i.name == item)
+        world.multiworld.push_precollected(item)
 
     # Add your code here to calculate which items to remove.
     #

@@ -36,7 +36,6 @@ from .hooks.World import \
     before_extend_hint_information, after_extend_hint_information, \
     after_collect_item, after_remove_item
 from .hooks.Data import hook_interpret_slot_data
-from .hooks.starting_letters import generate_basic_starting_inventory
 
 class ManualWorld(World):
     __doc__ = world_description
@@ -196,13 +195,9 @@ class ManualWorld(World):
 
         items_started: list[Item] = []
 
-        start = generate_basic_starting_inventory()
-        print(f"+++ {self.player}: {start}")
-        # starting_items = start
 
         if starting_items:
             for starting_item_block in starting_items:
-                print(f"+++ {starting_item_block}")
                 if not resolve_yaml_option(self.multiworld, self.player, starting_item_block):
                     continue
                 # if there's a condition on having a previous item, check for any of them
@@ -239,18 +234,11 @@ class ManualWorld(World):
                     pool.remove(starting_item)
                     print(f"=== {starting_item}")
 
-        for i in start:
-            if isinstance(i, str):
-                item_obj = next((item for item in pool if item.name == i), None)
-                if item_obj:
-                    self.multiworld.push_precollected(item_obj)
-            else:
-                self.multiworld.push_precollected(i)
 
         self.start_inventory = {i.name: items_started.count(i) for i in items_started}
-        print(f"~~~ {self.multiworld.precollected_items}")
 
         pool = before_create_items_filler(pool, self, self.multiworld, self.player)
+        print(f"~~~ Precollected items for player: {self.multiworld.precollected_items}")
 
 
 
