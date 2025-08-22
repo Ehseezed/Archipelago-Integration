@@ -1,0 +1,795 @@
+[
+  {
+    "name": "Level 01 - BBAAB/BBAJI",
+    "region": "",
+    "category": [
+      "Levels 01-10"
+    ],
+    "requires": "(|First position B| AND |Second position B| AND |Third position A| AND |Fourth position A| AND |Fifth position B|) OR (|First position B| AND |Second position B| AND |Third position A| AND |Fourth position J| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 02 - BAAAB/BAAJI",
+    "category": [
+      "Levels 01-10"
+    ],
+    "requires": "(|First position B| AND |Second position A| AND |Third position A| AND |Fourth position A| AND |Fifth position B|) OR (|First position B| AND |Second position A| AND |Third position A| AND |Fourth position J| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 03 - BABBI/BABCI",
+    "category": [
+      "Levels 01-10"
+    ],
+    "requires": "(|First position B| AND |Second position A| AND |Third position B| AND |Fourth position B| AND |Fifth position I|) OR (|First position B| AND |Second position A| AND |Third position B| AND |Fourth position C| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 04 - BIIIB/BIIEB",
+    "category": [
+      "Levels 01-10"
+    ],
+    "requires": "(|First position B| AND |Second position I| AND |Third position I| AND |Fourth position I| AND |Fifth position B|) OR (|First position B| AND |Second position I| AND |Third position I| AND |Fourth position E| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 05 - BIFFB/BIAJJ",
+    "category": [
+      "Levels 01-10"
+    ],
+    "requires": "(|First position B| AND |Second position I| AND |Third position F| AND |Fourth position F| AND |Fifth position B|) OR (|First position B| AND |Second position I| AND |Third position A| AND |Fourth position J| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 06 - BFFFB/BFAJJ",
+    "category": [
+      "Levels 01-10"
+    ],
+    "requires": "(|First position B| AND |Second position F| AND |Third position F| AND |Fourth position F| AND |Fifth position B|) OR (|First position B| AND |Second position F| AND |Third position A| AND |Fourth position J| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 07 - BFIIG/BFBCJ",
+    "category": [
+      "Levels 01-10"
+    ],
+    "requires": "(|First position B| AND |Second position F| AND |Third position I| AND |Fourth position I| AND |Fifth position G|) OR (|First position B| AND |Second position F| AND |Third position B| AND |Fourth position C| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 08 - BJJJB/BJGFI",
+    "category": [
+      "Levels 01-10"
+    ],
+    "requires": "(|First position B| AND |Second position J| AND |Third position J| AND |Fourth position J| AND |Fifth position B|) OR (|First position B| AND |Second position J| AND |Third position G| AND |Fourth position F| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 09 - BJCCB/BJEIB",
+    "category": [
+      "Levels 01-10"
+    ],
+    "requires": "(|First position B| AND |Second position J| AND |Third position C| AND |Fourth position C| AND |Fifth position B|) OR (|First position B| AND |Second position J| AND |Third position E| AND |Fourth position I| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 10 - BCCCB/BCEIB",
+    "category": [
+      "Levels 01-10"
+    ],
+    "requires": "(|First position B| AND |Second position C| AND |Third position C| AND |Fourth position C| AND |Fifth position B|) OR (|First position B| AND |Second position C| AND |Third position E| AND |Fourth position I| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 11 - BCJJI/BCGFB",
+    "category": [
+      "Levels 11-20"
+    ],
+    "requires": "(|First position B| AND |Second position C| AND |Third position J| AND |Fourth position J| AND |Fifth position I|) OR (|First position B| AND |Second position C| AND |Third position G| AND |Fourth position F| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 12 - BGGGB/BGJAI",
+    "category": [
+      "Levels 11-20"
+    ],
+    "requires": "(|First position B| AND |Second position G| AND |Third position G| AND |Fourth position G| AND |Fifth position B|) OR (|First position B| AND |Second position G| AND |Third position J| AND |Fourth position A| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 13 - BGEEB/BGCBJ",
+    "category": [
+      "Levels 11-20"
+    ],
+    "requires": "(|First position B| AND |Second position G| AND |Third position E| AND |Fourth position E| AND |Fifth position B|) OR (|First position B| AND |Second position G| AND |Third position C| AND |Fourth position B| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 14 - BEEEB/BECBJ",
+    "category": [
+      "Levels 11-20"
+    ],
+    "requires": "(|First position B| AND |Second position E| AND |Third position E| AND |Fourth position E| AND |Fifth position B|) OR (|First position B| AND |Second position E| AND |Third position C| AND |Fourth position B| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 15 - BEJJJ/BEJAJ",
+    "category": [
+      "Levels 11-20"
+    ],
+    "requires": "(|First position B| AND |Second position E| AND |Third position J| AND |Fourth position J| AND |Fifth position J|) OR (|First position B| AND |Second position E| AND |Third position J| AND |Fourth position A| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 16 - AAAAB/AAAJI",
+    "category": [
+      "Levels 11-20"
+    ],
+    "requires": "(|First position A| AND |Second position A| AND |Third position A| AND |Fourth position A| AND |Fifth position B|) OR (|First position A| AND |Second position A| AND |Third position A| AND |Fourth position J| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 17 - AABBI/AABCI",
+    "category": [
+      "Levels 11-20"
+    ],
+    "requires": "(|First position A| AND |Second position A| AND |Third position B| AND |Fourth position B| AND |Fifth position I|) OR (|First position A| AND |Second position A| AND |Third position B| AND |Fourth position C| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 18 - ABBBI/ABBCI",
+    "category": [
+      "Levels 11-20"
+    ],
+    "requires": "(|First position A| AND |Second position B| AND |Third position B| AND |Fourth position B| AND |Fifth position I|) OR (|First position A| AND |Second position B| AND |Third position B| AND |Fourth position C| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 19 - ABAAI/ABFGG",
+    "category": [
+      "Levels 11-20"
+    ],
+    "requires": "(|First position A| AND |Second position B| AND |Third position A| AND |Fourth position A| AND |Fifth position I|) OR (|First position A| AND |Second position B| AND |Third position F| AND |Fourth position G| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level 20 - AFFFB/AFAJJ",
+    "category": [
+      "Levels 11-20"
+    ],
+    "requires": "((|First position A| AND |Second position F| AND |Third position F| AND |Fourth position F| AND |Fifth position B|) OR (|First position A| AND |Second position F| AND |Third position A| AND |Fourth position J| AND |Fifth position J|)) AND (|Bubble Bounce| OR |Water Bubbles|)"
+  },
+  {
+    "name": "Level 21 - AFIIG/AFBCJ",
+    "category": [
+      "Levels 21-30"
+    ],
+    "requires": "(|First position A| AND |Second position F| AND |Third position I| AND |Fourth position I| AND |Fifth position G|) OR (|First position A| AND |Second position F| AND |Third position B| AND |Fourth position C| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 22 - AIIIG/AIBCJ",
+    "category": [
+      "Levels 21-30"
+    ],
+    "requires": "(|First position A| AND |Second position I| AND |Third position I| AND |Fourth position I| AND |Fifth position G|) OR (|First position A| AND |Second position I| AND |Third position B| AND |Fourth position C| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 23 - AIFFG/AIAJG",
+    "category": [
+      "Levels 21-30"
+    ],
+    "requires": "(|First position A| AND |Second position I| AND |Third position F| AND |Fourth position F| AND |Fifth position G|) OR (|First position A| AND |Second position I| AND |Third position A| AND |Fourth position J| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level 24 - ACCCB/ACEIB",
+    "category": [
+      "Levels 21-30"
+    ],
+    "requires": "(|First position A| AND |Second position C| AND |Third position C| AND |Fourth position C| AND |Fifth position B|) OR (|First position A| AND |Second position C| AND |Third position E| AND |Fourth position I| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 25 - ACJJI/ACGFB",
+    "category": [
+      "Levels 21-30"
+    ],
+    "requires": "(|First position A| AND |Second position C| AND |Third position J| AND |Fourth position J| AND |Fifth position I|) OR (|First position A| AND |Second position C| AND |Third position G| AND |Fourth position F| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 26 - AJJJI/AJGFB",
+    "category": [
+      "Levels 21-30"
+    ],
+    "requires": "(|First position A| AND |Second position J| AND |Third position J| AND |Fourth position J| AND |Fifth position I|) OR (|First position A| AND |Second position J| AND |Third position G| AND |Fourth position F| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 27 - AJCCI/AJEIG",
+    "category": [
+      "Levels 21-30"
+    ],
+    "requires": "(|First position A| AND |Second position J| AND |Third position C| AND |Fourth position C| AND |Fifth position I|) OR (|First position A| AND |Second position J| AND |Third position E| AND |Fourth position I| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level 28 - AEEEB/AECBJ",
+    "category": [
+      "Levels 21-30"
+    ],
+    "requires": "(|First position A| AND |Second position E| AND |Third position E| AND |Fourth position E| AND |Fifth position B|) OR (|First position A| AND |Second position E| AND |Third position C| AND |Fourth position B| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 29 - AEJJJ/AEJAJ",
+    "category": [
+      "Levels 21-30"
+    ],
+    "requires": "(|First position A| AND |Second position E| AND |Third position J| AND |Fourth position J| AND |Fifth position J|) OR (|First position A| AND |Second position E| AND |Third position J| AND |Fourth position A| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 30 - AGJJJ/AGJAJ",
+    "category": [
+      "Levels 21-30"
+    ],
+    "requires": "(|First position A| AND |Second position G| AND |Third position J| AND |Fourth position J| AND |Fifth position J|) OR (|First position A| AND |Second position G| AND |Third position J| AND |Fourth position A| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 31 - AGCCJ/AGCBG",
+    "category": [
+      "Levels 31-40"
+    ],
+    "requires": "(|First position A| AND |Second position G| AND |Third position C| AND |Fourth position C| AND |Fifth position J|) OR (|First position A| AND |Second position G| AND |Third position C| AND |Fourth position B| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level 32 - IIIIB/IIIEB",
+    "category": [
+      "Levels 31-40"
+    ],
+    "requires": "(|First position I| AND |Second position I| AND |Third position I| AND |Fourth position I| AND |Fifth position B|) OR (|First position I| AND |Second position I| AND |Third position I| AND |Fourth position E| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 33 - IIFFB/IIAJJ",
+    "category": [
+      "Levels 31-40"
+    ],
+    "requires": "(|First position I| AND |Second position I| AND |Third position F| AND |Fourth position F| AND |Fifth position B|) OR (|First position I| AND |Second position I| AND |Third position A| AND |Fourth position J| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 34 - IFFFB/IFAJJ",
+    "category": [
+      "Levels 31-40"
+    ],
+    "requires": "(|First position I| AND |Second position F| AND |Third position F| AND |Fourth position F| AND |Fifth position B|) OR (|First position I| AND |Second position F| AND |Third position A| AND |Fourth position J| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 35 - IFIIG/IFBCJ",
+    "category": [
+      "Levels 31-40"
+    ],
+    "requires": "((|First position I| AND |Second position F| AND |Third position I| AND |Fourth position I| AND |Fifth position G|) OR (|First position I| AND |Second position F| AND |Third position B| AND |Fourth position C| AND |Fifth position J|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level 36 - IBBBJ/IBIEG",
+    "category": [
+      "Levels 31-40"
+    ],
+    "requires": "(|First position I| AND |Second position B| AND |Third position B| AND |Fourth position B| AND |Fifth position J|) OR (|First position I| AND |Second position B| AND |Third position I| AND |Fourth position E| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level 37 - IBAAJ/IBFGJ",
+    "category": [
+      "Levels 31-40"
+    ],
+    "requires": "(|First position I| AND |Second position B| AND |Third position A| AND |Fourth position A| AND |Fifth position J|) OR (|First position I| AND |Second position B| AND |Third position F| AND |Fourth position G| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 38 - IAAAJ/IAFGJ",
+    "category": [
+      "Levels 31-40"
+    ],
+    "requires": "(|First position I| AND |Second position A| AND |Third position A| AND |Fourth position A| AND |Fifth position J|) OR (|First position I| AND |Second position A| AND |Third position F| AND |Fourth position G| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 39 - IABBG/IAIEJ",
+    "category": [
+      "Levels 31-40"
+    ],
+    "requires": "(|First position I| AND |Second position A| AND |Third position B| AND |Fourth position B| AND |Fifth position G|) OR (|First position I| AND |Second position A| AND |Third position I| AND |Fourth position E| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 40 - IGGGB/IGJAI",
+    "category": [
+      "Levels 31-40"
+    ],
+    "requires": "(|First position I| AND |Second position G| AND |Third position G| AND |Fourth position G| AND |Fifth position B|) OR (|First position I| AND |Second position G| AND |Third position J| AND |Fourth position A| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 41 - IGEEB/IGCBJ",
+    "category": [
+      "Levels 41-50"
+    ],
+    "requires": "(|First position I| AND |Second position G| AND |Third position E| AND |Fourth position E| AND |Fifth position B|) OR (|First position I| AND |Second position G| AND |Third position C| AND |Fourth position B| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 42 - IEEEB/IECBJ",
+    "category": [
+      "Levels 41-50"
+    ],
+    "requires": "(|First position I| AND |Second position E| AND |Third position E| AND |Fourth position E| AND |Fifth position B|) OR (|First position I| AND |Second position E| AND |Third position C| AND |Fourth position B| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 43 - IEJJJ/IEJAJ",
+    "category": [
+      "Levels 41-50"
+    ],
+    "requires": "(|First position I| AND |Second position E| AND |Third position J| AND |Fourth position J| AND |Fifth position J|) OR (|First position I| AND |Second position E| AND |Third position J| AND |Fourth position A| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 44 - IJGGG/IJGFG",
+    "category": [
+      "Levels 41-50"
+    ],
+    "requires": "(|First position I| AND |Second position J| AND |Third position G| AND |Fourth position G| AND |Fifth position G|) OR (|First position I| AND |Second position J| AND |Third position G| AND |Fourth position F| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level 45 - IJEEG/IJEIJ",
+    "category": [
+      "Levels 41-50"
+    ],
+    "requires": "(|First position I| AND |Second position J| AND |Third position E| AND |Fourth position E| AND |Fifth position G|) OR (|First position I| AND |Second position J| AND |Third position E| AND |Fourth position I| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 46 - ICEEG/ICEIJ",
+    "category": [
+      "Levels 41-50"
+    ],
+    "requires": "(|First position I| AND |Second position C| AND |Third position E| AND |Fourth position E| AND |Fifth position G|) OR (|First position I| AND |Second position C| AND |Third position E| AND |Fourth position I| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 47 - ICGGJ/ICGFJ",
+    "category": [
+      "Levels 41-50"
+    ],
+    "requires": "(|First position I| AND |Second position C| AND |Third position G| AND |Fourth position G| AND |Fifth position J|) OR (|First position I| AND |Second position C| AND |Third position G| AND |Fourth position F| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 48 - FFFFB/FFAJJ",
+    "category": [
+      "Levels 41-50"
+    ],
+    "requires": "(|First position F| AND |Second position F| AND |Third position F| AND |Fourth position F| AND |Fifth position B|) OR (|First position F| AND |Second position F| AND |Third position A| AND |Fourth position J| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 49 - FFIIG/FFBCJ",
+    "category": [
+      "Levels 41-50"
+    ],
+    "requires": "(|First position F| AND |Second position F| AND |Third position I| AND |Fourth position I| AND |Fifth position G|) OR (|First position F| AND |Second position F| AND |Third position B| AND |Fourth position C| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 50 - FFIFG/FIBCJ",
+    "category": [
+      "Levels 41-50"
+    ],
+    "requires": "(|First position F| AND |Second position F| AND |Third position I| AND |Fourth position F| AND |Fifth position G|) OR (|First position F| AND |Second position I| AND |Third position B| AND |Fourth position C| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 51 - FIIIG/FIAJG",
+    "category": [
+      "Levels 51-60"
+    ],
+    "requires": "(|First position F| AND |Second position I| AND |Third position I| AND |Fourth position I| AND |Fifth position G|) OR (|First position F| AND |Second position I| AND |Third position A| AND |Fourth position J| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level 52 - FAAAJ/FAFGJ",
+    "category": [
+      "Levels 51-60"
+    ],
+    "requires": "(|First position F| AND |Second position A| AND |Third position A| AND |Fourth position A| AND |Fifth position J|) OR (|First position F| AND |Second position A| AND |Third position F| AND |Fourth position G| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 53 - FABBG/FAIEJ",
+    "category": [
+      "Levels 51-60"
+    ],
+    "requires": "(|First position F| AND |Second position E| AND |Third position B| AND |Fourth position B| AND |Fifth position G|) OR (|First position F| AND |Second position A| AND |Third position I| AND |Fourth position E| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 54 - FBBBG/FBIEJ",
+    "category": [
+      "Levels 51-60"
+    ],
+    "requires": "((|First position F| AND |Second position B| AND |Third position B| AND |Fourth position B| AND |Fifth position G|) OR (|First position F| AND |Second position B| AND |Third position I| AND |Fourth position E| AND |Fifth position J|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level 55 - FBAAG/FBFGI",
+    "category": [
+      "Levels 51-60"
+    ],
+    "requires": "(|First position F| AND |Second position B| AND |Third position A| AND |Fourth position A| AND |Fifth position G|) OR (|First position F| AND |Second position B| AND |Third position F| AND |Fourth position G| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 56 - FEEEB/FECBJ",
+    "category": [
+      "Levels 51-60"
+    ],
+    "requires": "(|First position F| AND |Second position E| AND |Third position E| AND |Fourth position E| AND |Fifth position B|) OR (|First position F| AND |Second position E| AND |Third position C| AND |Fourth position B| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 57 - FEJJJ/FEJAJ",
+    "category": [
+      "Levels 51-60"
+    ],
+    "requires": "((|First position F| AND |Second position E| AND |Third position J| AND |Fourth position J| AND |Fifth position J|) OR (|First position F| AND |Second position E| AND |Third position J| AND |Fourth position A| AND |Fifth position J|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level 58 - FGJJJ/FGJAJ",
+    "category": [
+      "Levels 51-60"
+    ],
+    "requires": "(|First position F| AND |Second position G| AND |Third position J| AND |Fourth position J| AND |Fifth position J|) OR (|First position F| AND |Second position G| AND |Third position J| AND |Fourth position A| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 59 - FGCCJ/FGCBG",
+    "category": [
+      "Levels 51-60"
+    ],
+    "requires": "(|First position F| AND |Second position G| AND |Third position C| AND |Fourth position C| AND |Fifth position J|) OR (|First position F| AND |Second position G| AND |Third position C| AND |Fourth position B| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level 60 - FCEEG/FCEIJ",
+    "category": [
+      "Levels 51-60"
+    ],
+    "requires": "(|First position F| AND |Second position C| AND |Third position E| AND |Fourth position E| AND |Fifth position G|) OR (|First position F| AND |Second position C| AND |Third position E| AND |Fourth position I| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 61 - FCGGJ/FCGFJ",
+    "category": [
+      "Levels 61-70"
+    ],
+    "requires": "(|First position F| AND |Second position C| AND |Third position G| AND |Fourth position G| AND |Fifth position J|) OR (|First position F| AND |Second position C| AND |Third position G| AND |Fourth position F| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 62 - FJGGJ/FJGFJ",
+    "category": [
+      "Levels 61-70"
+    ],
+    "requires": "(|First position F| AND |Second position J| AND |Third position G| AND |Fourth position G| AND |Fifth position J|) OR (|First position F| AND |Second position J| AND |Third position G| AND |Fourth position F| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 63 - FJEEJ/FJAJJ",
+    "category": [
+      "Levels 61-70"
+    ],
+    "requires": "((|First position F| AND |Second position J| AND |Third position E| AND |Fourth position E| AND |Fifth position J|) OR (|First position F| AND |Second position J| AND |Third position A| AND |Fourth position J| AND |Fifth position J|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level 64 - JJJJB/JJGFI",
+    "category": [
+      "Levels 61-70"
+    ],
+    "requires": "(|First position J| AND |Second position J| AND |Third position J| AND |Fourth position J| AND |Fifth position B|) OR (|First position J| AND |Second position J| AND |Third position G| AND |Fourth position F| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 65 - JJCCB/JJEIB",
+    "category": [
+      "Levels 61-70"
+    ],
+    "requires": "((|First position J| AND |Second position J| AND |Third position C| AND |Fourth position C| AND |Fifth position B|) OR (|First position J| AND |Second position J| AND |Third position E| AND |Fourth position I| AND |Fifth position B|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level 66 - JCCCB/JCEIB",
+    "category": [
+      "Levels 61-70"
+    ],
+    "requires": "(|First position J| AND |Second position C| AND |Third position C| AND |Fourth position C| AND |Fifth position B|) OR (|First position J| AND |Second position C| AND |Third position E| AND |Fourth position I| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 67 - JCJJI/JCGFB",
+    "category": [
+      "Levels 61-70"
+    ],
+    "requires": "(|First position J| AND |Second position C| AND |Third position J| AND |Fourth position J| AND |Fifth position I|) OR (|First position J| AND |Second position C| AND |Third position G| AND |Fourth position F| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 68 - JGGGB/JGJAI",
+    "category": [
+      "Levels 61-70"
+    ],
+    "requires": "((|First position J| AND |Second position G| AND |Third position G| AND |Fourth position G| AND |Fifth position B|) OR (|First position J| AND |Second position G| AND |Third position J| AND |Fourth position A| AND |Fifth position I|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level 69 - JGEEB/JGCBJ",
+    "category": [
+      "Levels 61-70"
+    ],
+    "requires": "(|First position J| AND |Second position G| AND |Third position E| AND |Fourth position E| AND |Fifth position B|) OR (|First position J| AND |Second position G| AND |Third position C| AND |Fourth position B| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 70 - JEEEB/JECBJ",
+    "category": [
+      "Levels 61-70"
+    ],
+    "requires": "(|First position J| AND |Second position E| AND |Third position E| AND |Fourth position E| AND |Fifth position B|) OR (|First position J| AND |Second position E| AND |Third position C| AND |Fourth position B| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 71 - JEJJJ/JEJAJ",
+    "category": [
+      "Levels 71-80"
+    ],
+    "requires": "((|First position J| AND |Second position E| AND |Third position J| AND |Fourth position J| AND |Fifth position J|) OR (|First position J| AND |Second position E| AND |Third position J| AND |Fourth position A| AND |Fifth position J|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level 72 - JBIII/JBIEI",
+    "category": [
+      "Levels 71-80"
+    ],
+    "requires": "((|First position J| AND |Second position B| AND |Third position I| AND |Fourth position I| AND |Fifth position I|) OR (|First position J| AND |Second position B| AND |Third position I| AND |Fourth position E| AND |Fifth position I|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level 73 - JBFFI/JBFGB",
+    "category": [
+      "Levels 71-80"
+    ],
+    "requires": "(|First position J| AND |Second position B| AND |Third position F| AND |Fourth position F| AND |Fifth position I|) OR (|First position J| AND |Second position B| AND |Third position F| AND |Fourth position G| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 74 - JAFFI/JAFGB",
+    "category": [
+      "Levels 71-80"
+    ],
+    "requires": "(|First position J| AND |Second position A| AND |Third position F| AND |Fourth position F| AND |Fifth position I|) OR (|First position J| AND |Second position A| AND |Third position F| AND |Fourth position G| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 75 - JAIIB/JAIEB",
+    "category": [
+      "Levels 71-80"
+    ],
+    "requires": "(|First position J| AND |Second position A| AND |Third position I| AND |Fourth position I| AND |Fifth position B|) OR (|First position J| AND |Second position A| AND |Third position I| AND |Fourth position E| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 76 - JIBBI/JIBCI",
+    "category": [
+      "Levels 71-80"
+    ],
+    "requires": "(|First position J| AND |Second position I| AND |Third position B| AND |Fourth position B| AND |Fifth position I|) OR (|First position J| AND |Second position I| AND |Third position B| AND |Fourth position C| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 77 - JIAAI/JIEII",
+    "category": [
+      "Levels 71-80"
+    ],
+    "requires": "(|First position J| AND |Second position I| AND |Third position A| AND |Fourth position A| AND |Fifth position I|) OR (|First position J| AND |Second position I| AND |Third position E| AND |Fourth position I| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 78 - JFAAI/JFEII",
+    "category": [
+      "Levels 71-80"
+    ],
+    "requires": "(|First position J| AND |Second position F| AND |Third position A| AND |Fourth position A| AND |Fifth position I|) OR (|First position J| AND |Second position F| AND |Third position E| AND |Fourth position I| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 79 - JFBBJ/JFGFI",
+    "category": [
+      "Levels 71-80"
+    ],
+    "requires": "((|First position J| AND |Second position F| AND |Third position B| AND |Fourth position B| AND |Fifth position J|) OR (|First position J| AND |Second position F| AND |Third position G| AND |Fourth position F| AND |Fifth position I|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level 80 - CCCCB/CCEIB",
+    "category": [
+      "Levels 71-80"
+    ],
+    "requires": "(|First position C| AND |Second position C| AND |Third position C| AND |Fourth position C| AND |Fifth position B|) OR (|First position C| AND |Second position C| AND |Third position E| AND |Fourth position I| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 81 - CCJJI/CCGFB",
+    "category": [
+      "Levels 81-90"
+    ],
+    "requires": "((|First position C| AND |Second position C| AND |Third position J| AND |Fourth position J| AND |Fifth position I|) OR (|First position C| AND |Second position C| AND |Third position G| AND |Fourth position F| AND |Fifth position B|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level 82 - CJJJI/CJGFB",
+    "category": [
+      "Levels 81-90"
+    ],
+    "requires": "(|First position C| AND |Second position J| AND |Third position J| AND |Fourth position J| AND |Fifth position I|) OR (|First position C| AND |Second position J| AND |Third position G| AND |Fourth position F| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level 83 - CJCCI/CJEIG",
+    "category": [
+      "Levels 81-90"
+    ],
+    "requires": "(|First position C| AND |Second position J| AND |Third position C| AND |Fourth position C| AND |Fifth position I|) OR (|First position C| AND |Second position J| AND |Third position E| AND |Fourth position I| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level 84 - CEEEB/CECBJ",
+    "category": [
+      "Levels 81-90"
+    ],
+    "requires": "(|First position C| AND |Second position E| AND |Third position E| AND |Fourth position E| AND |Fifth position B|) OR (|First position C| AND |Second position E| AND |Third position C| AND |Fourth position B| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 85 - CEJJJ/CEJAJ",
+    "category": [
+      "Levels 81-90"
+    ],
+    "requires": "(|First position C| AND |Second position E| AND |Third position J| AND |Fourth position J| AND |Fifth position J|) OR (|First position C| AND |Second position E| AND |Third position J| AND |Fourth position A| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 86 - CGJJJ/CGJAJ",
+    "category": [
+      "Levels 81-90"
+    ],
+    "requires": "(|First position C| AND |Second position G| AND |Third position J| AND |Fourth position J| AND |Fifth position J|) OR (|First position C| AND |Second position G| AND |Third position J| AND |Fourth position A| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 87 - CGCCJ/CGCBG",
+    "category": [
+      "Levels 81-90"
+    ],
+    "requires": "(|First position C| AND |Second position G| AND |Third position C| AND |Fourth position C| AND |Fifth position J|) OR (|First position C| AND |Second position G| AND |Third position C| AND |Fourth position B| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level 88 - CAFFI/CAFGB",
+    "category": [
+      "Levels 81-90"
+    ],
+    "requires": "((|First position C| AND |Second position A| AND |Third position F| AND |Fourth position F| AND |Fifth position I|) OR (|First position C| AND |Second position A| AND |Third position F| AND |Fourth position G| AND |Fifth position B|)) AND |Bubble Bounce| AND |Fire Bubbles|"
+  },
+  {
+    "name": "Level 89 - CAJFI/CAIEB",
+    "category": [
+      "Levels 81-90"
+    ],
+    "requires": "((|First position C| AND |Second position A| AND |Third position J| AND |Fourth position F| AND |Fifth position I|) OR (|First position C| AND |Second position A| AND |Third position I| AND |Fourth position E| AND |Fifth position B|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level 90 - CBIIB/CBIEB",
+    "category": [
+      "Levels 81-90"
+    ],
+    "requires": "((|First position C| AND |Second position B| AND |Third position I| AND |Fourth position I| AND |Fifth position B|) OR (|First position C| AND |Second position B| AND |Third position I| AND |Fourth position E| AND |Fifth position B|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level 91 - CBFFB/CBCBB",
+    "category": [
+      "Levels 91-99"
+    ],
+    "requires": "((|First position C| AND |Second position B| AND |Third position F| AND |Fourth position F| AND |Fifth position B|) OR (|First position C| AND |Second position B| AND |Third position C| AND |Fourth position B| AND |Fifth position B|)) AND |Fire Bubbles|"
+  },
+  {
+    "name": "Level 92 - CFAAI/CFEII",
+    "category": [
+      "Levels 91-99"
+    ],
+    "requires": "(|First position C| AND |Second position F| AND |Third position A| AND |Fourth position A| AND |Fifth position I|) OR (|First position C| AND |Second position F| AND |Third position E| AND |Fourth position I| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 93 - CJBBJ/CFGFI",
+    "category": [
+      "Levels 91-99"
+    ],
+    "requires": "(|First position C| AND |Second position J| AND |Third position B| AND |Fourth position B| AND |Fifth position J|) OR (|First position C| AND |Second position F| AND |Third position G| AND |Fourth position F| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 94 - CIBBJ/CIGFI",
+    "category": [
+      "Levels 91-99"
+    ],
+    "requires": "(|First position C| AND |Second position I| AND |Third position B| AND |Fourth position B| AND |Fifth position J|) OR (|First position C| AND |Second position I| AND |Third position G| AND |Fourth position F| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 95 - CIAAJ/CIEIB",
+    "category": [
+      "Levels 91-99"
+    ],
+    "requires": "((|First position C| AND |Second position I| AND |Third position A| AND |Fourth position A| AND |Fifth position J|) OR (|First position C| AND |Second position I| AND |Third position E| AND |Fourth position I| AND |Fifth position B|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level 96 - GGJBI/GGJAI",
+    "category": [
+      "Levels 91-99"
+    ],
+    "requires": "(|First position G| AND |Second position G| AND |Third position J| AND |Fourth position B| AND |Fifth position I|) OR (|First position G| AND |Second position G| AND |Third position J| AND |Fourth position A| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level 97 - GGEEB/GGCBJ",
+    "category": [
+      "Levels 91-99"
+    ],
+    "requires": "((|First position G| AND |Second position G| AND |Third position E| AND |Fourth position E| AND |Fifth position B|) OR (|First position G| AND |Second position G| AND |Third position C| AND |Fourth position B| AND |Fifth position J|)) AND |Lightning Bubbles|"
+  },
+  {
+    "name": "Level 98 - GEEEB/GECBJ",
+    "category": [
+      "Levels 91-99"
+    ],
+    "requires": "(|First position F| AND |Second position E| AND |Third position E| AND |Fourth position E| AND |Fifth position B|) OR (|First position G| AND |Second position E| AND |Third position C| AND |Fourth position B| AND |Fifth position J|)"
+  },
+  {
+    "name": "Level 99 - GEJJJ/GEJAJ",
+    "category": [
+      "Levels 91-99"
+    ],
+    "requires": "((|First position G| AND |Second position E| AND |Third position J| AND |Fourth position J| AND |Fifth position J|) OR (|First position G| AND |Second position E| AND |Third position J| AND |Fourth position A| AND |Fifth position J|)) AND |Bubble Bounce| AND |Fire Bubbles|"
+  },
+  {
+    "name": "Level A0 - CJGEG/GJGBG",
+    "category": [
+      "Levels A0-B2"
+    ],
+    "requires": "(|First position C| AND |Second position J| AND |Third position G| AND |Fourth position E| AND |Fifth position G|) OR (|First position G| AND |Second position J| AND |Third position G| AND |Fourth position B| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level A1 - GJEGJ/GJEAG",
+    "category": [
+      "Levels A0-B2"
+    ],
+    "requires": "(|First position G| AND |Second position J| AND |Third position E| AND |Fourth position G| AND |Fifth position J|) OR (|First position G| AND |Second position J| AND |Third position E| AND |Fourth position A| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level A2 - GCEGJ/GCEAG",
+    "category": [
+      "Levels A0-B2"
+    ],
+    "requires": "(|First position G| AND |Second position C| AND |Third position E| AND |Fourth position G| AND |Fifth position J|) OR (|First position G| AND |Second position C| AND |Third position E| AND |Fourth position A| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level A3 - GCGEJ/GCBGG",
+    "category": [
+      "Levels A0-B2"
+    ],
+    "requires": "(|First position G| AND |Second position C| AND |Third position G| AND |Fourth position E| AND |Fifth position J|) OR (|First position G| AND |Second position C| AND |Third position B| AND |Fourth position G| AND |Fifth position G|)"
+  },
+  {
+    "name": "Level A4 - GIBAI/GIGBB",
+    "category": [
+      "Levels A0-B2"
+    ],
+    "requires": "(|First position G| AND |Second position I| AND |Third position B| AND |Fourth position A| AND |Fifth position I|) OR (|First position G| AND |Second position I| AND |Third position G| AND |Fourth position B| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level A5 - GIABJ/GIEAB",
+    "category": [
+      "Levels A0-B2"
+    ],
+    "requires": "(|First position G| AND |Second position I| AND |Third position A| AND |Fourth position B| AND |Fifth position J|) OR (|First position G| AND |Second position I| AND |Third position E| AND |Fourth position A| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level A6 - GFABJ/GFEAB",
+    "category": [
+      "Levels A0-B2"
+    ],
+    "requires": "(|First position G| AND |Second position F| AND |Third position A| AND |Fourth position B| AND |Fifth position J|) OR (|First position G| AND |Second position F| AND |Third position E| AND |Fourth position A| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level A7 - GFBAJ/GFGBI",
+    "category": [
+      "Levels A0-B2"
+    ],
+    "requires": "(|First position B| AND |Second position F| AND |Third position B| AND |Fourth position A| AND |Fifth position J|) OR (|First position G| AND |Second position F| AND |Third position G| AND |Fourth position B| AND |Fifth position I|)"
+  },
+  {
+    "name": "Level A8 - GBIFG/GBJIB",
+    "category": [
+      "Levels A0-B2"
+    ],
+    "requires": "(|First position G| AND |Second position B| AND |Third position I| AND |Fourth position F| AND |Fifth position G|) OR (|First position G| AND |Second position B| AND |Third position J| AND |Fourth position I| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level A9 - GBFIJ/GBCFB",
+    "category": [
+      "Levels A0-B2"
+    ],
+    "requires": "(|First position G| AND |Second position B| AND |Third position F| AND |Fourth position I| AND |Fifth position J|) OR (|First position G| AND |Second position B| AND |Third position C| AND |Fourth position F| AND |Fifth position B|)"
+  },
+  {
+    "name": "Level B0 - GAFIJ/GACFB",
+    "category": [
+      "Levels A0-B2"
+    ],
+    "requires": "((|First position G| AND |Second position A| AND |Third position F| AND |Fourth position I| AND |Fifth position J|) OR (|First position G| AND |Second position A| AND |Third position C| AND |Fourth position F| AND |Fifth position B|)) AND |Bubble Bounce|"
+  },
+  {
+    "name": "Level B1 - GAIFJ/GAJIG",
+    "category": [
+      "Levels A0-B2"
+    ],
+    "requires": "((|First position G| AND |Second position A| AND |Third position I| AND |Fourth position F| AND |Fifth position J|) OR (|First position G| AND |Second position A| AND |Third position J| AND |Fourth position I| AND |Fifth position G|)) AND |Bubble Bounce| AND |Fire Bubbles|"
+  },
+  {
+    "name": "Level B2 - EECJJ/EECFG",
+    "category": [
+      "Levels A0-B2"
+    ],
+    "requires": "(|First position E| AND |Second position E| AND |Third position C| AND |Fourth position J| AND |Fifth position J|) OR (|First position E| AND |Second position E| AND |Third position C| AND |Fourth position F| AND |Fifth position G|)"
+  },
+  {
+    "name": "Defeat Grumple Gromit",
+    "victory": true,
+    "category": [
+      "BOSS"
+    ],
+    "requires": "|Drug of Thunder| AND |Lightning Bubbles| AND (((|First position E| AND |Second position E| AND |Third position C| AND |Fourth position J| AND |Fifth position J|) OR (|First position E| AND |Second position E| AND |Third position C| AND |Fourth position F| AND |Fifth position G|)) OR (((|First position G| AND |Second position E| AND |Third position J| AND |Fourth position J| AND |Fifth position J|) OR (|First position G| AND |Second position E| AND |Third position J| AND |Fourth position A| AND |Fifth position J|)) AND |Bubble Bounce| AND |Fire Bubbles|))"
+  }
+]
