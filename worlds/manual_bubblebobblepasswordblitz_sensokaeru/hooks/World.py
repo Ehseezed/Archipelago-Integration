@@ -1,4 +1,6 @@
 # Object classes from AP core, to represent an entire MultiWorld and this individual World that's part of it
+from typing import Any
+
 from worlds.AutoWorld import World
 from BaseClasses import MultiWorld, CollectionState, Item
 
@@ -72,54 +74,25 @@ def before_create_items_starting(item_pool: list, world: World, multiworld: Mult
 def before_create_items_filler(item_pool: list, world: World, multiworld: MultiWorld, player: int) -> list:
     # Use this hook to remove items from the item pool
     import random
-    def generate_basic_starting_inventory() -> list:
-        legal_starting_password = ["BBAAB", "BAAAB", "BABBI", "BIIIB", "BIFFB", "BFFFB", "BFIIG", "BJJJB", "BJCCB",
-                                   "BCCCB",
-                                   "BCJJI", "BGGGB", "BGEEB", "BEEEB", "BEJJJ", "AAAAB", "AABBI", "ABBBI", "ABAAI",
-                                   "AFFFB",
-                                   "AFIIG", "AIIIG", "AIFFG", "ACCCB", "ACJJI", "AJJJI", "AJCCI", "AEEEB", "AEJJJ",
-                                   "AGJJJ",
-                                   "AGCCJ", "IIIIB", "IIFFB", "IFFFB", "IFIIG", "IBBBJ", "IBAAJ", "IAAAJ", "IABBG",
-                                   "IGGGB",
-                                   "IGEEB", "IEEEB", "IEJJJ", "IJGGG", "IJEEG", "ICEEG", "ICGGJ", "FFFFB", "FFIIG",
-                                   "FFIFG",
-                                   "FIIIG", "FAAAJ", "FABBG", "FBBBG", "FBAAG", "FEEEB", "FEJJJ", "FGJJJ", "FGCCJ",
-                                   "FCEEG",
-                                   "FCGGJ", "FJGGJ", "FJEEJ", "JJJJB", "JJCCB", "JCCCB", "JCJJI", "JGGGB", "JGEEB",
-                                   "JEEEB",
-                                   "JEJJJ", "JBIII", "JBFFI", "JAFFI", "JAIIB", "JIBBI", "JIAAI", "JFAAI", "JFBBJ",
-                                   "CCCCB",
-                                   "CCJJI", "CJJJI", "CJCCI", "CEEEB", "CEJJJ", "CGJJJ", "CGCCJ", "CAFFI", "CAJFI",
-                                   "CBIIB",
-                                   "CBFFB", "CFAAI", "CJBBJ", "CIBBJ", "CIAAJ", "GGJBI", "GGJBI", "GGEEB", "GEEEB",
-                                   "GEJJJ",
-                                   "CJGEG", "GJEGJ", "GCEGJ", "GCGEJ", "GIBAI", "GIABJ", "GFABJ", "GFBAJ", "GBIFG",
-                                   "GBFIJ",
-                                   "GAFIJ", "GAIFJ", "EECJJ", "BBAJI", "BAAJI", "BABCI", "BIIEB", "BIAJJ", "BFAJJ",
-                                   "BFBCJ",
-                                   "BJGFI", "BJEIB", "BCEIB", "BCGFB", "BGJAI", "BGCBJ", "BECBJ", "BEJAJ", "AAAJI",
-                                   "AABCI",
-                                   "ABBCI", "ABFGG", "AFAJJ", "AFBCJ", "AIBCJ", "AIAJG", "ACEIB", "ACGFB", "AJGFB",
-                                   "AJEIG",
-                                   "AECBJ", "AEJAJ", "AGJAJ", "AGCBG", "IIIEB", "IIAJJ", "IFAJJ", "IFBCJ", "IBIEG",
-                                   "IBFGJ",
-                                   "IAFGJ", "IAIEJ", "IGJAI", "IGCBJ", "IECBJ", "IEJAJ", "IJGFG", "IJEIJ", "ICEIJ",
-                                   "ICGFJ",
-                                   "FFAJJ", "FFBCJ", "FIBCJ", "FIAJG", "FAFGJ", "FAIEJ", "FBIEJ", "FBFGI", "FECBJ",
-                                   "FEJAJ",
-                                   "FGJAJ", "FGCBG", "FCEIJ", "FCGFJ", "FJGFJ", "FJAJJ", "JJGFI", "JJEIB", "JCEIB",
-                                   "JCGFB",
-                                   "JGJAI", "JGCBJ", "JECBJ", "JEJAJ", "JBIEI", "JBFGB", "JAFGB", "JAIEB", "JIBCI",
-                                   "JIEII",
-                                   "JFEII", "JFGFI", "CCEIB", "CCGFB", "CJGFB", "CJEIG", "CECBJ", "CEJAJ", "CGJAJ",
-                                   "CGCBG",
-                                   "CAFGB", "CAIEB", "CBIEB", "CBCBB", "CFEII", "CFGFI", "CIGFI", "CIEIB", "GGJAI",
-                                   "GGCBJ",
-                                   "GECBJ", "GEJAJ", "GJGBG", "GJEAG", "GCEAG", "GCBGG", "GIGBB", "GIEAB", "GFEAB",
-                                   "GFGBI",
-                                   "GBJIB", "GBCFB", "GACFB", "GAJIG", "EECFG"]
-        starting_inventory = generate_starting_inventory(random.choice(legal_starting_password))
-        return starting_inventory
+    legal_starting_password = [
+        "BAAAB", "BIFFB", "BFFFB", "BFIIG", "BJCCB", "BCCCB", "BCJJI", "BGEEB", "BEEEB", "AFIIG",
+        "AIIIG", "ACCCB", "ACJJI", "AJJJI", "AEEEB", "AGCCJ", "IIFFB", "IFFFB", "IAAAJ", "IGEEB",
+        "IEEEB", "ICEEG", "FFFFB", "FFIIG", "FIIIG", "IABBG", "FEEEB", "FGCCJ", "JCCCB", "JCJJI",
+        "JGEEB", "JEEEB", "JAFFI", "JFAAI", "CCCCB", "CJJJI", "CEEEB", "GEEEB",
+
+        "BBAAB", "BAAAB", "BIIIB", "BIFFB", "BFFFB", "BFIIG", "BFIIG", "BJCCB", "BCCCB", "BCJJI", "BGGGB", "BGEEB", "BEEEB",
+        "AAAAB", "AABBI", "ABBBI", "AFIIG", "AIIIG", "ACCCB", "ACJJI", "AJJJI", "AJCCI", "AEEEB", "AGCCJ", "IIIIB", "IIFFB",
+        "IFFFB", "IBAAJ", "IAAAJ", "IABBG", "IGEEB", "IEEEB", "IJGGG", "IJEEG", "ICEEG", "ICGGJ", "FFFFB", "FFIIG", "FFIFG",
+        "FIIIG", "FAAAJ", "FABBG", "FEEEB", "FGCCJ", "FCEEG", "FCGGJ", "FJGGJ", "JCCCB", "JCJJI", "JGEEB", "JEEEB", "JBFFI",
+        "JAFFI", "JIAAI", "JFAAI", "CCCCB", "CJJJI", "CJCCI", "CEEEB", "CGCCJ", "CFAAI", "CJBBJ", "CIBBJ", "GEEEB", "GJEGJ",
+        "GCEGJ"
+    ]
+
+
+    def generate_basic_starting_inventory(legal_starting_password:list) -> tuple[list, str]:
+        password = random.choice(legal_starting_password)
+        starting_inventory = generate_starting_inventory(password)
+        return starting_inventory, password
 
     def generate_starting_inventory(password: str) -> list:
         starting_inventory = []
@@ -145,24 +118,25 @@ def before_create_items_filler(item_pool: list, world: World, multiworld: MultiW
             case 4:
                 return "Fifth" + position_string
 
+    for passwords in range(0,2):
+        itemNamesToRemove: list[str] = []
+        itemNamesToRemove, password_to_remove = generate_basic_starting_inventory(legal_starting_password)
+        print(f'password to remove: {password_to_remove}')
+        print(f'items to remove: {itemNamesToRemove}')
+        legal_starting_password.remove(password_to_remove)
 
-    gnerated_starting_password = generate_basic_starting_inventory()
-
-
-    itemNamesToRemove: list[str] = generate_basic_starting_inventory()
-
-    for item in itemNamesToRemove:
-        item = next(i for i in item_pool if i.name == item)
-        world.multiworld.push_precollected(item)
+        for item in itemNamesToRemove:
+            item = next((i for i in item_pool if i.name == item), None)
+            if item is not None:
+                world.multiworld.push_precollected(item)
+                item_pool.remove(item)
 
     # Add your code here to calculate which items to remove.
     #
     # Because multiple copies of an item can exist, you need to add an item name
     # to the list multiple times if you want to remove multiple copies of it.
 
-    for itemName in itemNamesToRemove:
-        item = next(i for i in item_pool if i.name == itemName)
-        item_pool.remove(item)
+
 
 
 
