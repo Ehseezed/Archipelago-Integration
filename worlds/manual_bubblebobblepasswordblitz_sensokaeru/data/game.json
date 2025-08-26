@@ -2,6 +2,6 @@
   "$schema": "https://github.com/ManualForArchipelago/Manual/raw/main/schemas/Manual.game.schema.json",
   "game": "BubbleBobblePasswordBlitz",
   "creator": "Sensokaeru",
-  "filler_item_name": "popped bubble",
+  "filler_item_name": "A popped bubble",
   "starting_items": []
 }

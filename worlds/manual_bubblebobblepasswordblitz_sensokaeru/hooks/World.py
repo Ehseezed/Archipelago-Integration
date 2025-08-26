@@ -74,27 +74,15 @@ def before_create_items_starting(item_pool: list, world: World, multiworld: Mult
 def before_create_items_filler(item_pool: list, world: World, multiworld: MultiWorld, player: int) -> list:
     # Use this hook to remove items from the item pool
     import random
-    # legal_starting_password = [
-    #     "BAAAB", "BIFFB", "BFFFB", "BFIIG", "BJCCB", "BCCCB", "BCJJI", "BGEEB", "BEEEB", "AFIIG",
-    #     "AIIIG", "ACCCB", "ACJJI", "AJJJI", "AEEEB", "AGCCJ", "IIFFB", "IFFFB", "IAAAJ", "IGEEB",
-    #     "IEEEB", "ICEEG", "FFFFB", "FFIIG", "FIIIG", "IABBG", "FEEEB", "FGCCJ", "JCCCB", "JCJJI",
-    #     "JGEEB", "JEEEB", "JAFFI", "JFAAI", "CCCCB", "CJJJI", "CEEEB", "GEEEB",
-    #
-    #     "BBAAB", "BAAAB", "BIIIB", "BIFFB", "BFFFB", "BFIIG", "BFIIG", "BJCCB", "BCCCB", "BCJJI", "BGGGB", "BGEEB", "BEEEB",
-    #     "AAAAB", "AABBI", "ABBBI", "AFIIG", "AIIIG", "ACCCB", "ACJJI", "AJJJI", "AJCCI", "AEEEB", "AGCCJ", "IIIIB", "IIFFB",
-    #     "IFFFB", "IBAAJ", "IAAAJ", "IABBG", "IGEEB", "IEEEB", "IJGGG", "IJEEG", "ICEEG", "ICGGJ", "FFFFB", "FFIIG", "FFIFG",
-    #     "FIIIG", "FAAAJ", "FABBG", "FEEEB", "FGCCJ", "FCEEG", "FCGGJ", "FJGGJ", "JCCCB", "JCJJI", "JGEEB", "JEEEB", "JBFFI",
-    #     "JAFFI", "JIAAI", "JFAAI", "CCCCB", "CJJJI", "CJCCI", "CEEEB", "CGCCJ", "CFAAI", "CJBBJ", "CIBBJ", "GEEEB", "GJEGJ",
-    #     "GCEGJ"
-    # ]
-    legal_starting_password1 = ["BAAAB", "BIFFB", "BFFFB", "BFIIG", "BJCCB", "BCCCB", "BCJJI", "BGEEB", "BEEEB", "AFIIG",
-                                "AIIIG", "ACCCB", "ACJJI", "AJJJI", "AEEEB", "AGCCJ", "IIFFB", "IFFFB", "IAAAJ", "IGEEB",
-                                "IEEEB", "ICEEG", "FFFFB", "FFIIG", "FIIIG", "IABBG", "FEEEB", "FGCCJ", "JCCCB", "JCJJI",
-                                "JGEEB", "JEEEB", "JAFFI", "JFAAI", "CCCCB", "CJJJI", "CEEEB", "GEEEB"]
-    legal_starting_password2 = ["FAAAJ", "BIIEB", "IIFFB", "AIIIG", "CCCCB", "BCEIB", "BAAJI", "IEEEB", "IGEEB", "FIIIG",
-                                "AIFFG", "BJCCB", "AAAJI", "BCJJI", "JGEEB", "JGCBJ", "IIIEB", "BIFFB", "IIAJJ", "ICEEG",
-                                "IIIEB", "GCEAG", "FFIFG", "AIIIG", "BIIIB", "BABBI", "FCEEG", "FGJAJ", "JCGFB", "CJJJI",
-                                "JAIEB", "JCEIB", "JJGFI", "ABAAI", "CJCCI", "ACJJI", "JGEEB", "GIEAB"]
+
+    legal_starting_password1 = ["FFIIG", "AEEEB", "AFIIG", "BAAAB", "BIFFB", "BFFFB", "BFIIG", "BCCCB", "BCJJI", "BEEEB",
+                                "AIIIG", "ACCCB", "ACJJI", "AJJJI", "AGCCJ", "IIFFB", "IFFFB", "IAAAJ", "IGEEB", "CEEEB",
+                                "IEEEB", "ICEEG", "FFFFB", "IABBG", "FEEEB", "FGCCJ", "JCCCB", "JCJJI", "BGEEB", "FIIIG",
+                                "JGEEB", "JEEEB", "JAFFI", "JFAAI", "CCCCB", "CJJJI", "GEEEB", "BJCCB"]
+    legal_starting_password2 = ["GBIFG", "GIEAB", "BIIIB", "GIEAB", "JCGFB", "BIIEB", "JFEII", "GBCFB", "BJGFI", "IIIEB",
+                                "FFIFG", "AJGFB", "BJJJB", "BAAJI", "AEJAJ", "ACGFB", "JBFGB", "ABAAI", "BCEIB", "CEJAJ",
+                                "GFEAB", "CCEIB", "ACGFB", "IBIEG", "FCEIJ", "AGCBG", "AJCCI", "JIAAI", "BCGFB", "FBAAG",
+                                "JCEIB", "FCEEG", "AAAJI", "BBAJI", "FGCCJ", "AAAJI", "GIGBB", "AGCCJ",]
 
     password_pairs = {}
     for pw1, pw2 in zip(legal_starting_password1, legal_starting_password2):
@@ -105,7 +93,11 @@ def before_create_items_filler(item_pool: list, world: World, multiworld: MultiW
     def generate_basic_starting_inventory(password_pairs: dict) -> list:
         pw1, pw2 = random.choice(list(password_pairs.items()))
         print(f'generated password pair: {pw1}, {pw2}')
+        # print(f'generated password pair: ')
         starting_inventory = generate_starting_inventory(pw1) + generate_starting_inventory(pw2)
+        # print(legal_starting_password1[0])
+        # print(legal_starting_password2[0])
+        # starting_inventory = generate_starting_inventory(legal_starting_password1[0]) + generate_starting_inventory(legal_starting_password2[0])
         return starting_inventory
 
     def generate_starting_inventory(password: str) -> list:
@@ -117,26 +109,23 @@ def before_create_items_filler(item_pool: list, world: World, multiworld: MultiW
 
         return starting_inventory
 
-    def get_position_string(location: int) -> str:
+    def get_position_string(location: int):
         position_string = " position"
 
         match location:
             case 0:
-                return "First" + position_string
+                return "1st" + position_string
             case 1:
-                return "Second" + position_string
+                return "2nd" + position_string
             case 2:
-                return "Third" + position_string
+                return "3rd" + position_string
             case 3:
-                return "Fourth" + position_string
+                return "4th" + position_string
             case 4:
-                return "Fifth" + position_string
+                return "5th" + position_string
 
-    itemNamesToRemove: list[str] = []
-    passwordsToRemove: list[str] = []
     itemNamesToRemove = generate_basic_starting_inventory(password_pairs)
 
-    print(f'password to remove: {passwordsToRemove}')
     print(f'items to remove: {itemNamesToRemove}')
 
 
