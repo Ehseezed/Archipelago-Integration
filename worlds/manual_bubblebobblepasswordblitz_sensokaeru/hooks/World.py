@@ -75,26 +75,28 @@ def before_create_items_filler(item_pool: list, world: World, multiworld: MultiW
     # Use this hook to remove items from the item pool
     import random
 
-    legal_starting_password1 = ["FFIIG", "AEEEB", "AFIIG", "BAAAB", "BIFFB", "BFFFB", "BFIIG", "BCCCB", "BCJJI", "BEEEB",
-                                "AIIIG", "ACCCB", "ACJJI", "AJJJI", "AGCCJ", "IIFFB", "IFFFB", "IAAAJ", "IGEEB", "CEEEB",
-                                "IEEEB", "ICEEG", "FFFFB", "IABBG", "FEEEB", "FGCCJ", "JCCCB", "JCJJI", "BGEEB", "FIIIG",
-                                "JGEEB", "JEEEB", "JAFFI", "JFAAI", "CCCCB", "CJJJI", "GEEEB", "BJCCB"]
-    legal_starting_password2 = ["GBIFG", "GIEAB", "BIIIB", "GIEAB", "JCGFB", "BIIEB", "JFEII", "GBCFB", "BJGFI", "IIIEB",
-                                "FFIFG", "AJGFB", "BJJJB", "BAAJI", "AEJAJ", "ACGFB", "JBFGB", "ABAAI", "BCEIB", "CEJAJ",
-                                "GFEAB", "CCEIB", "ACGFB", "IBIEG", "FCEIJ", "AGCBG", "AJCCI", "JIAAI", "BCGFB", "FBAAG",
-                                "JCEIB", "FCEEG", "AAAJI", "BBAJI", "FGCCJ", "AAAJI", "GIGBB", "AGCCJ",]
+    # legal_starting_password1 = ["FFIIG", "AEEEB", "AFIIG", "BAAAB", "BIFFB", "BFFFB", "BFIIG", "BCCCB", "BCJJI", "BEEEB",
+    #                             "AIIIG", "ACCCB", "ACJJI", "AJJJI", "AGCCJ", "IIFFB", "IFFFB", "IAAAJ", "IGEEB", "CEEEB",
+    #                             "IEEEB", "ICEEG", "FFFFB", "IABBG", "FEEEB", "FGCCJ", "JCCCB", "JCJJI", "BGEEB", "FIIIG",
+    #                             "JGEEB", "JEEEB", "JAFFI", "JFAAI", "CCCCB", "CJJJI", "GEEEB", "BJCCB"]
+    # legal_starting_password2 = ["GBIFG", "GIEAB", "BIIIB", "GIEAB", "JCGFB", "BIIEB", "JFEII", "GBCFB", "BJGFI", "IIIEB",
+    #                             "FFIFG", "AJGFB", "BJJJB", "BAAJI", "AEJAJ", "ACGFB", "JBFGB", "ABAAI", "BCEIB", "CEJAJ",
+    #                             "GFEAB", "CCEIB", "ACGFB", "IBIEG", "FCEIJ", "AGCBG", "AJCCI", "JIAAI", "BCGFB", "FBAAG",
+    #                             "JCEIB", "FCEEG", "AAAJI", "BBAJI", "FGCCJ", "AAAJI", "GIGBB", "AGCCJ",]
 
-    password_pairs = {}
-    for pw1, pw2 in zip(legal_starting_password1, legal_starting_password2):
-        password_pairs[pw1] = pw2
+    character_pairs = ["AB", "BI", "BF", "BC", "BG", "BE"]
+
+    # password_pairs = {}
+    # for pw1, pw2 in zip(legal_starting_password1, legal_starting_password2):
+    #     password_pairs[pw1] = pw2
 
 
 
-    def generate_basic_starting_inventory(password_pairs: dict) -> list:
-        pw1, pw2 = random.choice(list(password_pairs.items()))
-        print(f'generated password pair: {pw1}, {pw2}')
-        # print(f'generated password pair: ')
-        starting_inventory = generate_starting_inventory(pw1) + generate_starting_inventory(pw2)
+    def generate_basic_starting_inventory(charachters: list) -> list:
+        pair = random.choice(charachters)
+        print(f'generated password pair: {pair} ')
+
+        starting_inventory = generate_starting_inventory(pair)
         # print(legal_starting_password1[0])
         # print(legal_starting_password2[0])
         # starting_inventory = generate_starting_inventory(legal_starting_password1[0]) + generate_starting_inventory(legal_starting_password2[0])
@@ -102,29 +104,36 @@ def before_create_items_filler(item_pool: list, world: World, multiworld: MultiW
 
     def generate_starting_inventory(password: str) -> list:
         starting_inventory = []
-        for c in range(len(password)):
-            new_item = get_position_string(c) + " " + password[c].upper()
+        for char in password:
+            print(f'generated password char: {char} ')
+            new_item = char.upper()
             if not new_item in starting_inventory:
                 starting_inventory.append(new_item)
 
+
+        # for c in range(len(password)):
+        #     new_item = get_position_string(c) + " " + password[c].upper()
+        #     if not new_item in starting_inventory:
+        #         starting_inventory.append(new_item)
+
         return starting_inventory
 
-    def get_position_string(location: int):
-        position_string = " position"
+    # def get_position_string(location: int):
+    #     position_string = " position"
+    #
+    #     match location:
+    #         case 0:
+    #             return "1st" + position_string
+    #         case 1:
+    #             return "2nd" + position_string
+    #         case 2:
+    #             return "3rd" + position_string
+    #         case 3:
+    #             return "4th" + position_string
+    #         case 4:
+    #             return "5th" + position_string
 
-        match location:
-            case 0:
-                return "1st" + position_string
-            case 1:
-                return "2nd" + position_string
-            case 2:
-                return "3rd" + position_string
-            case 3:
-                return "4th" + position_string
-            case 4:
-                return "5th" + position_string
-
-    itemNamesToRemove = generate_basic_starting_inventory(password_pairs)
+    itemNamesToRemove = generate_basic_starting_inventory(character_pairs)
 
     print(f'items to remove: {itemNamesToRemove}')
 
@@ -134,15 +143,6 @@ def before_create_items_filler(item_pool: list, world: World, multiworld: MultiW
         if item is not None:
             world.multiworld.push_precollected(item)
             item_pool.remove(item)
-
-    # Add your code here to calculate which items to remove.
-    #
-    # Because multiple copies of an item can exist, you need to add an item name
-    # to the list multiple times if you want to remove multiple copies of it.
-
-
-
-
 
     return item_pool
 
