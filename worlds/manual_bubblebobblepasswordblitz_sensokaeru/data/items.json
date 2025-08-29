@@ -1,401 +1,81 @@
 [
   {
     "count": 1,
-    "name": "1st position A",
+    "name": "A",
     "category": [
-      "1st position"
+      "Letters"
     ],
     "progression": true
   },
   {
     "count": 1,
-    "name": "1st position B",
+    "name": "B",
     "category": [
-      "1st position"
+      "Letters"
     ],
     "progression": true
   },
   {
     "count": 1,
-    "name": "1st position C",
+    "name": "C",
     "category": [
-      "1st position"
+      "Letters"
     ],
     "progression": true
   },
   {
     "count": 1,
-    "name": "1st position D",
+    "name": "D",
     "category": [
-      "1st position"
+      "Letters"
     ],
     "progression": true
   },
   {
     "count": 1,
-    "name": "1st position E",
+    "name": "E",
     "category": [
-      "1st position"
+      "Letters"
     ],
     "progression": true
   },
   {
     "count": 1,
-    "name": "1st position F",
+    "name": "F",
     "category": [
-      "1st position"
+      "Letters"
     ],
     "progression": true
   },
   {
     "count": 1,
-    "name": "1st position G",
+    "name": "G",
     "category": [
-      "1st position"
+      "Letters"
     ],
     "progression": true
   },
   {
     "count": 1,
-    "name": "1st position H",
+    "name": "H",
     "category": [
-      "1st position"
+      "Letters"
     ],
     "progression": true
   },
   {
     "count": 1,
-    "name": "1st position I",
+    "name": "I",
     "category": [
-      "1st position"
+      "Letters"
     ],
     "progression": true
   },
   {
     "count": 1,
-    "name": "1st position J",
+    "name": "J",
     "category": [
-      "1st position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "2nd position A",
-    "category": [
-      "2nd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "2nd position B",
-    "category": [
-      "2nd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "2nd position C",
-    "category": [
-      "2nd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "2nd position D",
-    "category": [
-      "2nd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "2nd position E",
-    "category": [
-      "2nd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "2nd position F",
-    "category": [
-      "2nd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "2nd position G",
-    "category": [
-      "2nd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "2nd position H",
-    "category": [
-      "2nd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "2nd position I",
-    "category": [
-      "2nd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "2nd position J",
-    "category": [
-      "2nd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "3rd position A",
-    "category": [
-      "3rd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "3rd position B",
-    "category": [
-      "3rd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "3rd position C",
-    "category": [
-      "3rd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "3rd position D",
-    "category": [
-      "3rd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "3rd position E",
-    "category": [
-      "3rd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "3rd position F",
-    "category": [
-      "3rd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "3rd position G",
-    "category": [
-      "3rd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "3rd position H",
-    "category": [
-      "3rd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "3rd position I",
-    "category": [
-      "3rd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "3rd position J",
-    "category": [
-      "3rd position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "4th position A",
-    "category": [
-      "4th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "4th position B",
-    "category": [
-      "4th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "4th position C",
-    "category": [
-      "4th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "4th position D",
-    "category": [
-      "4th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "4th position E",
-    "category": [
-      "4th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "4th position F",
-    "category": [
-      "4th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "4th position G",
-    "category": [
-      "4th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "4th position H",
-    "category": [
-      "4th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "4th position I",
-    "category": [
-      "4th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "4th position J",
-    "category": [
-      "4th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "5th position A",
-    "category": [
-      "5th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "5th position B",
-    "category": [
-      "5th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "5th position C",
-    "category": [
-      "5th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "5th position D",
-    "category": [
-      "5th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "5th position E",
-    "category": [
-      "5th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "5th position F",
-    "category": [
-      "5th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "5th position G",
-    "category": [
-      "5th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "5th position H",
-    "category": [
-      "5th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "5th position I",
-    "category": [
-      "5th position"
-    ],
-    "progression": true
-  },
-  {
-    "count": 1,
-    "name": "5th position J",
-    "category": [
-      "5th position"
+      "Letters"
     ],
     "progression": true
   },
@@ -403,7 +83,7 @@
     "count": 1,
     "name": "Bubble Bounce",
     "category": [
-      "Power unlocks"
+      "Powers"
     ],
     "progression": true
   },
@@ -411,7 +91,7 @@
     "count": 1,
     "name": "Lightning Bubbles",
     "category": [
-      "Power unlocks"
+      "Powers"
     ],
     "progression": true
   },
@@ -419,7 +99,7 @@
     "count": 1,
     "name": "Fire Bubbles",
     "category": [
-      "Power unlocks"
+      "Powers"
     ],
     "progression": true
   },
@@ -427,20 +107,20 @@
     "count": 1,
     "name": "Water Bubbles",
     "category": [
-      "Power unlocks"
+      "Powers"
     ],
     "progression": true
   },
   {
-    "count": 1,
-    "name": "Drug of Thunder",
+    "count": 10,
+    "name": "Thunder Shard",
     "category": [
-      "Power unlocks"
+      "Macguffins"
     ],
     "progression": true
   },
   {
-    "count": "5",
+    "count": "7",
     "name": "Increase Starting Lives",
     "category": [
       "Useful"
@@ -448,7 +128,7 @@
     "useful": true
   },
   {
-    "count": "15",
+    "count": "20",
     "name": "Timer Trap",
     "category": [
       "Trap"

@@ -9,10 +9,11 @@
             "display_name": "The End Objective",
             "description": "How to End your Randomized playthrough.",
             "aliases": {"easiest": 0},
-            "hidden": false
+            "hidden": true
         },
         "death_link": {
-            "default": false
+            "default": false,
+            "hidden": true
         },
         "filler_traps": {
             "_comment": "Using values here let you set a 'recommended' filler_trap percentage or even a default percentage",
@@ -25,19 +26,6 @@
         "_commented_out_option":{
             "type": "Toggle",
             "default": true
-        },
-
-        "DLC_enabled":{
-            "display_name": "DLC Enabled",
-            "description": "Is the Dlc enabled?",
-            "type": "Toggle",
-            "visibility": [
-                "simple_ui",
-                "complex_ui",
-                "template"
-            ],
-            "default": true
         }
     }
-
 }
