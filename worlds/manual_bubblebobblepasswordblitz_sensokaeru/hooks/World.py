@@ -94,7 +94,7 @@ def before_create_items_filler(item_pool: list, world: World, multiworld: MultiW
 
     def generate_basic_starting_inventory(charachters: list) -> list:
         pair = random.choice(charachters)
-        print(f'generated password pair: {pair} ')
+        # print(f'generated password pair: {pair} ')
 
         starting_inventory = generate_starting_inventory(pair)
         # print(legal_starting_password1[0])
@@ -105,7 +105,7 @@ def before_create_items_filler(item_pool: list, world: World, multiworld: MultiW
     def generate_starting_inventory(password: str) -> list:
         starting_inventory = []
         for char in password:
-            print(f'generated password char: {char} ')
+            # print(f'generated password char: {char} ')
             new_item = char.upper()
             if not new_item in starting_inventory:
                 starting_inventory.append(new_item)
@@ -135,7 +135,7 @@ def before_create_items_filler(item_pool: list, world: World, multiworld: MultiW
 
     itemNamesToRemove = generate_basic_starting_inventory(character_pairs)
 
-    print(f'items to remove: {itemNamesToRemove}')
+    # print(f'items to remove: {itemNamesToRemove}')
 
 
     for item in itemNamesToRemove:

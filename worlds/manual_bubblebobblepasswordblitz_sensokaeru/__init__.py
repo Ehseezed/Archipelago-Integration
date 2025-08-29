@@ -227,18 +227,18 @@ class ManualWorld(World):
                     items = items[0:starting_item_block["random"]]
 
 
-                print(f"--- {items}")
+                # print(f"--- {items}")
                 for starting_item in items:
                     items_started.append(starting_item)
                     self.multiworld.push_precollected(starting_item)
                     pool.remove(starting_item)
-                    print(f"=== {starting_item}")
+                    # print(f"=== {starting_item}")
 
 
         self.start_inventory = {i.name: items_started.count(i) for i in items_started}
 
         pool = before_create_items_filler(pool, self, self.multiworld, self.player)
-        print(f"~~~ Precollected items for player: {self.multiworld.precollected_items}")
+        # print(f"~~~ Precollected items for player: {self.multiworld.precollected_items}")
 
 
 
