@@ -62,6 +62,15 @@ Septoggs (as they feel safe next to the durable Elders)")
         logger.info("Special Thanks to all the beta testers and the AM2R Community Updates Team")
         logger.info("And Variable who was conned into becoming a programmer to fix issues he found")
 
+    def _cmd_deathlink(self):
+        """Toggles deathlink"""
+        if isinstance(self.ctx, AM2RContext):
+            self.ctx.set_deathLink = not self.ctx.set_deathLink
+            if self.ctx.set_deathLink:
+                self.output(f"Deathlink enabled.")
+            else:
+                self.output(f"Deathlink disabled.")
+
 
 class AM2RContext(CommonContext):
     command_processor = AM2RCommandProcessor
@@ -70,7 +79,7 @@ class AM2RContext(CommonContext):
     
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
-        self.error = None
+        self.error = 0
         self.waiting_for_client = False
         self.am2r_streams: (StreamReader, StreamWriter) = None
         self.am2r_sync_task = None
@@ -80,6 +89,9 @@ class AM2RContext(CommonContext):
         self.client_requesting_scouts = False
         self.TrapSprites = 0
         self.Tozos = False
+        self.deathlink_pending = None
+        self.set_deathLink = False
+
     
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
@@ -112,12 +124,27 @@ class AM2RContext(CommonContext):
             except KeyError:
                 self.Tozos = False
                 self.TrapSprites = 5
-                self.error = True
+                self.error += 10
+            try:
+                if args["slot_data"]["DeathLink"]:
+                    self.set_deathLink = True
+            except KeyError:
+                self.set_deathLink = False
+                self.error += 1
         elif cmd == "LocationInfo":
             logger.info("Received Location Info")
-            if self.error:
+            if self.error // 10 == 1:
                 self.ui.print_json([{"text": "Seed rolled on version without Tozos or Trap Sprites options, defaulting to old behavior", "type": "color", "color": "salmon"}])
                 self.ui.print_json([{"text": "Everything is fine just convince the host to update their AM2R for next time", "type": "color", "color": "salmon"}])
+            if self.error % 10 == 1:
+                self.ui.print_json([{"text": "Seed rolled on version without DeathLink option, defaulting to DeathLink on", "type": "color", "color": "salmon"}])
+                self.ui.print_json([{"text": "Everything is fine just convince the host to update their AM2R for next time", "type": "color", "color": "salmon"}])
+
+    def on_deathlink(self, data: dict):
+        self.deathlink_pending = "whatkillsyou"
+        super().on_deathlink(data)
+
+
 
 def get_payload(ctx: AM2RContext):
     global upper, lower
@@ -160,6 +187,10 @@ def get_payload(ctx: AM2RContext):
     # 0b001 = progression
     # 0b010 = good
     # 0b100 = trap
+    if ctx.deathlink_pending == "whatkillsyou":
+        return json.dumps({
+            "cmd": "whatkillsyou",
+        })
 
     if ctx.client_requesting_scouts:
         itemdict = {}
@@ -190,13 +221,22 @@ def get_payload(ctx: AM2RContext):
                 else:
                     gameitem = 101
             itemdict[gamelocation] = gameitem
-        print("Sending")
-        return json.dumps({
-            'cmd':"locations", 'items': itemdict, 'metroids': ctx.metroids_required
-    })
-    return json.dumps({
-        "cmd": "items", "items": items_to_give 
-    })
+        ret = json.dumps(
+            {
+                'cmd':"locations",
+                'items': itemdict,
+                'metroids': ctx.metroids_required
+            }
+        )
+        return ret
+    ret_payload = json.dumps(
+        {
+           "cmd": "items",
+           "items": items_to_give,
+        }
+    )
+    ctx.deathlink_pending = None
+    return ret_payload
 
 async def parse_payload(ctx: AM2RContext, data_decoded):
     item_list = [game_id_to_location_id[int(location)] for location in data_decoded["Items"]]
@@ -238,6 +278,61 @@ async def am2r_sync_task(ctx: AM2RContext):
                     error_status = CONNECTION_RESET_STATUS
                     writer.close()
                     ctx.am2r_streams = None
+
+
+                await ctx.update_death_link(ctx.set_deathLink)
+
+                if data_decoded["Deathlinked"] == True and ctx.set_deathLink:
+                    rand = randint(0,13,)
+
+                    match rand:
+                        case 0:
+                            reason = f"{ctx.auth} was killed by a Skissue"
+                        case 1:
+                            reason = f"{ctx.auth} forgot their X-Vaccine"
+                        case 2:
+                            reason = f"Omega Metroid landed the 0 to death on {ctx.auth}"
+                        case 3:
+                            reason = f"{ctx.auth} was ran out of Energy"
+                        case 4:
+                            reason = f"{ctx.auth}\'s controller disconnected"
+                        case 5:
+                            reason = f"{ctx.auth} bid farewell, cruel world"
+                        case 6:
+                            reason = f"{ctx.auth} has turned everone into a tombstone"
+                        case 7:
+                            reason = f"What?\nKills you"
+                        case 8:
+                            reason = f"{ctx.auth} and company were not feeling good...\nThey were feeling evil"
+                        case 9:
+                            reason = f"{ctx.auth} and their friends suffered the consequences of {ctx.auth}\'s actions"
+                        case 10:
+                            reason = f"{ctx.auth} wants you to know it was a rollback hit"
+                        case 11:
+                            import datetime
+                            if datetime.datetime.now().weekday() != 3:
+                                reason = f"{ctx.auth} remembered it isn\'t Thursday yet"
+                            else:
+                                reason = f"{ctx.auth} realized \"Thursday\" is not this Thursday"
+                        case 12:
+                            reason = f"{ctx.auth} was slain by the mighty Tozo"
+                        case 13:
+                            reason = f"Which one of you idiots decided that {ctx.auth} sends DeathLinks?"
+                        case 14:
+                            reason = f"{ctx.auth} received a DMCA takedown notice from Nintendo on their life"
+                        case 15:
+                            reason = f"{ctx.auth} ran out of memory"
+                        case 16:
+                            reason = f"{ctx.auth}\'s level was a multiple of 5"
+                        case 17:
+                            reason = f"{ctx.auth} was brutally murdered by hammers and whatnot"
+                        case _:
+                            reason = f"Ehseezed has made an error in their code"
+
+                    await ctx.send_death(f"{reason}")
+
+
+
             except TimeoutError:
                 logger.debug("Connection Timed Out, Reconnecting")
                 error_status = CONNECTION_TIMING_OUT_STATUS

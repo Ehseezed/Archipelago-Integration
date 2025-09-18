@@ -1,5 +1,5 @@
 from typing import Union, List, Dict, TYPE_CHECKING
-from Options import Choice, Range, Toggle, PerGameCommonOptions
+from Options import Choice, Range, Toggle, PerGameCommonOptions, DeathLink
 from dataclasses import dataclass
 
 if TYPE_CHECKING:
@@ -75,6 +75,10 @@ class RemoveOHKOTrap(Toggle):
     """Removes OHKO Traps from trap fill"""
     display_name = "Remove OHKO Trap"
 
+class RemoveWrongWarpTrap(Toggle):
+    """Removes Wrong Warp Traps from trap fill"""
+    display_name = "Remove Wrong Warp Trap"
+
 
 class TrapSprites(Choice):
     """Change what sprites are used for traps.
@@ -110,6 +114,7 @@ class AM2ROptions(PerGameCommonOptions):
     RemoveEMPTrap: RemoveEMPTrap
     RemoveTouhouTrap: RemoveTouhouTrap
     RemoveOHKOTrap: RemoveOHKOTrap
+    RemoveWrongWarpTrap: RemoveWrongWarpTrap
     TrapSprites: TrapSprites
     Tozos: Tozos
-    #  DeathLink: DeathLink
+    DeathLink: DeathLink

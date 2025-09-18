@@ -1,5 +1,7 @@
 import logging
 from typing import Dict
+import random
+
 from .items import item_table, item_name_groups, item_name_to_id, create_item, create_all_items
 from .locations import get_location_datas, EventId
 from .regions import create_regions_and_locations
@@ -66,9 +68,11 @@ class AM2RWorld(World):
             "RemoveEMPTrap": self.options.RemoveEMPTrap.value,
             "RemoveTouhouTrap": self.options.RemoveTouhouTrap.value,
             "RemoveOHKOTrap": self.options.RemoveOHKOTrap.value,
+            "RemoveWrongWarpTrap": self.options.RemoveWrongWarpTrap.value,
             "TrapSprites": self.options.TrapSprites.value,
             "Tozos": self.options.Tozos.value,
-            # "DeathLink": self.options.DeathLink.value,
+            "DeathLink": self.options.DeathLink.value,
+            "TrapSeed": self.multiworld.random % (2 ** 32)
         }
 
     def create_regions(self) -> None:
