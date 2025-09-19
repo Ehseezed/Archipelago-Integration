@@ -293,6 +293,11 @@ async def am2r_sync_task(ctx: AM2RContext):
 
                     reason = f"{ctx.auth} has died"
 
+                    names  = CommonContext.player_names
+                    if not hasattr(ctx, "_names_printed"):
+                        print(names)
+                        ctx._names_printed = True
+
                     match rand:
                         case 0:
                             reason = f"{ctx.auth} was killed"
