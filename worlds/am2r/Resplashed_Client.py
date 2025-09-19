@@ -116,6 +116,12 @@ class AM2RContext(CommonContext):
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
     def on_package(self, cmd: str, args: dict):
+        try:
+            # Write args to a JSON file for debugging
+            with open("am2r_on_package_args.json", "w", encoding="utf-8") as f:
+                json.dump(args, f, indent=4)
+        except:
+            pass
         if cmd == "Connected":
             self.metroids_required = args["slot_data"]["MetroidsRequired"]
             try:
@@ -285,21 +291,23 @@ async def am2r_sync_task(ctx: AM2RContext):
                 if data_decoded["Deathlinked"] == True and ctx.set_deathLink:
                     rand = randint(0,18,)
 
+                    reason = f"{ctx.auth} has died"
+
                     match rand:
                         case 0:
-                            reason = f"{ctx.auth} was killed by a Skissue"
+                            reason = f"{ctx.auth} was killed"
                         case 1:
                             reason = f"{ctx.auth} forgot their X-Vaccine"
                         case 2:
                             reason = f"Omega Metroid landed the 0 to death on {ctx.auth}"
                         case 3:
-                            reason = f"{ctx.auth} was ran out of Energy"
+                            reason = f"{ctx.auth} ran out of Energy"
                         case 4:
                             reason = f"{ctx.auth}\'s controller disconnected"
                         case 5:
                             reason = f"{ctx.auth} bid farewell, cruel world"
                         case 6:
-                            reason = f"{ctx.auth} has turned everyone into a tombstone"
+                            reason = f"{ctx.auth} has turned you into a tombstone"
                         case 7:
                             reason = f"What?\nKills you"
                         case 8:
@@ -315,15 +323,15 @@ async def am2r_sync_task(ctx: AM2RContext):
                             else:
                                 reason = f"{ctx.auth} realized \"Thursday\" is not this Thursday"
                         case 12:
-                            reason = f"{ctx.auth} was slain by the mighty Tozo"
+                            reason = f"{ctx.auth} was slain by a Chiny Tozo"
                         case 13:
                             reason = f"Which one of you idiots decided that {ctx.auth} sends DeathLinks?"
                         case 14:
-                            reason = f"{ctx.auth} received a DMCA takedown notice from Nintendo on their life"
+                            reason = f"{ctx.auth} received a DMCA takedown notice from Nintendo"
                         case 15:
                             reason = f"{ctx.auth} ran out of memory"
                         case 16:
-                            reason = f"{ctx.auth}\'s level was a multiple of 5"
+                            reason = f"{ctx.auth}\'s level was divisible by 5"
                         case 17:
                             reason = f"{ctx.auth} was brutally murdered by hammers and whatnot"
                         case 18:
@@ -335,15 +343,15 @@ async def am2r_sync_task(ctx: AM2RContext):
                         case 21:
                             reason = f"{ctx.auth}\'s power bomb did not scare the metroid"
                         case 22:
-                            reason = f"{ctx.auth}\'s life was not authorised by Adam"
+                            reason = f"{ctx.auth} was not authorised by Adam"
                         case 23:
-                            reason = f"{ctx.auth} calls it \"Wide Beam\" and was killed for it"
+                            reason = f"{ctx.auth} calls it \"Wide Beam\" and was promptly killed for it"
                         case 24:
-                            reason = f"{ctx.auth} has always been"
+                            reason = f"{ctx.auth} has always been a bit clumsy"
                         case 25:
                             reason = f"{ctx.auth} couldn\'t escape mines"
                         case 26:
-                            reason = f"{ctx.auth} has a 64bit Android device"
+                            reason = f"{ctx.auth} has a modern Android device"
                         case 27:
                             reason = f"{ctx.auth} was silenced for asking for a Mac port"
                         case 28:
@@ -371,6 +379,25 @@ async def am2r_sync_task(ctx: AM2RContext):
                             reason = f"Your honor {ctx.auth} is innocent, the real criminal is the one who decided that {ctx.auth} should send DeathLinks"
                         case 37:
                             reason = f"{ctx.auth} was killed by a horde of angry Archipelago players for sending DeathLinks"
+                        case 38:
+                            reason = (f"{ctx.auth}, you little fucker.  You made a shit of piece with your trash Isaac. "
+                                      f"It\'s fucking bad, this trash game. I will become back my money. "
+                                      f"I hope you will in your next time a cow on a trash farm you sucker.")
+                        case 39:
+                            reason = f"{ctx.auth} has been suspended for 50 days."
+                        case 40:
+                            reason = f"Connection terminated: This gameplay is ass"
+                        case 41:
+                            reason = f"For whom the wombat malls"
+                        case 42:
+                            reason = f"{ctx.auth} insists its but a scratch"
+                        case 43:
+                            reason = f"{ctx.auth} experienced the killer rabbit"
+                        case 44:
+                            reason = (f"In front of you are 2 doors. Due to budget cuts only {ctx.auth} stand in front of "
+                                      f"them and {ctx.auth} lies 50% of the time.")
+                        case 45:
+                            reason = f"In front of {ctx.auth} there are 2 doors. Due to budget cuts, only Ehseezed stands in front of them, and Ehseezed lies 50% of the time."
                         case _:
                             reason = f"Ehseezed has made an error in their code\nyou should never see this one"
 
