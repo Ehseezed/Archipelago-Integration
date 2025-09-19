@@ -283,7 +283,7 @@ async def am2r_sync_task(ctx: AM2RContext):
                 await ctx.update_death_link(ctx.set_deathLink)
 
                 if data_decoded["Deathlinked"] == True and ctx.set_deathLink:
-                    rand = randint(0,13,)
+                    rand = randint(0,18,)
 
                     match rand:
                         case 0:
@@ -299,7 +299,7 @@ async def am2r_sync_task(ctx: AM2RContext):
                         case 5:
                             reason = f"{ctx.auth} bid farewell, cruel world"
                         case 6:
-                            reason = f"{ctx.auth} has turned everone into a tombstone"
+                            reason = f"{ctx.auth} has turned everyone into a tombstone"
                         case 7:
                             reason = f"What?\nKills you"
                         case 8:
@@ -326,8 +326,12 @@ async def am2r_sync_task(ctx: AM2RContext):
                             reason = f"{ctx.auth}\'s level was a multiple of 5"
                         case 17:
                             reason = f"{ctx.auth} was brutally murdered by hammers and whatnot"
+                        case 18:
+                            reason = f"{ctx.auth} is wondering if there is a better way"
+                        case 19:
+                            reason = f"{ctx.auth} was found by the SA-X"
                         case _:
-                            reason = f"Ehseezed has made an error in their code"
+                            reason = f"Ehseezed has made an error in their code\nyou should never see this one"
 
                     await ctx.send_death(f"{reason}")
 
