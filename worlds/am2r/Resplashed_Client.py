@@ -303,7 +303,7 @@ async def am2r_sync_task(ctx: AM2RContext):
                         case 7:
                             reason = f"What?\nKills you"
                         case 8:
-                            reason = f"{ctx.auth} and company were not feeling good...\nThey were feeling evil"
+                            reason = f"{ctx.auth} is not feeling good...\nThey are feeling evil"
                         case 9:
                             reason = f"{ctx.auth} and their friends suffered the consequences of {ctx.auth}\'s actions"
                         case 10:
@@ -330,6 +330,47 @@ async def am2r_sync_task(ctx: AM2RContext):
                             reason = f"{ctx.auth} is wondering if there is a better way"
                         case 19:
                             reason = f"{ctx.auth} was found by the SA-X"
+                        case 20:
+                            reason = f"{ctx.auth} just simply wanted to kill you"
+                        case 21:
+                            reason = f"{ctx.auth}\'s power bomb did not scare the metroid"
+                        case 22:
+                            reason = f"{ctx.auth}\'s life was not authorised by Adam"
+                        case 23:
+                            reason = f"{ctx.auth} calls it \"Wide Beam\" and was killed for it"
+                        case 24:
+                            reason = f"{ctx.auth} has always been"
+                        case 25:
+                            reason = f"{ctx.auth} couldn\'t escape mines"
+                        case 26:
+                            reason = f"{ctx.auth} has a 64bit Android device"
+                        case 27:
+                            reason = f"{ctx.auth} was silenced for asking for a Mac port"
+                        case 28:
+                            reason = (f"{ctx.auth} is prohibited to speak for the next 12 hours and by law has to "
+                                      f"stand up for the next 4")
+                        case 29:
+                            reason = f"Fatal Error: Out of memory"
+                        case 30:
+                            consoles = ["Color TV-Game", "NES/Famicom", "Super Famicom/SNES", "Nintendo 64", "GameCube",
+                                        "Wii", "Wii U", "Nintendo Switch", "Nintendo Switch 2", "Game & Watch", "Game Boy",
+                                        "Game Boy Advance", "Nintendo DS", "Nintendo 3DS", "Pokemon Mini"
+                                        "Virtual Boy"]
+                            reason = f"{ctx.auth} was trying to port AM2R to the {random.choice(consoles)}"
+                        case 31:
+                            reason = f"{ctx.auth}\'s blunder will be added to the skullboard"
+                        case 32:
+                            reason = f"{ctx.auth} wants you to immagine this (https://www.youtube.com/watch?v=Ad87SqVYizA) any time they die"
+                        case 33:
+                            reason = f"{ctx.auth} wants you to know that they are not a gamer"
+                        case 34:
+                            reason = f"{ctx.auth} wants you to know that stick drift is real and its really annoying"
+                        case 35:
+                            reason = f"The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start."
+                        case 36:
+                            reason = f"Your honor {ctx.auth} is innocent, the real criminal is the one who decided that {ctx.auth} should send DeathLinks"
+                        case 37:
+                            reason = f"{ctx.auth} was killed by a horde of angry Archipelago players for sending DeathLinks"
                         case _:
                             reason = f"Ehseezed has made an error in their code\nyou should never see this one"
 
