@@ -3,9 +3,12 @@ import copy
 import json
 import time
 import random
+import datetime
 from asyncio import StreamReader, StreamWriter
 from random import randint
 from typing import List
+from unittest import case
+
 from worlds.am2r.items import item_table
 from worlds.am2r.locations import get_location_datas
 from .options import AM2ROptions as options
@@ -25,8 +28,7 @@ item_location_scouts = {}
 item_id_to_game_id: dict = {item.code: item.game_id for item in item_table.values()}
 location_id_to_game_id: dict = {location.code: location.game_id for location in get_location_datas(None, None)}
 game_id_to_location_id: dict = {location.game_id: location.code for location in get_location_datas(None, None) if location.code != None}
-
-
+players = []
 
 class AM2RCommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx: CommonContext):
@@ -116,13 +118,10 @@ class AM2RContext(CommonContext):
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
     def on_package(self, cmd: str, args: dict):
-        try:
-            # Write args to a JSON file for debugging
-            with open("am2r_on_package_args.json", "w", encoding="utf-8") as f:
-                json.dump(args, f, indent=4)
-        except:
-            pass
+        global players
         if cmd == "Connected":
+            players = list(self.player_names.values())
+            print(players)
             self.metroids_required = args["slot_data"]["MetroidsRequired"]
             try:
                 self.Tozos = args["slot_data"]["Tozos"]
@@ -257,6 +256,7 @@ async def parse_payload(ctx: AM2RContext, data_decoded):
         ctx.finished_game = True
 
 async def am2r_sync_task(ctx: AM2RContext):
+    global players
     logger.info("Starting AM2R connector, use /am2r for status information.")
     while not ctx.exit_event.is_set():
         error_status = None
@@ -288,123 +288,197 @@ async def am2r_sync_task(ctx: AM2RContext):
 
                 await ctx.update_death_link(ctx.set_deathLink)
 
-                if data_decoded["Deathlinked"] == True and ctx.set_deathLink:
-                    rand = randint(0,18,)
+                # if data_decoded["Deathlinked"] == True and ctx.set_deathLink:
+                if True:
+                    print(players)
+                    rand = datetime.datetime.now().microsecond
 
-                    reason = f"{ctx.auth} has died"
+                    if players == []:
+                        players = ["Ehseezed"]
 
-                    names  = CommonContext.player_names
-                    if not hasattr(ctx, "_names_printed"):
-                        print(names)
-                        ctx._names_printed = True
+                    if ctx.auth in players:
+                        players.remove(ctx.auth)
+                    if "Archipelago" in players:
+                        players.remove("Archipelago")
+
+                    rand_player = random.choice(players)
+                    player = ctx.auth
+                    enemy = ""
 
                     match rand:
                         case 0:
-                            reason = f"{ctx.auth} was killed"
+                            reason = f"{player} was killed"
                         case 1:
-                            reason = f"{ctx.auth} forgot their X-Vaccine"
+                            reason = f"{player} forgot their X-Vaccine"
                         case 2:
-                            reason = f"Omega Metroid landed the 0 to death on {ctx.auth}"
+                            reason = f"Omega Metroid landed the 0 to death on {player}"
                         case 3:
-                            reason = f"{ctx.auth} ran out of Energy"
+                            reason = f"{player} ran out of Energy"
                         case 4:
-                            reason = f"{ctx.auth}\'s controller disconnected"
+                            reason = f"{player}\'s controller disconnected"
                         case 5:
-                            reason = f"{ctx.auth} bid farewell, cruel world"
+                            reason = f"{player} bid farewell, cruel world"
                         case 6:
-                            reason = f"{ctx.auth} has turned you into a tombstone"
+                            reason = f"{player} has turned you into a tombstone"
                         case 7:
                             reason = f"What?\nKills you"
                         case 8:
-                            reason = f"{ctx.auth} is not feeling good...\nThey are feeling evil"
+                            reason = f"{player} is not feeling good...\nThey are feeling evil"
                         case 9:
-                            reason = f"{ctx.auth} and their friends suffered the consequences of {ctx.auth}\'s actions"
+                            reason = f"{player} and their friends suffered the consequences of {player}\'s actions"
                         case 10:
-                            reason = f"{ctx.auth} wants you to know it was a rollback hit"
+                            reason = f"{player} wants you to know it was a rollback hit"
                         case 11:
-                            import datetime
                             if datetime.datetime.now().weekday() != 3:
-                                reason = f"{ctx.auth} remembered it isn\'t Thursday yet"
+                                reason = f"{player} remembered it isn\'t Thursday yet"
                             else:
-                                reason = f"{ctx.auth} realized \"Thursday\" is not this Thursday"
+                                reason = f"{player} realized \"Thursday\" is not this Thursday"
                         case 12:
-                            reason = f"{ctx.auth} was slain by a Chiny Tozo"
+                            reason = f"{player} was slain by a Chiny Tozo"
                         case 13:
-                            reason = f"Which one of you idiots decided that {ctx.auth} sends DeathLinks?"
+                            reason = f"Which one of you idiots decided that {player} sends DeathLinks?"
                         case 14:
-                            reason = f"{ctx.auth} received a DMCA takedown notice from Nintendo"
+                            reason = f"{player} received a DMCA takedown notice from Nintendo"
                         case 15:
-                            reason = f"{ctx.auth} ran out of memory"
+                            reason = f"{player} ran out of memory"
                         case 16:
-                            reason = f"{ctx.auth}\'s level was divisible by 5"
+                            reason = f"{player}\'s level was divisible by 5"
                         case 17:
-                            reason = f"{ctx.auth} was brutally murdered by hammers and whatnot"
+                            reason = f"{player} was brutally murdered by hammers and whatnot"
                         case 18:
-                            reason = f"{ctx.auth} is wondering if there is a better way"
+                            reason = f"{player} is wondering if there is a better way"
                         case 19:
-                            reason = f"{ctx.auth} was found by the SA-X"
+                            reason = f"{player} was found by the SA-X"
                         case 20:
-                            reason = f"{ctx.auth} just simply wanted to kill you"
+                            reason = f"{player} just simply wanted to kill you"
                         case 21:
-                            reason = f"{ctx.auth}\'s power bomb did not scare the metroid"
+                            reason = f"{player}\'s power bomb did not scare the metroid"
                         case 22:
-                            reason = f"{ctx.auth} was not authorised by Adam"
+                            reason = f"{player} was not authorised by Adam"
                         case 23:
-                            reason = f"{ctx.auth} calls it \"Wide Beam\" and was promptly killed for it"
+                            reason = f"{player} calls it \"Wide Beam\" and was promptly killed for it"
                         case 24:
-                            reason = f"{ctx.auth} has always been a bit clumsy"
+                            reason = f"{player} has always been a bit clumsy"
                         case 25:
-                            reason = f"{ctx.auth} couldn\'t escape mines"
+                            reason = f"{player} couldn\'t escape mines"
                         case 26:
-                            reason = f"{ctx.auth} has a modern Android device"
+                            reason = f"{player} has a modern Android device"
                         case 27:
-                            reason = f"{ctx.auth} was silenced for asking for a Mac port"
+                            reason = f"{player} was silenced for asking for a Mac port"
                         case 28:
-                            reason = (f"{ctx.auth} is prohibited to speak for the next 12 hours and by law has to "
+                            reason = (f"{player} is prohibited to speak for the next 12 hours and by law has to "
                                       f"stand up for the next 4")
                         case 29:
-                            reason = f"Fatal Error: Out of memory"
+                            reason = f"Fatal Memory Error\nOut of memory!"
                         case 30:
                             consoles = ["Color TV-Game", "NES/Famicom", "Super Famicom/SNES", "Nintendo 64", "GameCube",
                                         "Wii", "Wii U", "Nintendo Switch", "Nintendo Switch 2", "Game & Watch", "Game Boy",
                                         "Game Boy Advance", "Nintendo DS", "Nintendo 3DS", "Pokemon Mini"
                                         "Virtual Boy"]
-                            reason = f"{ctx.auth} was trying to port AM2R to the {random.choice(consoles)}"
+                            reason = f"{player} was trying to port AM2R to the {random.choice(consoles)}"
                         case 31:
-                            reason = f"{ctx.auth}\'s blunder will be added to the skullboard"
+                            reason = f"{player}\'s blunder will be added to the skullboard"
                         case 32:
-                            reason = f"{ctx.auth} wants you to immagine this (https://www.youtube.com/watch?v=Ad87SqVYizA) any time they die"
+                            reason = f"{player} wants you to immagine this (https://www.youtube.com/watch?v=Ad87SqVYizA) any time they die"
                         case 33:
-                            reason = f"{ctx.auth} wants you to know that they are not a gamer"
+                            reason = f"{player} wants you to know that they are not a gamer"
                         case 34:
-                            reason = f"{ctx.auth} wants you to know that stick drift is real and its really annoying"
+                            reason = f"{player} wants you to know that stick drift is real and its really annoying"
                         case 35:
                             reason = f"The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start."
                         case 36:
-                            reason = f"Your honor {ctx.auth} is innocent, the real criminal is the one who decided that {ctx.auth} should send DeathLinks"
+                            reason = f"Your honor {player} is innocent, the real criminal is the one who decided that {player} should send DeathLinks"
                         case 37:
-                            reason = f"{ctx.auth} was killed by a horde of angry Archipelago players for sending DeathLinks"
+                            reason = f"{player} was killed by a horde of angry Archipelago players for sending DeathLinks"
                         case 38:
-                            reason = (f"{ctx.auth}, you little fucker.  You made a shit of piece with your trash Isaac. "
+                            reason = (f"{player}, you little fucker.  You made a shit of piece with your trash Isaac. "
                                       f"It\'s fucking bad, this trash game. I will become back my money. "
                                       f"I hope you will in your next time a cow on a trash farm you sucker.")
                         case 39:
-                            reason = f"{ctx.auth} has been suspended for 50 days."
+                            reason = f"{player} has been suspended for 50 days."
                         case 40:
-                            reason = f"Connection terminated: This gameplay is ass"
+                            reason = f"That gameplay was ass: Multiworld Terminated"
                         case 41:
                             reason = f"For whom the wombat malls"
                         case 42:
-                            reason = f"{ctx.auth} insists its but a scratch"
+                            reason = f"{player} insists its but a scratch"
                         case 43:
-                            reason = f"{ctx.auth} experienced the killer rabbit"
+                            reason = f"{player} experienced the killer rabbit"
                         case 44:
-                            reason = (f"In front of you are 2 doors. Due to budget cuts only {ctx.auth} stand in front of "
-                                      f"them and {ctx.auth} lies 50% of the time.")
+                            reason = (f"In front of you are 2 doors. Due to budget cuts only {player} stand in front of "
+                                      f"them and {player} lies 50% of the time.")
                         case 45:
-                            reason = f"In front of {ctx.auth} there are 2 doors. Due to budget cuts, only Ehseezed stands in front of them, and Ehseezed lies 50% of the time."
+                            reason = f"In front of {player} there are 2 doors. Due to budget cuts, only Ehseezed stands in front of them, and Ehseezed lies 50% of the time."
+                        case 46:
+                            reason = f"{player} saved the animals"
+                        case 47:
+                            reason = f"In front of {player} there are 2 doors. Due to budget cuts, only {rand_player} stands in front of them, and {rand_player} lies 50% of the time."
+                        case 48:
+                            reason = f"{player} touched the sand map"
+                        case 49:
+                            reason = f"Unlike the Gatordile algorithm, {player} does not stay winning"
+                        case 50:
+                            reason = f"{player} could not stop gambling"
+                        case 51:
+                            reason = f"{player} got everyone else killed making them tonight's biggest loser"
+                        case 52:
+                            reason = f"{player} had a bad time"
+                        case 53:
+                            reason = f"{player} dies a slightly embarrassing death"
+                        case 54:
+                            reason = f"{player} votes to lower the difficulty"
+                        case 55:
+                            reason = f"Not a trace of {player} will be found"
+                        case 56:
+                            reason = f"The planet has killed {player}"
+                        case 57:
+                            reason = f"That was absolutely {player}\'s fault"
+                        case 58:
+                            reason = f"That was definitely not {player}\'s fault"
+                        case 59:
+                            reason = f"Beep.. beep.. beeeeeeeeeeeeeeeee"
+                        case 60:
+                            reason = f"{player} was styled uppon"
+                        case 61:
+                            reason = f"{player} has shattered into innumerable pieces"
+                        case 62:
+                            reason = f"{player} fell for it"
+                        case 63:
+                            reason = f"{player} pixel bonked"
+                        case 64:
+                            reason = f"{player} was sent to the crystal"
+                        case 65:
+                            reason = f"{player} pulled a lever, it was the wrong one"
+                        case 66:
+                            reason = f"{rand_player} had the controller"
+                        case 67:
+                            reason = f"Mom said it was {rand_player}\'s turn on the Game Boy"
+                        case 68:
+                            reason = f"{player} did that to mess with {rand_player}"
+                        case 69:
+                            reason = f"{player} has released all the remaining hate from their world"
+                        case 70:
+                            reason = f"And Yet."
                         case _:
                             reason = f"Ehseezed has made an error in their code\nyou should never see this one"
+
+                    match rand:
+                        case 1:
+                            reason = f"{player} was killed by {enemy}"
+                        case 2:
+                            reason = f"{enemy} will be celebrated for this one"
+                        case 3:
+                            reason = f"{player}: \"What?\"\n{enemy}: \"Kills you\""
+                        case 4:
+                            reason = f"{enemy} did not like the way {player} looked at them"
+                        case 5:
+                            reason = f"{enemy} was defending their honor"
+                        case 6:
+                            reason = f"{enemy} asked"
+
+                        case _:
+                            reason = f"Ehseezed has made an error in their code\nyou should never see this one"
+
 
                     await ctx.send_death(f"{reason}")
 
