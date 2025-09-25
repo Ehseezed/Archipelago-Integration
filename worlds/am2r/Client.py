@@ -1,14 +1,25 @@
 import asyncio
+import copy
 import json
+import time
 import random
+import datetime
 from asyncio import StreamReader, StreamWriter
+from random import randint
+from typing import List
+from unittest import case
+
 from worlds.am2r.items import item_table
 from worlds.am2r.locations import get_location_datas
 
 import Utils
-from Utils import async_start
+from Utils import async_start, init_logging
 from CommonClient import CommonContext, server_loop, gui_enabled, ClientCommandProcessor, logger, \
     get_base_parser
+
+if __name__ == "__main__":
+
+    Utils.init_logging("AM2R Client", exception_logger="Client")
 
 CONNECTION_TIMING_OUT_STATUS = "Connection timing out"
 CONNECTION_REFUSED_STATUS = "Connection Refused"
@@ -20,8 +31,7 @@ item_location_scouts = {}
 item_id_to_game_id: dict = {item.code: item.game_id for item in item_table.values()}
 location_id_to_game_id: dict = {location.code: location.game_id for location in get_location_datas(None, None)}
 game_id_to_location_id: dict = {location.game_id: location.code for location in get_location_datas(None, None) if location.code != None}
-
-
+players = []
 
 class AM2RCommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx: CommonContext):
@@ -49,9 +59,22 @@ Septoggs (as they feel safe next to the durable Elders)")
         logger.info("AM2R Multiworld Randomizer brought to you by:")
         logger.info("Programmers: Ehseezed and DodoBirb")
         logger.info("Additional help by: Scungip")
+        logger.info("Initial Multiworld Mod by: DodoBirb")
+        logger.info("Resplashed Mod by: Abyssal Creature, Mystical")
+        logger.info("Multisquared Mod by: Steele")
         logger.info("Sprite Artists: Abyssal Creature, Mimolette")
+        logger.info("New Trap Sprites by: Mystical")
         logger.info("Special Thanks to all the beta testers and the AM2R Community Updates Team")
         logger.info("And Variable who was conned into becoming a programmer to fix issues he found")
+
+    def _cmd_deathlink(self):
+        """Toggles deathlink"""
+        if isinstance(self.ctx, AM2RContext):
+            self.ctx.set_deathLink = not self.ctx.set_deathLink
+            if self.ctx.set_deathLink:
+                self.output(f"Deathlink enabled.")
+            else:
+                self.output(f"Deathlink disabled.")
 
 
 class AM2RContext(CommonContext):
@@ -61,6 +84,7 @@ class AM2RContext(CommonContext):
     
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
+        self.error = 0
         self.waiting_for_client = False
         self.am2r_streams: (StreamReader, StreamWriter) = None
         self.am2r_sync_task = None
@@ -68,6 +92,11 @@ class AM2RContext(CommonContext):
         self.received_locscouts = False
         self.metroids_required = 41
         self.client_requesting_scouts = False
+        self.TrapSprites = 0
+        self.Tozos = False
+        self.deathlink_pending = None
+        self.set_deathLink = False
+
     
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
@@ -92,14 +121,42 @@ class AM2RContext(CommonContext):
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
     def on_package(self, cmd: str, args: dict):
+        global players
         if cmd == "Connected":
+            players = list(self.player_names.values())
+            print(players)
             self.metroids_required = args["slot_data"]["MetroidsRequired"]
+            try:
+                self.Tozos = args["slot_data"]["Tozos"]
+                self.TrapSprites = args["slot_data"]["TrapSprites"]
+            except KeyError:
+                self.Tozos = False
+                self.TrapSprites = 5
+                self.error += 10
+            try:
+                if args["slot_data"]["DeathLink"]:
+                    self.set_deathLink = True
+            except KeyError:
+                self.set_deathLink = False
+                self.error += 1
         elif cmd == "LocationInfo":
             logger.info("Received Location Info")
+            if self.error // 10 == 1:
+                self.ui.print_json([{"text": "Seed rolled on version without Tozos or Trap Sprites options, defaulting to old behavior", "type": "color", "color": "salmon"}])
+                self.ui.print_json([{"text": "Everything is fine just convince the host to update their AM2R for next time", "type": "color", "color": "salmon"}])
+            if self.error % 10 == 1:
+                self.ui.print_json([{"text": "Seed rolled on version without DeathLink option, defaulting to DeathLink on", "type": "color", "color": "salmon"}])
+                self.ui.print_json([{"text": "Everything is fine just convince the host to update their AM2R for next time", "type": "color", "color": "salmon"}])
+
+    def on_deathlink(self, data: dict):
+        self.deathlink_pending = "whatkillsyou"
+        super().on_deathlink(data)
 
 
 
 def get_payload(ctx: AM2RContext):
+    global upper, lower
+
     items_to_give = [item_id_to_game_id[item.item] for item in ctx.items_received if item.item in item_id_to_game_id]
     if not ctx.locations_info:
         locations = [location.code for location in get_location_datas(None, None) if location.code is not None]
@@ -107,26 +164,87 @@ def get_payload(ctx: AM2RContext):
         return json.dumps({
             "cmd": "items", "items": items_to_give 
         })
-    
+
+    match ctx.TrapSprites:
+        case 0:
+            upper = 82
+            lower = 20
+        case 2:
+            upper = 38
+            lower = 20
+        case 1:
+            upper = 47
+            lower = 40
+        case 3:
+            upper = 62
+            lower = 50
+        case 4:
+            upper = 82
+            lower = 70
+        case 5:
+            upper = 15
+            lower = 0
+        case _:
+            upper = 15
+            lower = 0
+
+    non_ids = [48,49,63,64,65,66,67,68,69]
+
+    # 0b111 = full remote
+    # 0b000 = bad
+    # 0b001 = progression
+    # 0b010 = good
+    # 0b100 = trap
+    if ctx.deathlink_pending == "whatkillsyou":
+        return json.dumps({
+            "cmd": "whatkillsyou",
+        })
+
     if ctx.client_requesting_scouts:
         itemdict = {}
         for locationid, netitem in ctx.locations_info.items():
+            itemid = randint(lower, upper)
+            while itemid in non_ids:
+                print("extremely loud incorrect buzzer")
+                itemid = randint(lower, upper)
             gamelocation = location_id_to_game_id[locationid]
-            if netitem.item in item_id_to_game_id:
-                if netitem.flags & 0b100 != 0:
-                    gameitem = random.randint(0, 19)
+            if ctx.Tozos:
+                if netitem.item in item_id_to_game_id:
+                    if netitem.flags & 0b100 != 0:
+                        gameitem = random.randint(lower, upper)
+                    else:
+                        gameitem = item_id_to_game_id[netitem.item] + 20
+                elif netitem.flags & 0b001 == 1:
+                    gameitem = 102 #
                 else:
-                    gameitem = item_id_to_game_id[netitem.item]
+                    gameitem = 103
             else:
-                gameitem = 20
+                if netitem.item in item_id_to_game_id:
+                    if netitem.flags & 0b100 != 0:
+                        gameitem = random.randint(lower, upper)
+                    else:
+                        gameitem = item_id_to_game_id[netitem.item]
+                elif netitem.flags & 0b001 == 1:
+                    gameitem = 100
+                else:
+                    gameitem = 101
             itemdict[gamelocation] = gameitem
-        print("Sending")
-        return json.dumps({
-            'cmd':"locations", 'items': itemdict, 'metroids': ctx.metroids_required
-    })
-    return json.dumps({
-        "cmd": "items", "items": items_to_give 
-    })
+        ret = json.dumps(
+            {
+                'cmd':"locations",
+                'items': itemdict,
+                'metroids': ctx.metroids_required
+            }
+        )
+        return ret
+    ret_payload = json.dumps(
+        {
+           "cmd": "items",
+           "items": items_to_give,
+        }
+    )
+    ctx.deathlink_pending = None
+    return ret_payload
 
 async def parse_payload(ctx: AM2RContext, data_decoded):
     item_list = [game_id_to_location_id[int(location)] for location in data_decoded["Items"]]
@@ -141,10 +259,8 @@ async def parse_payload(ctx: AM2RContext, data_decoded):
         ctx.finished_game = True
 
 async def am2r_sync_task(ctx: AM2RContext):
+    global players
     logger.info("Starting AM2R connector, use /am2r for status information.")
-    ctx.ui.print_json([{"text": "Legacy Client for use with AM2R Multiworld Mod versions 1.1 or earlier. (Resplashed Multiworld 1.1 or earlier)", "type": "color", "color": "salmon"}])
-    ctx.ui.print_json([{"text": "Please use the Multisquared Mod by Steele or Resplased Multiworld 1.2 or newer for the best experience.", "type": "color", "color": "salmon"}])
-    ctx.ui.print_json([{"text": "This client does not support the new trap options in 1.2.0", "type": "color", "color": "salmon"}])
     while not ctx.exit_event.is_set():
         error_status = None
         if ctx.am2r_streams:
@@ -171,6 +287,149 @@ async def am2r_sync_task(ctx: AM2RContext):
                     error_status = CONNECTION_RESET_STATUS
                     writer.close()
                     ctx.am2r_streams = None
+
+
+                await ctx.update_death_link(ctx.set_deathLink)
+
+                # if data_decoded["Deathlinked"] == True and ctx.set_deathLink:
+                if True:
+                    print(players)
+                    consoles = ["Color TV-Game", "NES/Famicom", "Super Famicom/SNES", "Nintendo 64", "GameCube",
+                                "Wii", "Wii U", "Nintendo Switch", "Nintendo Switch 2", "Game & Watch", "Game Boy",
+                                "Game Boy Advance", "Nintendo DS", "Nintendo 3DS", "Pokemon Mini", "Virtual Boy"]
+                    reasons = []
+                    if ctx.auth in players:
+                        players.remove(ctx.auth)
+                    if "Archipelago" in players:
+                        players.remove("Archipelago")
+
+                    rand_player = random.choice(players)
+                    player = ctx.auth
+                    enemy = ""
+                    reason = ""
+
+                    default = [
+                        f"{player} was killed",
+                        f"{player} forgot their X-Vaccine",
+                        f"Omega Metroid landed the 0 to death on {player}",
+                        f"{player} ran out of Energy",
+                        f"{player}'s controller disconnected",
+                        f"{player} bid farewell, cruel world",
+                        f"{player} has turned you into a tombstone",
+                        f"What?\nKills you",
+                        f"{player} is not feeling good...\nThey are feeling evil",
+                        f"{player} wants you to know it was a rollback hit",
+                        "Thursday",  # Special handling for Thursday
+                        f"{player} was slain by a Chiny Tozo",
+                        f"Which one of you idiots decided that {player} sends DeathLinks?",
+                        f"{player} received a DMCA takedown notice from Nintendo",
+                        f"{player} ran out of memory",
+                        f"{player}'s level was divisible by 5",
+                        f"{player} was brutally murdered by hammers and whatnot",
+                        f"{player} is wondering if there is a better way",
+                        f"{player} was found by the SA-X",
+                        f"{player} just simply wanted to kill you",
+                        f"{player}'s power bomb did not scare the metroid",
+                        f"{player} was not authorised by Adam",
+                        f"{player} calls it \"Wide Beam\" and was promptly killed for it",
+                        f"{player} has always been a bit clumsy",
+                        f"{player} couldn't escape mines",
+                        f"{player} has a modern Android device",
+                        f"{player} was silenced for asking for a Mac port",
+                        f"{player} is prohibited to speak for the next 12 hours and by law has to stand up for the next 4",
+                        f"Fatal Memory Error\nOut of memory!",
+                        f"{player} was trying to port AM2R to the {random.choice(consoles)}",
+                        f"{player}'s blunder will be added to the skullboard",
+                        f"{player} wants you to immagine this (https://www.youtube.com/watch?v=Ad87SqVYizA) any time they die",
+                        f"{player} wants you to know that they are not a gamer",
+                        f"{player} wants you to know that stick drift is real and its really annoying",
+                        f"Your honor {player} is innocent, the real criminal is the one who decided that {player} should send DeathLinks",
+                        f"{player} was killed by a horde of angry Archipelago players for sending DeathLinks",
+                        f"{player} has been suspended for 50 days.",
+                        f"That gameplay was ass: Multiworld Terminated",
+                        f"For whom the wombat malls",
+                        f"{player} insists its but a scratch",
+                        f"{player} experienced the killer rabbit",
+                        (f"In front of you are 2 doors. Due to budget cuts only {player} stand in front of "
+                         f"them and {player} lies 50% of the time."),
+                        f"In front of {player} there are 2 doors. Due to budget cuts, only Ehseezed stands in front of them, and Ehseezed lies 50% of the time.",
+                        f"{player} saved the animals",
+                        f"{player} touched the sand map",
+                        f"Unlike the Gatordile algorithm, {player} does not stay winning",
+                        f"{player} could not stop gambling",
+                        f"{player} got everyone else killed making them tonight's biggest loser",
+                        f"{player} had a bad time",
+                        f"{player} fell for it",
+                        f"{player} pixel bonked",
+                        f"{player} was sent to the crystal",
+                        f"{player} pulled a lever, it was the wrong one",
+                        f"{player} has released all the remaining hate from their world",
+                        f"And Yet.",
+                    ]
+                    includes_random_player = [
+                        f"{player} and their friends suffered the consequences of {player}'s actions",
+                        f"In front of {player} there are 2 doors. Due to budget cuts, only {rand_player} stands in front of them, and {rand_player} lies 50% of the time.",
+                        f"{rand_player} had the controller",
+                        f"Mom said it was {rand_player}'s turn on the Game Boy",
+                        f"{player} did that to mess with {rand_player}",
+                    ]
+                    includes_enemy = [
+                        f"{player} was killed by {enemy}",
+                        f"{enemy} will be celebrated for this one",
+                        f"{player}: \"What?\"\n{enemy}: \"Kills you\"",
+                        f"{player}: \"What?\"\n{enemy}: \"Kills you\"",
+                        f"{enemy} did not like the way {player} looked at them",
+                        f"{enemy} was defending their honor"
+                        f"{enemy} asked"
+                    ]
+                    ror2 = [
+                        f"{player} dies a slightly embarrassing death",
+                        f"{player} votes to lower the difficulty",
+                        f"Not a trace of {player} will be found",
+                        f"The planet has killed {player}",
+                        f"That was absolutely {player}'s fault",
+                        f"That was definitely not {player}'s fault",
+                        f"Beep.. beep.. beeeeeeeeeeeeeeeee",
+                        f"{player} was styled uppon",
+                        f"{player} has shattered into innumerable pieces",
+                    ]
+                    coptpastas = [
+                        (f"{player}, you little fucker.  You made a shit of piece with your trash Isaac. "
+                         f"It's fucking bad, this trash game. I will become back my money. "
+                         f"I hope you will in your next time a cow on a trash farm you sucker."),
+                        "The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start.",
+                    ]
+
+                    reasons += default
+                    reasons += ror2
+                    reasons += coptpastas
+
+                    if enemy != "":
+                        reasons += includes_enemy
+
+                    if rand_player != "":
+                        reasons += includes_random_player
+
+
+
+
+                    reason: str = random.choice(reasons)
+
+                    if reason == "Thursday":
+                        if datetime.datetime.now().weekday() != 3:
+                            reason = f"{player} remembered it isn't Thursday yet"
+                        else:
+                            reason = f"{player} realized \"Thursday\" is not this Thursday"
+
+                    if reason == "":
+                        reason = "Ehseezed has made an error in their code and you should probably alert them"
+
+
+
+                    await ctx.send_death(f"{reason}")
+
+
+
             except TimeoutError:
                 logger.debug("Connection Timed Out, Reconnecting")
                 error_status = CONNECTION_TIMING_OUT_STATUS
@@ -205,6 +464,19 @@ async def am2r_sync_task(ctx: AM2RContext):
                 ctx.am2r_status = CONNECTION_REFUSED_STATUS
                 continue
 
+async def main(args):
+    random.seed()
+    ctx = AM2RContext(args.connect, args.password)
+    ctx.server_task = asyncio.create_task(server_loop(ctx), name="ServerLoop")
+    if gui_enabled:
+        ctx.run_gui()
+    ctx.run_cli()
+    ctx.am2r_sync_task = asyncio.create_task(am2r_sync_task(ctx), name="AM2R Sync")
+    await ctx.exit_event.wait()
+    ctx.server_address = None
+
+    await ctx.shutdown()
+
 
 def launch():
     # Text Mode to use !hint and such with games that have no text entry
@@ -212,23 +484,12 @@ def launch():
 
     options = Utils.get_options()
 
-    async def main(args):
-        random.seed()
-        ctx = AM2RContext(args.connect, args.password)
-        ctx.server_task = asyncio.create_task(server_loop(ctx), name="ServerLoop")
-        if gui_enabled:
-            ctx.run_gui()
-        ctx.run_cli()
-        ctx.am2r_sync_task = asyncio.create_task(am2r_sync_task(ctx), name="AM2R Sync")
-        await ctx.exit_event.wait()
-        ctx.server_address = None
-
-        await ctx.shutdown()
-
     import colorama
 
     parser = get_base_parser()
     args = parser.parse_args()
+
     colorama.init()
+
     asyncio.run(main(args))
     colorama.deinit()

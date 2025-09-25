@@ -1,6 +1,5 @@
 import logging
 from typing import Dict
-import random
 
 from .items import item_table, item_name_groups, item_name_to_id, create_item, create_all_items
 from .locations import get_location_datas, EventId
@@ -8,22 +7,19 @@ from .regions import create_regions_and_locations
 from BaseClasses import Tutorial, Item, ItemClassification
 from .options import AM2ROptions, LocationSettings
 from worlds.AutoWorld import World, WebWorld
-from worlds.LauncherComponents import Component, components, Type, launch_subprocess
+from worlds.LauncherComponents import Component, components, Type, icon_paths, launch
+
 
 logger = logging.getLogger("AM2R")
 
 def launch_client():
-    from .Resplashed_Client import launch
-    launch_subprocess(launch, name="AM2RClient")
+    from .Client import launch as am2r_client
+    launch(am2r_client, name="AM2R Client")
 
-
-def launch_legacy_client():
-    from .Client import launch
-    launch_subprocess(launch, name="AM2RClient")
-
-
-components.append(Component("Legacy AM2R Client", "AM2RClient", func=launch_legacy_client, component_type=Type.CLIENT))
-components.append(Component("AM2R Client", "AM2RResplashedClient", func=launch_client, component_type=Type.CLIENT))
+icon_paths["am2r_icon"] = f"ap:{__name__}/icon.png"
+components.append(
+    Component("AM2R Client", func=launch_client, component_type=Type.CLIENT, icon="am2r_icon")
+)
 
 
 class AM2RWeb(WebWorld):
