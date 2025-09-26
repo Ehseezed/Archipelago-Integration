@@ -14,7 +14,7 @@ logger = logging.getLogger("AM2R")
 
 def launch_client():
     from .Client import launch as am2r_client
-    launch(am2r_client, name="AM2R Client")
+    launch(am2r_client, name="AM2RClient")
 
 icon_paths["am2r_icon"] = f"ap:{__name__}/icon.png"
 components.append(

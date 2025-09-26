@@ -18,8 +18,7 @@ from CommonClient import CommonContext, server_loop, gui_enabled, ClientCommandP
     get_base_parser
 
 if __name__ == "__main__":
-
-    Utils.init_logging("AM2R Client", exception_logger="Client")
+    init_logging("AM2RClient", exception_logger="Client")
 
 CONNECTION_TIMING_OUT_STATUS = "Connection timing out"
 CONNECTION_REFUSED_STATUS = "Connection Refused"
@@ -480,10 +479,6 @@ async def main(args):
 
 def launch():
     # Text Mode to use !hint and such with games that have no text entry
-    Utils.init_logging("AM2RClient")
-
-    options = Utils.get_options()
-
     import colorama
 
     parser = get_base_parser()
@@ -493,3 +488,6 @@ def launch():
 
     asyncio.run(main(args))
     colorama.deinit()
+
+if __name__ == "__main__":
+    launch()
