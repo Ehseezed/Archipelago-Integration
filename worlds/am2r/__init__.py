@@ -139,7 +139,7 @@ class AM2RWorld(World):
             self.options.exclude_locations.value.add("Deep Caves: Ramulken Lava Pool")
             self.options.exclude_locations.value.add("Deep Caves: After Omega")
 
-        items.create_all_items(self)
+        create_all_items(self)
 
     def set_rules(self) -> None:
         self.multiworld.completion_condition[self.player] = lambda state: state.has("The Galaxy is at Peace", self.player)
