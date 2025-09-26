@@ -123,7 +123,6 @@ class AM2RContext(CommonContext):
         global players
         if cmd == "Connected":
             players = list(self.player_names.values())
-            print(players)
             self.metroids_required = args["slot_data"]["MetroidsRequired"]
             try:
                 self.Tozos = args["slot_data"]["Tozos"]
@@ -396,7 +395,13 @@ async def am2r_sync_task(ctx: AM2RContext):
                         (f"{player}, you little fucker.  You made a shit of piece with your trash Isaac. "
                          f"It's fucking bad, this trash game. I will become back my money. "
                          f"I hope you will in your next time a cow on a trash farm you sucker."),
-                        "The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start.",
+                        ("The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively "
+                         "gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. "
+                         "Line up at the start. The running speed starts slowly, but gets faster each minute after you "
+                         "hear this signal. [beep] A single lap should be completed each time you hear this sound. "
+                         "[ding] Remember to run in a straight line, and run as long as possible. The second time you "
+                         "fail to complete a lap before the sound, your test is over. The test will begin on the word "
+                         "start. On your mark, get ready, start."),
                     ]
 
                     reasons += default
@@ -451,7 +456,7 @@ async def am2r_sync_task(ctx: AM2RContext):
                 logger.info("Lost connection to AM2R and attempting to reconnect. Use /am2r for status updates")
         else:
             try:
-                logger.debug("Attempting to connect to AM2R")
+                # logger.debug("Attempting to connect to AM2R")
                 ctx.am2r_streams = await asyncio.wait_for(asyncio.open_connection("127.0.0.1", 64197), timeout=10)
                 ctx.am2r_status = CONNECTION_TENTATIVE_STATUS
             except TimeoutError:
@@ -459,7 +464,7 @@ async def am2r_sync_task(ctx: AM2RContext):
                 ctx.am2r_status = CONNECTION_TIMING_OUT_STATUS
                 continue
             except ConnectionRefusedError:
-                logger.debug("Connection Refused, Trying Again")
+                # logger.debug("Connection Refused, Trying Again")
                 ctx.am2r_status = CONNECTION_REFUSED_STATUS
                 continue
 
@@ -481,10 +486,11 @@ def launch():
     # Text Mode to use !hint and such with games that have no text entry
     import colorama
 
-    parser = get_base_parser()
+    parser = get_base_parser(description="AM2R Client for interfacing with AM2RMultiworld/Multisquared mods")
+    parser.add_argument("url", nargs="?", help="Archipelago connection url")
     args = parser.parse_args()
 
-    colorama.init()
+    colorama.init(args)
 
     asyncio.run(main(args))
     colorama.deinit()

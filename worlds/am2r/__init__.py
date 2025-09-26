@@ -12,6 +12,7 @@ from worlds.LauncherComponents import Component, components, Type, icon_paths, l
 
 logger = logging.getLogger("AM2R")
 
+
 def launch_client():
     from .Client import launch as am2r_client
     launch(am2r_client, name="AM2RClient")

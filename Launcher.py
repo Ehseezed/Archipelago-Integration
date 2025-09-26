@@ -446,30 +446,13 @@ def run_component(component: Component, *args):
     else:
         logging.warning(f"Component {component} does not appear to be executable.")
 
-def print_all_components():
-    print("Known components:")
-    for component in components:
-        print(f"- {component.display_name}")
-
-def print_valid_args(parser: argparse.ArgumentParser):
-    print("Valid command-line arguments:")
-    for action in parser._actions:
-        if action.option_strings:
-            print(f"- {' / '.join(action.option_strings)}")
-        else:
-            print(f"- {action.dest}")
-
 def main(args: argparse.Namespace | dict | None = None):
-    print_all_components()
     if isinstance(args, argparse.Namespace):
         args = {k: v for k, v in args._get_kwargs()}
     elif not args:
         args = {}
-    # print_valid_args(args)
 
     path = args.get("Patch|Game|Component|url", None)
-
-    print(f"Args: {args}")
 
     if path is not None:
         if path.startswith("archipelago://"):
