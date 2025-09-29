@@ -68,8 +68,10 @@ class AM2RWorld(World):
             "RemoveWrongWarpTrap": self.options.RemoveWrongWarpTrap.value,
             "TrapSprites": self.options.TrapSprites.value,
             "Tozos": self.options.Tozos.value,
+            "CustomDeathLinkMessages": list(self.options.CustomDeathLinkMessages.value),
+            "DeathlinkMessagePacks": list(self.options.DeathlinkMessagePacks.value),
             "DeathLink": self.options.DeathLink.value,
-            "TrapSeed": int(self.multiworld.random.random() % (2 ** 32))
+            "TrapSeed": int(self.random.random() % (2 ** 32))
         }
 
     def create_regions(self) -> None:

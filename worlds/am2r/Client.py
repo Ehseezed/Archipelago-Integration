@@ -31,6 +31,14 @@ item_id_to_game_id: dict = {item.code: item.game_id for item in item_table.value
 location_id_to_game_id: dict = {location.code: location.game_id for location in get_location_datas(None, None)}
 game_id_to_location_id: dict = {location.game_id: location.code for location in get_location_datas(None, None) if location.code != None}
 players = []
+custom_messages = []
+enable_enemy = 1
+enable_default = 1
+enable_ror2 = 1
+enable_coptpastas = 1
+enable_randplayer = 1
+enable_custom = 1
+
 
 class AM2RCommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx: CommonContext):
@@ -66,14 +74,111 @@ Septoggs (as they feel safe next to the durable Elders)")
         logger.info("Special Thanks to all the beta testers and the AM2R Community Updates Team")
         logger.info("And Variable who was conned into becoming a programmer to fix issues he found")
 
+
     def _cmd_deathlink(self):
         """Toggles deathlink"""
         if isinstance(self.ctx, AM2RContext):
             self.ctx.set_deathLink = not self.ctx.set_deathLink
             if self.ctx.set_deathLink:
-                self.output(f"Deathlink enabled.")
+                logger.info(f"Deathlink enabled.")
             else:
-                self.output(f"Deathlink disabled.")
+                logger.info(f"Deathlink disabled.")
+
+
+    def _cmd_custom_message(self, *, message: str = ""):
+        """Add a custom deathlink message. Use {player} to include your player name,
+        {enemy} to include the enemy that killed you (if available),
+        and {randplayer} to include a random player (if multiple players are present).
+        Use /custom_message with no arguments to see your current custom messages."""
+
+        global custom_messages
+        if message == "":
+            if len(custom_messages) == 0:
+                logger.info("You have no custom deathlink messages.")
+            else:
+                logger.info("Your custom deathlink messages are:")
+                for i, msg in enumerate(custom_messages):
+                    logger.info(f"  {i + 1}. {msg}")
+                logger.info("Use /custom_message <message> to add a new message.")
+                logger.info("Use /remove_custom_message <number> to remove a message.")
+        else:
+            if message in custom_messages:
+                logger.info("This message is already in your custom messages.")
+            else:
+                custom_messages.append(message)
+                logger.info("Custom deathlink message added.")
+
+
+    def _cmd_remove_custom_message(self, number: int = 0):
+        """Remove a custom deathlink message by its number. Use /custom_message with no arguments to see your current custom messages."""
+
+        global custom_messages
+        if number <= 0 or number > len(custom_messages):
+            logger.info("Invalid message number. Use /custom_message with no arguments to see your current custom messages.")
+        else:
+            removed_message = custom_messages.pop(number - 1)
+            logger.info(f"Removed custom deathlink message: {removed_message}")
+
+
+    def _cmd_toggle_messages(self, type: str = ""):
+        """Toggles what deathlink messages you will send if enabled"""
+        if type == "":
+            logger.info("You can toggle the following deathlink message categories:")
+            logger.info("  default - The standard messages everyone gets")
+            logger.info("  ror2 - Messages from Risk of Rain 2")
+            logger.info("  coptpastas - Various copypastas")
+            logger.info("  enemy - Messages that include an enemy (if enemy data is available)")
+            logger.info("  randplayer - Messages that include another random player (if multiple players are present)")
+            logger.info("  custom - Custom messages you have added using /custom_message")
+            logger.info("Use /toggle_messages <category> to toggle a category")
+        elif type == "default":
+            global enable_default
+            enable_default *= -1
+            if enable_default > 0:
+                logger.info("Default deathlink messages enabled.")
+            else:
+                logger.info("Default deathlink messages disabled.")
+        elif type == "ror2":
+            global enable_ror2
+            enable_ror2 *= -1
+            if enable_ror2 > 0:
+                logger.info("Risk of Rain 2 deathlink messages enabled.")
+            else:
+                logger.info("Risk of Rain 2 deathlink messages disabled.")
+        elif type == "coptpastas":
+            global enable_coptpastas
+            enable_coptpastas *= -1
+            if enable_coptpastas > 0:
+                logger.info("Copypasta deathlink messages enabled.")
+            else:
+                logger.info("Copypasta deathlink messages disabled.")
+        elif type == "enemy":
+            global enable_enemy
+            enable_enemy *= -1
+            if enable_enemy > 0:
+                logger.info("Enemy deathlink messages enabled.")
+            else:
+                logger.info("Enemy deathlink messages disabled.")
+        elif type == "randplayer":
+            global enable_randplayer
+            enable_randplayer *= -1
+            if enable_randplayer > 0:
+                logger.info("Random player deathlink messages enabled.")
+            else:
+                logger.info("Random player deathlink messages disabled.")
+        elif type == "custom":
+            global enable_custom
+            enable_custom *= -1
+            if enable_custom > 0:
+                logger.info("Custom deathlink messages enabled.")
+            else:
+                logger.info("Custom deathlink messages disabled.")
+        else:
+            logger.info(f"Unknown category '{type}'. Use /toggle_messages with no arguments to see a list of categories.")
+
+        if enable_default + enable_ror2 + enable_coptpastas + enable_enemy + enable_randplayer == -5:
+            logger.info("All deathlink message categories are disabled. You will send a generic message when you die.")
+
 
 
 class AM2RContext(CommonContext):
@@ -121,6 +226,15 @@ class AM2RContext(CommonContext):
 
     def on_package(self, cmd: str, args: dict):
         global players
+        global custom_messages
+        global enable_enemy
+        global enable_default
+        global enable_ror2
+        global enable_coptpastas
+        global enable_randplayer
+        global enable_custom
+
+
         if cmd == "Connected":
             players = list(self.player_names.values())
             self.metroids_required = args["slot_data"]["MetroidsRequired"]
@@ -137,13 +251,35 @@ class AM2RContext(CommonContext):
             except KeyError:
                 self.set_deathLink = False
                 self.error += 1
+
+            try:
+                custom_messages = args["slot_data"]["CustomDeathLinkMessages"]
+            except KeyError:
+                custom_messages = []
+
+            try:
+                message_packs = args["slot_data"]["DeathlinkMessagePacks"]
+                enable_enemy = 1 if "enemy" in message_packs else -1
+                enable_default = 1 if "default" in message_packs else -1
+                enable_ror2 = 1 if "ror2" in message_packs else -1
+                enable_coptpastas = 1 if "coptpastas" in message_packs else -1
+                enable_randplayer = 1 if "randplayer" in message_packs else -1
+                enable_custom = 1 if "custom" in message_packs else -1
+            except KeyError:
+                enable_enemy = -1
+                enable_default = 1
+                enable_ror2 = -1
+                enable_coptpastas = -1
+                enable_randplayer = -1
+                enable_custom = -1
+
         elif cmd == "LocationInfo":
             logger.info("Received Location Info")
             if self.error // 10 == 1:
                 self.ui.print_json([{"text": "Seed rolled on version without Tozos or Trap Sprites options, defaulting to old behavior", "type": "color", "color": "salmon"}])
                 self.ui.print_json([{"text": "Everything is fine just convince the host to update their AM2R for next time", "type": "color", "color": "salmon"}])
             if self.error % 10 == 1:
-                self.ui.print_json([{"text": "Seed rolled on version without DeathLink option, defaulting to DeathLink on", "type": "color", "color": "salmon"}])
+                self.ui.print_json([{"text": "Seed rolled on version without DeathLink option, Dethlink is still functional you just will need to manually add enable it", "type": "color", "color": "salmon"}])
                 self.ui.print_json([{"text": "Everything is fine just convince the host to update their AM2R for next time", "type": "color", "color": "salmon"}])
 
     def on_deathlink(self, data: dict):
@@ -193,6 +329,8 @@ def get_payload(ctx: AM2RContext):
     # 0b001 = progression
     # 0b010 = good
     # 0b100 = trap
+
+
     if ctx.deathlink_pending == "whatkillsyou":
         return json.dumps({
             "cmd": "whatkillsyou",
@@ -395,6 +533,7 @@ async def am2r_sync_task(ctx: AM2RContext):
                         (f"{player}, you little fucker.  You made a shit of piece with your trash Isaac. "
                          f"It's fucking bad, this trash game. I will become back my money. "
                          f"I hope you will in your next time a cow on a trash farm you sucker."),
+
                         ("The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively "
                          "gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. "
                          "Line up at the start. The running speed starts slowly, but gets faster each minute after you "
@@ -404,20 +543,33 @@ async def am2r_sync_task(ctx: AM2RContext):
                          "start. On your mark, get ready, start."),
                     ]
 
-                    reasons += default
-                    reasons += ror2
-                    reasons += coptpastas
+                    try:
+                        for i in range(len(custom_messages)):
+                            custom_messages[i] = custom_messages[i].replace("{player}", player)
+                            custom_messages[i] = custom_messages[i].replace("{enemy}", enemy)
+                            custom_messages[i] = custom_messages[i].replace("{rand_player}", rand_player)
+                    except:
+                        pass
 
-                    if enemy != "":
-                        reasons += includes_enemy
+                    if enable_default > 0:
+                        reasons.extend(default)
 
-                    if rand_player != "":
-                        reasons += includes_random_player
+                    if enable_ror2 > 0:
+                        reasons.extend(ror2)
 
+                    if enable_coptpastas > 0:
+                        reasons.extend(coptpastas)
 
+                    if enemy != "" and enable_enemy > 0:
+                        reasons.extend(enemy)
 
+                    if rand_player != "" and enable_randplayer > 0:
+                        reasons.extend(rand_player)
 
-                    reason: str = random.choice(reasons)
+                    if len(custom_messages) > 0 and enable_custom > 0:
+                        reasons.extend(custom_messages)
+
+                    reason = random.choice(reasons)
 
                     if reason == "Thursday":
                         if datetime.datetime.now().weekday() != 3:

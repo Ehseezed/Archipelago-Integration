@@ -1,5 +1,5 @@
 from typing import Union, List, Dict, TYPE_CHECKING
-from Options import Choice, Range, Toggle, PerGameCommonOptions, DeathLink
+from Options import Choice, Range, Toggle, PerGameCommonOptions, DeathLink, FreeText, OptionList
 from dataclasses import dataclass
 
 if TYPE_CHECKING:
@@ -102,6 +102,20 @@ class Tozos(Toggle):
     """Enable Tozo items"""
     display_name = "Tozo Items"
 
+class CustomDeathLinkMessages(OptionList):
+    """Custom DeathLink Messages
+    You can use {player} to include the name of the player whose death triggered the message.
+    You can use {enemy} to include the name of the enemy that killed them.
+    You can use {rand_player} to include the name of a random player in the game."""
+    display_name = "Custom DeathLink Messages"
+    default = [""]
+
+class DeathlinkMessagePacks(OptionList):
+    """Predefined DeathLink Message Packs"""
+    display_name = "Predefined DeathLink Message Packs"
+    valid_keys = {"default", "enemy", "ror2", "coptpastas", "randplayer", "custom"}
+    default = ["default"]
+
 @dataclass
 class AM2ROptions(PerGameCommonOptions):
     MetroidsRequired: MetroidsRequired
@@ -117,4 +131,6 @@ class AM2ROptions(PerGameCommonOptions):
     RemoveWrongWarpTrap: RemoveWrongWarpTrap
     TrapSprites: TrapSprites
     Tozos: Tozos
+    CustomDeathLinkMessages: CustomDeathLinkMessages
+    DeathlinkMessagePacks: DeathlinkMessagePacks
     DeathLink: DeathLink
