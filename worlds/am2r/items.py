@@ -72,7 +72,7 @@ def create_trap_items(world: AM2RWorld, locations_to_trap: int) -> List[str]:
         del trap_pool["OHKO Trap"]
 
     if world.options.RemoveWrongWarpTrap == 1:
-        del trap_pool["Wrong Warp Trap"]
+        del trap_pool["Wrong Warp"]
 
     return world.random.choices(
         population=list(trap_pool.keys()),
