@@ -4,6 +4,7 @@ import json
 import time
 import random
 import datetime
+import re
 from asyncio import StreamReader, StreamWriter
 from random import randint
 from typing import List
@@ -38,6 +39,46 @@ enable_ror2 = 1
 enable_coptpastas = 1
 enable_randplayer = 1
 enable_custom = 1
+
+
+def extract_enemy_name(enemy) -> str:
+    known_problems = {
+        "TPO2": "TPO-2",
+        "TPO": "TPO",
+        "PincherFly": "Pincherfly",
+        "SpikePlant": "Spike Plants",
+        "A3": "Industrial Complex Mechanisms",
+        "A2": "Hydro Station Mechanisms",
+        "RoboMine": "Robomine",
+        "BladeBot": "Bladebot",
+        "GlowFly": "Glowfly",
+        "TorizoGhost": "Torizo Ghost",
+        "BlobThrower": "Blob Thrower",
+        "CoreXShell": "Core-X",
+        "CoreX": "Core-X",
+        "Monster": "Larval Metroid",
+        "ChuteLeech": "Chute Leech",
+        "MeboidBarrier": "Meboid",
+        "Meboid": "Mebit",
+        "WConnector": "Chiny Tozo", # Skip to default (the M gets killed)
+        "TestKeys": "Chiny Tozo", # Skip to default
+    }
+    enemy = enemy.replace("o", "", 1)  # Remove leading 'o' if present
+    enemy = re.sub(r'^M(?=[A-Z])', '', enemy) # Remove leading 'M' if followed by uppercase letter
+
+    for entry in known_problems: # Check for known problems first
+        if enemy.startswith(entry):
+            return known_problems[entry]
+
+    match = re.match(r'([A-Z][a-z]+)', enemy) # Match CamelCase pattern
+    if match:
+        return match.group(1)
+
+
+    return "Chiny Tozo"  # Default fallback name
+
+
+
 
 
 class AM2RCommandProcessor(ClientCommandProcessor):
@@ -473,7 +514,9 @@ async def am2r_sync_task(ctx: AM2RContext):
                     except IndexError:
                         rand_player = "Ehseezed"
                     player = ctx.auth
-                    enemy = "Metroid"
+                    enemy = data_decoded["CauseOfDeath"]
+                    enemy = extract_enemy_name(enemy)
+                    print(f"Enemy extracted: {enemy}")
                     reason = ""
 
                     default = [
@@ -596,7 +639,7 @@ async def am2r_sync_task(ctx: AM2RContext):
                     if enable_coptpastas > 0:
                         reasons.extend(coptpastas)
 
-                    if enemy != "" and enable_enemy > 0:
+                    if enemy != "Chiny Tozo" and enable_enemy > 0:
                         reasons.extend(includes_enemy)
 
                     if rand_player != "" and enable_randplayer > 0:
@@ -607,6 +650,9 @@ async def am2r_sync_task(ctx: AM2RContext):
 
                     reason = random.choice(reasons)
 
+                    if enemy == "Client":
+                        reason = f"This one wasnt {player}\'s fault it was whoever turned on Health Sync"
+
                     if reason == "Thursday":
                         if datetime.datetime.now().weekday() != 3:
                             reason = f"{player} remembered it isn't Thursday yet"
@@ -616,8 +662,7 @@ async def am2r_sync_task(ctx: AM2RContext):
                     if reason == "":
                         reason = "Ehseezed has made an error in their code and you should probably alert them"
 
-
-
+                    print(f"Deathlink: {reason}")
                     await ctx.send_death(f"{reason}")
 
 
