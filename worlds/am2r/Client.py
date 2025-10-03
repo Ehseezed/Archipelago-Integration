@@ -16,7 +16,7 @@ from worlds.am2r.items import item_table
 from worlds.am2r.locations import get_location_datas
 
 import Utils
-from Utils import async_start, init_logging
+from Utils import async_start, init_logging, persistent_store, persistent_load
 from CommonClient import CommonContext, server_loop, gui_enabled, ClientCommandProcessor, logger, \
     get_base_parser
 
@@ -35,35 +35,37 @@ location_id_to_game_id: dict = {location.code: location.game_id for location in 
 game_id_to_location_id: dict = {location.game_id: location.code for location in get_location_datas(None, None) if location.code != None}
 players = []
 custom_messages = []
-enable_enemy = 1
-enable_default = 1
-enable_ror2 = 1
-enable_coptpastas = 1
-enable_randplayer = 1
-enable_custom = 1
+enable_enemy = True
+enable_default = True
+enable_ror2 = True
+enable_coptpastas = True
+enable_randplayer = True
+enable_custom = True
 
-import json
 
-def save_custom_messages_to_file(filename="custom_messages.json"):
-    global custom_messages
-    with open(filename, "w", encoding="utf-8") as f:
-        try:
-            with open(filename, "r", encoding="utf-8") as f_read:
-                json_custom_messages = json.load(f_read)
-                for msg in json_custom_messages:
-                    custom_messages.append(msg)
-        except (FileNotFoundError, json.JSONDecodeError):
-            pass
-        custom_messages = list(set(custom_messages)) # Remove duplicates
-        json.dump(custom_messages, f, ensure_ascii=False, indent=4)
-
-def load_custom_messages_from_file(filename="custom_messages.json"):
+def save_custom_messages_to_file():
     global custom_messages
     try:
-        with open(filename, "r", encoding="utf-8") as f:
-            custom_messages = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        custom_messages = []
+        storage = load_custom_messages_from_file(True)
+        if "custom_messages" in storage:
+            custom_messages.extend(storage["Custom_Messages"])
+            custom_messages = list(set(custom_messages))
+    except Exception as e:
+        logger.error(f"Error loading custom messages: {e}")
+        pass
+
+    persistent_store("Custom_Messages", "AM2R", custom_messages)
+
+def overwrite_custom_messages():
+    persistent_store("Custom_Messages", "AM2R", custom_messages)
+
+
+def load_custom_messages_from_file(return_load: bool):
+    global custom_messages
+    if return_load:
+        return persistent_load().get("Custom_Messages", {}).get("AM2R", {})
+    else:
+        custom_messages = persistent_load().get("Custom_Messages", {}).get("AM2R", {})
 
 
 def extract_enemy_name(enemy) -> str:
@@ -150,14 +152,14 @@ Septoggs (as they feel safe next to the durable Elders)")
             else:
                 logger.info(f"Deathlink disabled.")
 
-
-    def _cmd_custom_message(self, *, message: str = ""):
+    def _cmd_custom_message(self, *message):
         """Add a custom deathlink message. Use {player} to include your player name,
         {enemy} to include the enemy that killed you (if available),
         and {randplayer} to include a random player.
         Use /custom_message with no arguments to see your current custom messages."""
 
         global custom_messages
+        message = " ".join(message).strip()
         if message == "":
             if len(custom_messages) == 0:
                 logger.info("You have no custom deathlink messages.")
@@ -175,17 +177,6 @@ Septoggs (as they feel safe next to the durable Elders)")
                 logger.info("Custom deathlink message added.")
 
 
-    def _cmd_remove_custom_message(self, number: int = 0):
-        """Remove a custom deathlink message by its number. Use /custom_message with no arguments to see your current custom messages."""
-
-        global custom_messages
-        if number <= 0 or number > len(custom_messages):
-            logger.info("Invalid message number. Use /custom_message with no arguments to see your current custom messages.")
-        else:
-            removed_message = custom_messages.pop(number - 1)
-            logger.info(f"Removed custom deathlink message: {removed_message}")
-
-
     def _cmd_toggle_messages(self, type: str = ""):
         """Toggles what deathlink messages you will send if enabled"""
         global enable_default
@@ -198,83 +189,82 @@ Septoggs (as they feel safe next to the durable Elders)")
         if type == "":
             logger.info("You can toggle the following deathlink message categories:")
             logger.info("default - A standard message pack everyone gets")
-            if enable_default > 0:
+            if enable_default:
                 logger.info("  (currently enabled)")
             else:
                 logger.info("  (currently disabled)")
 
             logger.info("ror2 - Messages ripped directly from Risk of Rain( Returns/2)")
-            if enable_ror2 > 0:
+            if enable_ror2:
                 logger.info("  (currently enabled)")
             else:
                 logger.info("  (currently disabled)")
 
             logger.info("coptpastas - Various copypastas")
-            if enable_coptpastas > 0:
+            if enable_coptpastas:
                 logger.info("  (currently enabled)")
             else:
                 logger.info("  (currently disabled)")
 
             logger.info("enemy - Messages that include an enemy")
-            if enable_enemy > 0:
+            if enable_enemy:
                 logger.info("  (currently enabled)")
             else:
                 logger.info("  (currently disabled)")
             logger.info("randplayer - Messages that include another random player")
-            if enable_randplayer > 0:
+            if enable_randplayer:
                 logger.info("  (currently enabled)")
             else:
                 logger.info("  (currently disabled)")
 
             logger.info("custom - Custom messages you have added using /custom_message")
-            if enable_custom > 0:
+            if enable_custom:
                 logger.info("  (currently enabled)")
             else:
                 logger.info("  (currently disabled)")
             logger.info("Use /toggle_messages <category> to toggle a category")
 
         elif type == "default":
-            enable_default *= -1
-            if enable_default > 0:
+            enable_default = not enable_default
+            if enable_default:
                 logger.info("Default deathlink messages enabled.")
             else:
                 logger.info("Default deathlink messages disabled.")
         elif type == "ror2":
-            enable_ror2 *= -1
-            if enable_ror2 > 0:
+            enable_ror2 = not enable_ror2
+            if enable_ror2:
                 logger.info("Risk of Rain 2 deathlink messages enabled.")
             else:
                 logger.info("Risk of Rain 2 deathlink messages disabled.")
         elif type == "coptpastas":
-            enable_coptpastas *= -1
-            if enable_coptpastas > 0:
+            enable_coptpastas = not enable_coptpastas
+            if enable_coptpastas:
                 logger.info("Copypasta deathlink messages enabled.")
             else:
                 logger.info("Copypasta deathlink messages disabled.")
         elif type == "enemy":
-            enable_enemy *= -1
-            if enable_enemy > 0:
+            enable_enemy = not enable_enemy
+            if enable_enemy:
                 logger.info("Enemy deathlink messages enabled.")
             else:
                 logger.info("Enemy deathlink messages disabled.")
         elif type == "randplayer":
-            enable_randplayer *= -1
-            if enable_randplayer > 0:
+            enable_randplayer = not enable_randplayer
+            if enable_randplayer:
                 logger.info("Random player deathlink messages enabled.")
             else:
                 logger.info("Random player deathlink messages disabled.")
         elif type == "custom":
-            enable_custom *= -1
-            if enable_custom > 0:
+            enable_custom = not enable_custom
+            if enable_custom:
                 logger.info("Custom deathlink messages enabled.")
             else:
                 logger.info("Custom deathlink messages disabled.")
         else:
             logger.info(f"Unknown category '{type}'. Use /toggle_messages with no arguments to see a list of categories.")
 
-        if enable_default + enable_ror2 + enable_coptpastas + enable_enemy + enable_randplayer == -5:
+        if not(enable_default or enable_ror2 or enable_coptpastas or enable_enemy or enable_randplayer):
             logger.info("All deathlink message categories are disabled. You will send a generic message when you die.")
-
 
 
 class AM2RContext(CommonContext):
@@ -326,7 +316,8 @@ class AM2RContext(CommonContext):
             def menu_open(self, button):
                 menu_items = [
                     {"text": "Save Custom Messages", "on_release": lambda: save_custom_messages_to_file()},
-                    {"text": "Load Custom Messages", "on_release": lambda: load_custom_messages_from_file()},
+                    {"text": "Load Custom Messages", "on_release": lambda: load_custom_messages_from_file(False)},
+                    {"text": "Overwrite Custom Messages", "on_release": lambda: overwrite_custom_messages()},
                     {"text": "Thursday", "on_release": lambda: webbrowser.open('https://am2r-community-developers.github.io/DistributionCenter/next-thursday.html')}
                 ]
                 MDDropdownMenu(caller=button, items=menu_items, width_mult=3).open()
@@ -381,19 +372,19 @@ class AM2RContext(CommonContext):
 
             try:
                 message_packs = args["slot_data"]["DeathlinkMessagePacks"]
-                enable_enemy = 1 if "enemy" in message_packs else -1
-                enable_default = 1 if "default" in message_packs else -1
-                enable_ror2 = 1 if "ror2" in message_packs else -1
-                enable_coptpastas = 1 if "coptpastas" in message_packs else -1
-                enable_randplayer = 1 if "randplayer" in message_packs else -1
-                enable_custom = 1 if "custom" in message_packs else -1
+                enable_enemy = True if "enemy" in message_packs else False
+                enable_default = True if "default" in message_packs else False
+                enable_ror2 = True if "ror2" in message_packs else False
+                enable_coptpastas = True if "coptpastas" in message_packs else False
+                enable_randplayer = True if "randplayer" in message_packs else False
+                enable_custom = True if "custom" in message_packs else False
             except KeyError:
-                enable_enemy = -1
-                enable_default = 1
-                enable_ror2 = -1
-                enable_coptpastas = -1
-                enable_randplayer = -1
-                enable_custom = -1
+                enable_enemy = False
+                enable_default =False
+                enable_ror2 = False
+                enable_coptpastas = False
+                enable_randplayer = False
+                enable_custom = False
 
         elif cmd == "LocationInfo":
             logger.info("Received Location Info")
@@ -682,22 +673,22 @@ async def am2r_sync_task(ctx: AM2RContext):
                     except:
                         pass
 
-                    if enable_default > 0:
+                    if enable_default:
                         reasons.extend(default)
 
-                    if enable_ror2 > 0:
+                    if enable_ror2:
                         reasons.extend(ror2)
 
-                    if enable_coptpastas > 0:
+                    if enable_coptpastas:
                         reasons.extend(coptpastas)
 
-                    if enemy != "Chiny Tozo" and enable_enemy > 0:
+                    if enemy != "Chiny Tozo" and enable_enemy:
                         reasons.extend(includes_enemy)
 
-                    if rand_player != "" and enable_randplayer > 0:
+                    if rand_player != "" and enable_randplayer:
                         reasons.extend(includes_random_player)
 
-                    if len(custom_messages) > 0 and enable_custom > 0:
+                    if len(custom_messages) > 0 and enable_custom:
                         reasons.extend(custom_messages)
 
                     reason = random.choice(reasons)
