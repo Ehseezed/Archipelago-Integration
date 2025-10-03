@@ -10,6 +10,8 @@ from random import randint
 from typing import List
 from unittest import case
 
+from click import style
+
 from worlds.am2r.items import item_table
 from worlds.am2r.locations import get_location_datas
 
@@ -39,6 +41,29 @@ enable_ror2 = 1
 enable_coptpastas = 1
 enable_randplayer = 1
 enable_custom = 1
+
+import json
+
+def save_custom_messages_to_file(filename="custom_messages.json"):
+    global custom_messages
+    with open(filename, "w", encoding="utf-8") as f:
+        try:
+            with open(filename, "r", encoding="utf-8") as f_read:
+                json_custom_messages = json.load(f_read)
+                for msg in json_custom_messages:
+                    custom_messages.append(msg)
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
+        custom_messages = list(set(custom_messages)) # Remove duplicates
+        json.dump(custom_messages, f, ensure_ascii=False, indent=4)
+
+def load_custom_messages_from_file(filename="custom_messages.json"):
+    global custom_messages
+    try:
+        with open(filename, "r", encoding="utf-8") as f:
+            custom_messages = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        custom_messages = []
 
 
 def extract_enemy_name(enemy) -> str:
@@ -284,13 +309,38 @@ class AM2RContext(CommonContext):
         await self.send_connect()
 
     def run_gui(self):
+        import webbrowser
         from kvui import GameManager
+        from kivy.metrics import dp
+        from kivymd.uix.button import MDButton, MDButtonText
+        from kivymd.uix.menu import MDDropdownMenu
+
+
 
         class AM2RManager(GameManager):
             logging_pairs = [
                 ("Client", "Archipelago")
             ]
             base_title = "AM2R Multiworld Client"
+
+            def menu_open(self, button):
+                menu_items = [
+                    {"text": "Save Custom Messages", "on_release": lambda: save_custom_messages_to_file()},
+                    {"text": "Load Custom Messages", "on_release": lambda: load_custom_messages_from_file()},
+                    {"text": "Thursday", "on_release": lambda: webbrowser.open('https://am2r-community-developers.github.io/DistributionCenter/next-thursday.html')}
+                ]
+                MDDropdownMenu(caller=button, items=menu_items, width_mult=3).open()
+
+
+            def build(self):
+                b = super().build()
+
+                dropdown_button = MDButton(MDButtonText(text="Special"), style="filled", size=(dp(100), dp(70)), radius=5,
+                                           size_hint_x=None, size_hint_y=None, pos_hint={"center_y": 0.55},
+                                           on_release=self.menu_open)
+                dropdown_button.height = self.server_connect_bar.height
+                self.connect_layout.add_widget(dropdown_button)
+                return b
 
         self.ui = AM2RManager(self)
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
@@ -309,6 +359,7 @@ class AM2RContext(CommonContext):
         if cmd == "Connected":
             players = list(self.player_names.values())
             self.metroids_required = args["slot_data"]["MetroidsRequired"]
+            self.trap_seed = args["slot_data"]["TrapSeed"]
             try:
                 self.Tozos = args["slot_data"]["Tozos"]
                 self.TrapSprites = args["slot_data"]["TrapSprites"]
@@ -440,7 +491,8 @@ def get_payload(ctx: AM2RContext):
             {
                 'cmd':"locations",
                 'items': itemdict,
-                'metroids': ctx.metroids_required
+                'metroids': ctx.metroids_required,
+                'trapseed': ctx.trap_seed
             }
         )
         return ret
