@@ -511,6 +511,42 @@ async def parse_payload(ctx: AM2RContext, data_decoded):
 async def am2r_sync_task(ctx: AM2RContext):
     global players
     logger.info("Starting AM2R connector, use /am2r for status information.")
+    # ctx.ui.print_json([{"text": "This is a color test",
+    #                     "type": "color",
+    #                     "color": "white"}])
+    # ctx.ui.print_json([{"text": "This is a color test",
+    #                     "type": "color",
+    #                     "color": "black"}])
+    # ctx.ui.print_json([{"text": "This is a color test",
+    #                     "type": "color",
+    #                     "color": "red"}])
+    # ctx.ui.print_json([{"text": "This is a color test",
+    #                     "type": "color",
+    #                     "color": "green"}])
+    # ctx.ui.print_json([{"text": "This is a color test",
+    #                     "type": "color",
+    #                     "color": "yellow"}])
+    # ctx.ui.print_json([{"text": "This is a color test",
+    #                     "type": "color",
+    #                     "color": "blue"}])
+    # ctx.ui.print_json([{"text": "This is a color test",
+    #                     "type": "color",
+    #                     "color": "magenta"}])
+    # ctx.ui.print_json([{"text": "This is a color test",
+    #                     "type": "color",
+    #                     "color": "cyan"}])
+    # ctx.ui.print_json([{"text": "This is a color test",
+    #                     "type": "color",
+    #                     "color": "slateblue"}])
+    # ctx.ui.print_json([{"text": "This is a color test",
+    #                     "type": "color",
+    #                     "color": "plum"}])
+    # ctx.ui.print_json([{"text": "This is a color test",
+    #                     "type": "color",
+    #                     "color": "salmon"}])
+    # ctx.ui.print_json([{"text": "This is a color test",
+    #                     "type": "color",
+    #                     "color": "orange"}])
     while not ctx.exit_event.is_set():
         error_status = None
         if ctx.am2r_streams:
@@ -705,7 +741,10 @@ async def am2r_sync_task(ctx: AM2RContext):
                     if reason == "":
                         reason = "Ehseezed has made an error in their code and you should probably alert them"
 
-                    print(f"Deathlink: {reason}")
+                    ctx.ui.print_json([{"text": f"Deathlink Message: {reason}",
+                                        "type": "color",
+                                        "color": "red"}])
+
                     await ctx.send_death(f"{reason}")
 
 
