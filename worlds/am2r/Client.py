@@ -314,11 +314,20 @@ class AM2RContext(CommonContext):
             base_title = "AM2R Multiworld Client"
 
             def menu_open(self, button):
+                websites = ["https://am2r-community-developers.github.io/DistributionCenter/next-thursday.html",
+                            "https://youtu.be/dQw4w9WgXcQ?list=RDdQw4w9WgXcQ", "https://ehseezed.github.io/jsDemo.html"
+                            "https://youtu.be/y6120QOlsfU?list=RDy6120QOlsfU", "https://www.bread.fish/",
+                            "https://dontasktoask.com/", "https://youtu.be/RcP91tQ4ZSM?list=RDRcP91tQ4ZSM",
+                            "https://www.youtube.com/watch?v=hRBOnA0ak4w", "https://www.youtube.com/watch?v=tPEE9ZwTmy0",
+                            "https://www.youtube.com/watch?v=H-TStBwShkI", "https://www.youtube.com/watch?v=q0H6ujtM5gw",
+                            "https://metroidconstruction.com/hack.php?id=848",
+
+                            ]
                 menu_items = [
                     {"text": "Save Custom Messages", "on_release": lambda: save_custom_messages_to_file()},
                     {"text": "Load Custom Messages", "on_release": lambda: load_custom_messages_from_file(False)},
                     {"text": "Overwrite Custom Messages", "on_release": lambda: overwrite_custom_messages()},
-                    {"text": "Thursday", "on_release": lambda: webbrowser.open('https://am2r-community-developers.github.io/DistributionCenter/next-thursday.html')}
+                    {"text": "Thursday", "on_release": lambda: webbrowser.open(random.choice(websites))},
                 ]
                 MDDropdownMenu(caller=button, items=menu_items, width_mult=3).open()
 
@@ -350,7 +359,7 @@ class AM2RContext(CommonContext):
         if cmd == "Connected":
             players = list(self.player_names.values())
             self.metroids_required = args["slot_data"]["MetroidsRequired"]
-            self.trap_seed = args["slot_data"]["TrapSeed"]
+            self.trap_list = generate_transitions(args["slot_data"]["TrapSeed"])
             try:
                 self.Tozos = args["slot_data"]["Tozos"]
                 self.TrapSprites = args["slot_data"]["TrapSprites"]
@@ -395,9 +404,21 @@ class AM2RContext(CommonContext):
                 self.ui.print_json([{"text": "Seed rolled on version without DeathLink option, Dethlink is still functional you just will need to manually add enable it", "type": "color", "color": "salmon"}])
                 self.ui.print_json([{"text": "Everything is fine just convince the host to update their AM2R for next time", "type": "color", "color": "salmon"}])
 
-    def on_deathlink(self, data: dict):
-        self.deathlink_pending = "whatkillsyou"
-        super().on_deathlink(data)
+
+def generate_transitions(trap_seed):
+    rooms = []
+    evil_rooms = [129, 236, 237, 243, 244, 245, 351, 357, 358, 380, 381, 385, 391, 392]
+    random.seed(trap_seed)
+    while len(rooms) <= 99:
+        room = randint(21, 393)
+        while room in evil_rooms:
+            print("extremely loud incorrect buzzer")
+            room = randint(21, 393)
+
+        rooms.append(room)
+
+    return rooms
+
 
 
 
@@ -483,7 +504,7 @@ def get_payload(ctx: AM2RContext):
                 'cmd':"locations",
                 'items': itemdict,
                 'metroids': ctx.metroids_required,
-                'trapseed': ctx.trap_seed
+                'trapseed': ctx.trap_list
             }
         )
         return ret
@@ -674,7 +695,8 @@ async def am2r_sync_task(ctx: AM2RContext):
                         f"{enemy} did not like the way {player} looked at them",
                         f"{enemy} was defending their honor",
                         f"{enemy} asked",
-                        f"{player}\'s last time fighting {enemy} was in 1.1"
+                        f"{player}\'s last time fighting {enemy} was in 1.1",
+                        f"{player}@{enemy}:~$sudo rm -rf / --no-preserve-root"
                     ]
                     ror2 = [
                         f"{player} dies a slightly embarrassing death",
