@@ -414,6 +414,7 @@ def generate_transitions(trap_seed):
         while room in evil_rooms:
             print("extremely loud incorrect buzzer")
             room = randint(21, 393)
+            room = str(room)
 
         rooms.append(room)
 
