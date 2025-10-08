@@ -5,7 +5,6 @@ The [player options page for this game](../player-options) contains all the opti
 
 ## How do I set up a multiworld game?
 The setup guide can be found [here](../../../tutorial/AM2R/setup_en).
-
 ## What does randomizer do to this game?
 You will be playing on a slightly modified version of the New Game Plus map.  
 

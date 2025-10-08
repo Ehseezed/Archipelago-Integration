@@ -2,7 +2,7 @@
 
 ## Required Software
 - [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases/latest)
-- Current Mods
+- One of the Current Mods (currently should be version 1.3.x)
   - [AM2R Multiworld(²)](https://github.com/rm-steele/AM2R-Multisquared/releases/latest)
   - [AM2R Multiworld: Resplashed](https://github.com/AbyssalCreature/AM2R-Re-Splashed/releases?q=multiworld&expanded=true)
 - [AM2R Launcher](https://github.com/AM2R-Community-Developers/AM2RLauncher/releases/latest)
@@ -29,13 +29,21 @@ the slot name (player name) and hit `Connect to Python Client` the client will t
 at which point you can run /connect [IP]:[PORT] or use the address bar at the top with the same formatting to connect to the
 multiworld session at which point you can start a new save file or continue a save file.
 
+## Joining a Multitroid Session
+
+Assuming there is soneone hosting a Multitroid server you can navigate to the `Multitroid` muenu in the AM2R settings
+and enter the server address and port into the relevant spots at which point you can also pick a special multitroid color
+as well as a team if the server has teams enabled for PVP.
+
 # Things are subject to change at developer discretion
 
 ### Seeds should be beatable but its possible there are still logical errors
 
 ## Bug Reporting/Feature Requests
 
-If you are playing this mod and are encountering bugs **DO NOT** report them to the Archipelago server this is not official support from them, and they may or may not know what to do instead you can report them to the dedicated mod thread on the [AM2R Server](https://discord.gg/YTQnkAJ) or on the [Modding Server](https://discord.gg/Fdq3MSXEDb) and you can always open an issue on the GitHub.
+If you are playing this mod and are encountering bugs **DO NOT** report them to the Archipelago server this is not 
+official support from them, and they may or may not know what to do instead you can report them to the dedicated mod 
+thread on the [AM2R Server](https://discord.gg/YTQnkAJ) or on the [Modding Server](https://discord.gg/Fdq3MSXEDb) and you can always open an issue on the GitHub.
 
 ### Help I don't have enough energy to do this check with 100% trap fill on fusion mode
 
