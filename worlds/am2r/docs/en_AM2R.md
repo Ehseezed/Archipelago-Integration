@@ -1,23 +1,28 @@
-# AM2R Multiworld Beta (Text Adventure)
-## How to use 
-There currently is no client to use this with
+# AM2R 
 
+## Where is the options page?
+The [player options page for this game](../player-options) contains all the options you need to configure and export a config file.
 
-Download and install the latest version of [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases) the `AM2R.apworld` from below.  
-Once you have installed Archipelago you can take the `AM2R.apworld` and put it inside the `/lib/worlds` portion of your Archipelago install.
-From there to get a generic `AM2R.yaml` open the Archipelago Launcher and click the **Generate Template settings** which will add it to the template yaml folder in `/Players/Templates`.
-### Things are subject to change at developer discretion
-### Seeds should be beatable but its possible there are still logical errors
-## Bug Reporting
-If you are playing this mod and are encountering bugs **DO NOT** report them to the Archipelago server this is not offical support from them, and they may or may not know what to do instead you can report them to the dedicated mod thread on the [AM2R Server](https://discord.gg/YTQnkAJ) or on the [Modding Server](https://discord.gg/Fdq3MSXEDb) and you can always open an issue on the github.
-### Help I found a problem with 100% trap fill playing on fusion mode
-Fuck you Abyss said it was possible, and I was there.
+## How do I set up a multiworld game?
+The setup guide can be found [here](../../../tutorial/AM2R/setup_en).
 
-## Randomizer Information
+## What does randomizer do to this game?
+You will be playing on a slightly modified version of the New Game Plus map.  
 
-### What is randomized?
-All items both majors and minors are randomized together in one pool with the option to add in the metroids as checks as well.
-### What is the goal?
-The goal of this AM2R randomizer implementation is to kill or collect the self specified number of metroids to reach the queen metroid and save the baby metorid
-### What do I get with 100% trap fill?
-With max trap fill you get 1 copy of every major as well as 2 PB packs and 1 Super Missile
+Notable changes to the map include:
+- Helper septoggs are conditionally placed in certain spots in the main caves area to help with vertical navigation
+- The entire world is open from the start, except for the laboratory so you can go fight omega metroids right away
+- The bomb blocks that block the way down to Hydro Station are removed
+
+The randomizer will randomize all items aside from Power Grip Morph Ball and the initial 30 missiles.
+
+## What do remote items look like?
+
+Items that are not from AM2R will appear as one of 2 sprites depending on if they are a progression item or not
+- progression items will appear as colorful AP orbs in a capsule
+- non-progression items will appear as a blue-gray orbs without a capsule
+Any item (not just remote items) with the trap flag enabled will appear as a random sprite from a wide pool depending on the yaml option you pick
+
+## Thursday?
+
+The AM2R community has an onging joke that AM2R 2.0 will release on Thursday, so there are several Thursday related jokes because of this.
