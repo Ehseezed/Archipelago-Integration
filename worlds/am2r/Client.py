@@ -315,15 +315,29 @@ class AM2RContext(CommonContext):
 
             def menu_open(self, button):
                 websites = ["https://am2r-community-developers.github.io/DistributionCenter/next-thursday.html",
-                            "https://youtu.be/dQw4w9WgXcQ?list=RDdQw4w9WgXcQ", "https://ehseezed.github.io/jsDemo.html"
-                            "https://youtu.be/y6120QOlsfU?list=RDy6120QOlsfU", "https://www.bread.fish/",
-                            "https://dontasktoask.com/", "https://youtu.be/RcP91tQ4ZSM?list=RDRcP91tQ4ZSM",
-                            "https://www.youtube.com/watch?v=hRBOnA0ak4w", "https://www.youtube.com/watch?v=tPEE9ZwTmy0",
-                            "https://www.youtube.com/watch?v=H-TStBwShkI", "https://www.youtube.com/watch?v=q0H6ujtM5gw",
+                            "https://am2r-community-developers.github.io/DistributionCenter/next-thursday.html",
+                            "https://am2r-community-developers.github.io/DistributionCenter/next-thursday.html",
+                            "https://am2r-community-developers.github.io/DistributionCenter/next-thursday.html",
+                            "https://bsky.app/profile/steakbentley.bsky.social/post/3lig44ykaqs2n",
+                            "https://bsky.app/profile/steakbentley.bsky.social/post/3lig44ykaqs2n",
+                            "https://bsky.app/profile/steakbentley.bsky.social/post/3lig44ykaqs2n",
+                            "https://youtu.be/dQw4w9WgXcQ?list=RDdQw4w9WgXcQ",
+                            "https://ehseezed.github.io/jsDemo.html",
+                            "https://youtu.be/y6120QOlsfU?list=RDy6120QOlsfU",
+                            "https://www.bread.fish/",
+                            "https://dontasktoask.com/",
+                            "https://youtu.be/RcP91tQ4ZSM?list=RDRcP91tQ4ZSM",
+                            "https://www.youtube.com/watch?v=hRBOnA0ak4w",
+                            "https://www.youtube.com/watch?v=tPEE9ZwTmy0",
+                            "https://www.youtube.com/watch?v=H-TStBwShkI",
+                            "https://www.youtube.com/watch?v=q0H6ujtM5gw",
                             "https://metroidconstruction.com/hack.php?id=848",
-                            "https://bsky.app/profile/steakbentley.bsky.social/post/3lig44ykaqs2n",
-                            "https://bsky.app/profile/steakbentley.bsky.social/post/3lig44ykaqs2n",
-                            "https://bsky.app/profile/steakbentley.bsky.social/post/3lig44ykaqs2n"
+                            "https://www.youtube.com/watch?v=a56T2llZf_k",
+                            "https://www.youtube.com/watch?v=X17i9JpeO5U",
+                            "https://www.youtube.com/watch?v=E9aS7_uIb6M",
+                            "https://www.youtube.com/watch?v=xTfWF9S8BCY",
+                            "https://www.youtube.com/watch?v=n8foumUixN4",
+                            "https://www.youtube.com/watch?v=FPXbhxgWyOU"
                             ]
                 menu_items = [
                     {"text": "Save Custom Messages", "on_release": lambda: save_custom_messages_to_file()},
@@ -409,6 +423,7 @@ class AM2RContext(CommonContext):
 
 def generate_transitions(trap_seed):
     rooms = []
+    print(f'Trap Seed: {trap_seed}')
     evil_rooms = [129, 236, 237, 243, 244, 245, 351, 357, 358, 380, 381, 385, 391, 392]
     random.seed(trap_seed)
     while len(rooms) <= 99:
@@ -419,6 +434,7 @@ def generate_transitions(trap_seed):
             room = str(room)
 
         rooms.append(room)
+    print(f'rooms: {rooms}')
 
     return rooms
 
