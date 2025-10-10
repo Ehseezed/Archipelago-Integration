@@ -314,31 +314,9 @@ class AM2RContext(CommonContext):
             base_title = "AM2R Multiworld Client"
 
             def menu_open(self, button):
-                websites = ["https://am2r-community-developers.github.io/DistributionCenter/next-thursday.html",
-                            "https://am2r-community-developers.github.io/DistributionCenter/next-thursday.html",
-                            "https://am2r-community-developers.github.io/DistributionCenter/next-thursday.html",
-                            "https://am2r-community-developers.github.io/DistributionCenter/next-thursday.html",
-                            "https://bsky.app/profile/steakbentley.bsky.social/post/3lig44ykaqs2n",
-                            "https://bsky.app/profile/steakbentley.bsky.social/post/3lig44ykaqs2n",
-                            "https://bsky.app/profile/steakbentley.bsky.social/post/3lig44ykaqs2n",
-                            "https://youtu.be/dQw4w9WgXcQ?list=RDdQw4w9WgXcQ",
-                            "https://ehseezed.github.io/jsDemo.html",
-                            "https://youtu.be/y6120QOlsfU?list=RDy6120QOlsfU",
-                            "https://www.bread.fish/",
-                            "https://dontasktoask.com/",
-                            "https://youtu.be/RcP91tQ4ZSM?list=RDRcP91tQ4ZSM",
-                            "https://www.youtube.com/watch?v=hRBOnA0ak4w",
-                            "https://www.youtube.com/watch?v=tPEE9ZwTmy0",
-                            "https://www.youtube.com/watch?v=H-TStBwShkI",
-                            "https://www.youtube.com/watch?v=q0H6ujtM5gw",
-                            "https://metroidconstruction.com/hack.php?id=848",
-                            "https://www.youtube.com/watch?v=a56T2llZf_k",
-                            "https://www.youtube.com/watch?v=X17i9JpeO5U",
-                            "https://www.youtube.com/watch?v=E9aS7_uIb6M",
-                            "https://www.youtube.com/watch?v=xTfWF9S8BCY",
-                            "https://www.youtube.com/watch?v=n8foumUixN4",
-                            "https://www.youtube.com/watch?v=FPXbhxgWyOU"
-                            ]
+                import urllib.request, json
+                with urllib.request.urlopen("https://raw.githubusercontent.com/Ehseezed/Archipelago-Integration/refs/heads/8th-Aniversary/worlds/am2r/data/websites.json") as websites:
+                    websites = json.loads(websites.read().decode())
                 menu_items = [
                     {"text": "Save Custom Messages", "on_release": lambda: save_custom_messages_to_file()},
                     {"text": "Load Custom Messages", "on_release": lambda: load_custom_messages_from_file(False)},
