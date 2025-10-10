@@ -420,6 +420,9 @@ class AM2RContext(CommonContext):
                 self.ui.print_json([{"text": "Seed rolled on version without DeathLink option, Dethlink is still functional you just will need to manually add enable it", "type": "color", "color": "salmon"}])
                 self.ui.print_json([{"text": "Everything is fine just convince the host to update their AM2R for next time", "type": "color", "color": "salmon"}])
 
+    def on_deathlink(self, data: dict):
+        self.deathlink_pending = "whatkillsyou"
+        super().on_deathlink(data)
 
 def generate_transitions(trap_seed):
     rooms = []
@@ -483,8 +486,12 @@ def get_payload(ctx: AM2RContext):
     # 0b010 = good
     # 0b100 = trap
 
+    if ctx.deathlink_pending:
+        print(f"Deathlink pending: {ctx.deathlink_pending}")
+
 
     if ctx.deathlink_pending == "whatkillsyou":
+        ctx.deathlink_pending = None
         return json.dumps({
             "cmd": "whatkillsyou",
         })
@@ -533,7 +540,6 @@ def get_payload(ctx: AM2RContext):
            "items": items_to_give,
         }
     )
-    ctx.deathlink_pending = None
     return ret_payload
 
 async def parse_payload(ctx: AM2RContext, data_decoded):
