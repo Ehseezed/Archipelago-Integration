@@ -38,7 +38,7 @@ custom_messages = []
 enable_enemy = True
 enable_default = True
 enable_ror2 = True
-enable_coptpastas = True
+enable_copypastas = True
 enable_randplayer = True
 enable_custom = True
 
@@ -181,7 +181,7 @@ Septoggs (as they feel safe next to the durable Elders)")
         """Toggles what deathlink messages you will send if enabled"""
         global enable_default
         global enable_ror2
-        global enable_coptpastas
+        global enable_copypastas
         global enable_enemy
         global enable_randplayer
         global enable_custom
@@ -200,8 +200,8 @@ Septoggs (as they feel safe next to the durable Elders)")
             else:
                 logger.info("  (currently disabled)")
 
-            logger.info("coptpastas - Various copypastas")
-            if enable_coptpastas:
+            logger.info("copypastas - Various copypastas")
+            if enable_copypastas:
                 logger.info("  (currently enabled)")
             else:
                 logger.info("  (currently disabled)")
@@ -236,9 +236,9 @@ Septoggs (as they feel safe next to the durable Elders)")
                 logger.info("Risk of Rain 2 deathlink messages enabled.")
             else:
                 logger.info("Risk of Rain 2 deathlink messages disabled.")
-        elif type == "coptpastas":
-            enable_coptpastas = not enable_coptpastas
-            if enable_coptpastas:
+        elif type == "copypastas":
+            enable_copypastas = not enable_copypastas
+            if enable_copypastas:
                 logger.info("Copypasta deathlink messages enabled.")
             else:
                 logger.info("Copypasta deathlink messages disabled.")
@@ -263,7 +263,7 @@ Septoggs (as they feel safe next to the durable Elders)")
         else:
             logger.info(f"Unknown category '{type}'. Use /toggle_messages with no arguments to see a list of categories.")
 
-        if not(enable_default or enable_ror2 or enable_coptpastas or enable_enemy or enable_randplayer):
+        if not(enable_default or enable_ror2 or enable_copypastas or enable_enemy or enable_randplayer):
             logger.info("All deathlink message categories are disabled. You will send a generic message when you die.")
 
 
@@ -345,7 +345,7 @@ class AM2RContext(CommonContext):
         global enable_enemy
         global enable_default
         global enable_ror2
-        global enable_coptpastas
+        global enable_copypastas
         global enable_randplayer
         global enable_custom
 
@@ -378,14 +378,14 @@ class AM2RContext(CommonContext):
                 enable_enemy = True if "enemy" in message_packs else False
                 enable_default = True if "default" in message_packs else False
                 enable_ror2 = True if "ror2" in message_packs else False
-                enable_coptpastas = True if "coptpastas" in message_packs else False
+                enable_copypastas = True if "copypastas" in message_packs else False
                 enable_randplayer = True if "randplayer" in message_packs else False
                 enable_custom = True if "custom" in message_packs else False
             except KeyError:
                 enable_enemy = False
                 enable_default =False
                 enable_ror2 = False
-                enable_coptpastas = False
+                enable_copypastas = False
                 enable_randplayer = False
                 enable_custom = False
 
@@ -712,7 +712,7 @@ async def am2r_sync_task(ctx: AM2RContext):
                         f"{player} was styled uppon",
                         f"{player} has shattered into innumerable pieces",
                     ]
-                    coptpastas = [
+                    copypastas = [
                         (f"{player}, you little fucker.  You made a shit of piece with your trash Isaac. "
                          f"It's fucking bad, this trash game. I will become back my money. "
                          f"I hope you will in your next time a cow on a trash farm you sucker."),
@@ -740,8 +740,8 @@ async def am2r_sync_task(ctx: AM2RContext):
                     if enable_ror2:
                         reasons.extend(ror2)
 
-                    if enable_coptpastas:
-                        reasons.extend(coptpastas)
+                    if enable_copypastas:
+                        reasons.extend(copypastas)
 
                     if enemy != "Chiny Tozo" and enable_enemy:
                         reasons.extend(includes_enemy)
@@ -764,7 +764,7 @@ async def am2r_sync_task(ctx: AM2RContext):
                             reason = f"{player} realized \"Thursday\" is not this Thursday"
 
                     if reason == "":
-                        reason = "Ehseezed has made an error in their code and you should probably alert them"
+                        reason = "Ehseezed has made an error in their code and you should probably alert them\nUnless you have no messages enabled in which case its your fault"
 
                     ctx.ui.print_json([{"text": f"Deathlink Message: {reason}",
                                         "type": "color",
