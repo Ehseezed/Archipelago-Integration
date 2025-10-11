@@ -1,21 +1,14 @@
 import asyncio
-import copy
 import json
-import time
 import random
 import datetime
 import re
 from asyncio import StreamReader, StreamWriter
 from random import randint
-from typing import List
-from unittest import case
-
-from click import style
 
 from worlds.am2r.items import item_table
 from worlds.am2r.locations import get_location_datas
 
-import Utils
 from Utils import async_start, init_logging, persistent_store, persistent_load
 from CommonClient import CommonContext, server_loop, gui_enabled, ClientCommandProcessor, logger, \
     get_base_parser
@@ -302,8 +295,8 @@ class AM2RContext(CommonContext):
         import webbrowser
         from kvui import GameManager
         from kivy.metrics import dp
-        from kivymd.uix.button import MDButton, MDButtonText
         from kivymd.uix.menu import MDDropdownMenu
+        from kivymd.uix.button import MDButton, MDButtonText
 
 
 
@@ -329,7 +322,7 @@ class AM2RContext(CommonContext):
             def build(self):
                 b = super().build()
 
-                dropdown_button = MDButton(MDButtonText(text="Special"), style="filled", size=(dp(100), dp(70)), radius=5,
+                dropdown_button = MDButton(MDButtonText(text="Menu"), style="filled", size=(dp(100), dp(70)), radius=5,
                                            size_hint_x=None, size_hint_y=None, pos_hint={"center_y": 0.55},
                                            on_release=self.menu_open)
                 dropdown_button.height = self.server_connect_bar.height
