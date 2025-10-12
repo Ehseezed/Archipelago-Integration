@@ -47,7 +47,7 @@ class Version(typing.NamedTuple):
         return ".".join(str(item) for item in self)
 
 
-__version__ = "1.3.0"
+__version__ = "4.2.0"
 version_tuple = tuplize_version(__version__)
 version = Version(*version_tuple)
 
