@@ -71,7 +71,7 @@ class AM2RWorld(World):
             "CustomDeathLinkMessages": list(self.options.CustomDeathLinkMessages.value),
             "DeathlinkMessagePacks": list(self.options.DeathlinkMessagePacks.value),
             "DeathLink": self.options.DeathLink.value,
-            "TrapSeed": int(self.random.random() % (2 ** 32))
+            "TrapSeed": int(self.random.randint(0, (2**32)-1))
         }
 
     def create_regions(self) -> None:

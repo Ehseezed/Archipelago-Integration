@@ -1,21 +1,14 @@
 import asyncio
-import copy
 import json
-import time
 import random
 import datetime
 import re
 from asyncio import StreamReader, StreamWriter
 from random import randint
-from typing import List
-from unittest import case
-
-from click import style
 
 from worlds.am2r.items import item_table
 from worlds.am2r.locations import get_location_datas
 
-import Utils
 from Utils import async_start, init_logging, persistent_store, persistent_load
 from CommonClient import CommonContext, server_loop, gui_enabled, ClientCommandProcessor, logger, \
     get_base_parser
@@ -38,7 +31,7 @@ custom_messages = []
 enable_enemy = True
 enable_default = True
 enable_ror2 = True
-enable_coptpastas = True
+enable_copypastas = True
 enable_randplayer = True
 enable_custom = True
 
@@ -181,7 +174,7 @@ Septoggs (as they feel safe next to the durable Elders)")
         """Toggles what deathlink messages you will send if enabled"""
         global enable_default
         global enable_ror2
-        global enable_coptpastas
+        global enable_copypastas
         global enable_enemy
         global enable_randplayer
         global enable_custom
@@ -200,8 +193,8 @@ Septoggs (as they feel safe next to the durable Elders)")
             else:
                 logger.info("  (currently disabled)")
 
-            logger.info("coptpastas - Various copypastas")
-            if enable_coptpastas:
+            logger.info("copypastas - Various copypastas")
+            if enable_copypastas:
                 logger.info("  (currently enabled)")
             else:
                 logger.info("  (currently disabled)")
@@ -236,9 +229,9 @@ Septoggs (as they feel safe next to the durable Elders)")
                 logger.info("Risk of Rain 2 deathlink messages enabled.")
             else:
                 logger.info("Risk of Rain 2 deathlink messages disabled.")
-        elif type == "coptpastas":
-            enable_coptpastas = not enable_coptpastas
-            if enable_coptpastas:
+        elif type == "copypastas":
+            enable_copypastas = not enable_copypastas
+            if enable_copypastas:
                 logger.info("Copypasta deathlink messages enabled.")
             else:
                 logger.info("Copypasta deathlink messages disabled.")
@@ -263,7 +256,7 @@ Septoggs (as they feel safe next to the durable Elders)")
         else:
             logger.info(f"Unknown category '{type}'. Use /toggle_messages with no arguments to see a list of categories.")
 
-        if not(enable_default or enable_ror2 or enable_coptpastas or enable_enemy or enable_randplayer):
+        if not(enable_default or enable_ror2 or enable_copypastas or enable_enemy or enable_randplayer):
             logger.info("All deathlink message categories are disabled. You will send a generic message when you die.")
 
 
@@ -302,8 +295,8 @@ class AM2RContext(CommonContext):
         import webbrowser
         from kvui import GameManager
         from kivy.metrics import dp
-        from kivymd.uix.button import MDButton, MDButtonText
         from kivymd.uix.menu import MDDropdownMenu
+        from kivymd.uix.button import MDButton, MDButtonText
 
 
 
@@ -314,17 +307,9 @@ class AM2RContext(CommonContext):
             base_title = "AM2R Multiworld Client"
 
             def menu_open(self, button):
-                websites = ["https://am2r-community-developers.github.io/DistributionCenter/next-thursday.html",
-                            "https://youtu.be/dQw4w9WgXcQ?list=RDdQw4w9WgXcQ", "https://ehseezed.github.io/jsDemo.html"
-                            "https://youtu.be/y6120QOlsfU?list=RDy6120QOlsfU", "https://www.bread.fish/",
-                            "https://dontasktoask.com/", "https://youtu.be/RcP91tQ4ZSM?list=RDRcP91tQ4ZSM",
-                            "https://www.youtube.com/watch?v=hRBOnA0ak4w", "https://www.youtube.com/watch?v=tPEE9ZwTmy0",
-                            "https://www.youtube.com/watch?v=H-TStBwShkI", "https://www.youtube.com/watch?v=q0H6ujtM5gw",
-                            "https://metroidconstruction.com/hack.php?id=848",
-                            "https://bsky.app/profile/steakbentley.bsky.social/post/3lig44ykaqs2n",
-                            "https://bsky.app/profile/steakbentley.bsky.social/post/3lig44ykaqs2n",
-                            "https://bsky.app/profile/steakbentley.bsky.social/post/3lig44ykaqs2n"
-                            ]
+                import urllib.request, json
+                with urllib.request.urlopen("https://raw.githubusercontent.com/Ehseezed/Archipelago-Integration/refs/heads/8th-Aniversary/worlds/am2r/data/websites.json") as websites:
+                    websites = json.loads(websites.read().decode())
                 menu_items = [
                     {"text": "Save Custom Messages", "on_release": lambda: save_custom_messages_to_file()},
                     {"text": "Load Custom Messages", "on_release": lambda: load_custom_messages_from_file(False)},
@@ -337,7 +322,7 @@ class AM2RContext(CommonContext):
             def build(self):
                 b = super().build()
 
-                dropdown_button = MDButton(MDButtonText(text="Special"), style="filled", size=(dp(100), dp(70)), radius=5,
+                dropdown_button = MDButton(MDButtonText(text="Menu"), style="filled", size=(dp(100), dp(70)), radius=5,
                                            size_hint_x=None, size_hint_y=None, pos_hint={"center_y": 0.55},
                                            on_release=self.menu_open)
                 dropdown_button.height = self.server_connect_bar.height
@@ -353,7 +338,7 @@ class AM2RContext(CommonContext):
         global enable_enemy
         global enable_default
         global enable_ror2
-        global enable_coptpastas
+        global enable_copypastas
         global enable_randplayer
         global enable_custom
 
@@ -386,14 +371,14 @@ class AM2RContext(CommonContext):
                 enable_enemy = True if "enemy" in message_packs else False
                 enable_default = True if "default" in message_packs else False
                 enable_ror2 = True if "ror2" in message_packs else False
-                enable_coptpastas = True if "coptpastas" in message_packs else False
+                enable_copypastas = True if "copypastas" in message_packs else False
                 enable_randplayer = True if "randplayer" in message_packs else False
                 enable_custom = True if "custom" in message_packs else False
             except KeyError:
                 enable_enemy = False
                 enable_default =False
                 enable_ror2 = False
-                enable_coptpastas = False
+                enable_copypastas = False
                 enable_randplayer = False
                 enable_custom = False
 
@@ -406,9 +391,13 @@ class AM2RContext(CommonContext):
                 self.ui.print_json([{"text": "Seed rolled on version without DeathLink option, Dethlink is still functional you just will need to manually add enable it", "type": "color", "color": "salmon"}])
                 self.ui.print_json([{"text": "Everything is fine just convince the host to update their AM2R for next time", "type": "color", "color": "salmon"}])
 
+    def on_deathlink(self, data: dict):
+        self.deathlink_pending = "whatkillsyou"
+        super().on_deathlink(data)
 
 def generate_transitions(trap_seed):
     rooms = []
+    print(f'Trap Seed: {trap_seed}')
     evil_rooms = [129, 236, 237, 243, 244, 245, 351, 357, 358, 380, 381, 385, 391, 392]
     random.seed(trap_seed)
     while len(rooms) <= 99:
@@ -419,6 +408,7 @@ def generate_transitions(trap_seed):
             room = str(room)
 
         rooms.append(room)
+    print(f'rooms: {rooms}')
 
     return rooms
 
@@ -467,8 +457,12 @@ def get_payload(ctx: AM2RContext):
     # 0b010 = good
     # 0b100 = trap
 
+    if ctx.deathlink_pending:
+        print(f"Deathlink pending: {ctx.deathlink_pending}")
+
 
     if ctx.deathlink_pending == "whatkillsyou":
+        ctx.deathlink_pending = None
         return json.dumps({
             "cmd": "whatkillsyou",
         })
@@ -517,7 +511,6 @@ def get_payload(ctx: AM2RContext):
            "items": items_to_give,
         }
     )
-    ctx.deathlink_pending = None
     return ret_payload
 
 async def parse_payload(ctx: AM2RContext, data_decoded):
@@ -712,7 +705,7 @@ async def am2r_sync_task(ctx: AM2RContext):
                         f"{player} was styled uppon",
                         f"{player} has shattered into innumerable pieces",
                     ]
-                    coptpastas = [
+                    copypastas = [
                         (f"{player}, you little fucker.  You made a shit of piece with your trash Isaac. "
                          f"It's fucking bad, this trash game. I will become back my money. "
                          f"I hope you will in your next time a cow on a trash farm you sucker."),
@@ -740,8 +733,8 @@ async def am2r_sync_task(ctx: AM2RContext):
                     if enable_ror2:
                         reasons.extend(ror2)
 
-                    if enable_coptpastas:
-                        reasons.extend(coptpastas)
+                    if enable_copypastas:
+                        reasons.extend(copypastas)
 
                     if enemy != "Chiny Tozo" and enable_enemy:
                         reasons.extend(includes_enemy)
@@ -764,7 +757,7 @@ async def am2r_sync_task(ctx: AM2RContext):
                             reason = f"{player} realized \"Thursday\" is not this Thursday"
 
                     if reason == "":
-                        reason = "Ehseezed has made an error in their code and you should probably alert them"
+                        reason = "Ehseezed has made an error in their code and you should probably alert them\nUnless you have no messages enabled in which case its your fault"
 
                     ctx.ui.print_json([{"text": f"Deathlink Message: {reason}",
                                         "type": "color",
