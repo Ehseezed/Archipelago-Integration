@@ -47,7 +47,7 @@ from NetUtils import Endpoint, ClientStatus, NetworkItem, decode, encode, Networ
 from BaseClasses import ItemClassification
 
 
-min_client_version = Version(0, 5, 0)
+min_client_version = Version(0, 1, 6)
 colorama.just_fix_windows_console()
 
 no_version = Version(0, 0, 0)
