@@ -17,9 +17,9 @@ from .Rules import set_rules
 
 client_version = 9
 
-def launch_client():
+def launch_client(*args):
     from .MinecraftClient import launch
-    launch_subprocess(launch, name="MinecraftClient")
+    launch_subprocess(launch, name="MinecraftClient", args=args)
 
 components.append(Component('Minecraft Client', func=launch_client, cli=True, file_identifier=SuffixIdentifier('.apmc')))
 
