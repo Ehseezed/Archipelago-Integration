@@ -276,7 +276,7 @@ class AM2RContext(CommonContext):
         self.metroids_required = 41
         self.client_requesting_scouts = False
         self.TrapSprites = 0
-        self.Tozos = False
+        self.Tozos = 0
         self.deathlink_pending = None
         self.set_deathLink = False
 
@@ -351,7 +351,7 @@ class AM2RContext(CommonContext):
                 self.Tozos = args["slot_data"]["Tozos"]
                 self.TrapSprites = args["slot_data"]["TrapSprites"]
             except KeyError:
-                self.Tozos = False
+                self.Tozos = 0
                 self.TrapSprites = 5
                 self.error += 10
             try:
@@ -475,12 +475,16 @@ def get_payload(ctx: AM2RContext):
                 print("extremely loud incorrect buzzer")
                 itemid = randint(lower, upper)
             gamelocation = location_id_to_game_id[locationid]
-            if ctx.Tozos:
+
+
+            if ctx.Tozos != 0:
                 if netitem.item in item_id_to_game_id:
                     if netitem.flags & 0b100 != 0:
                         gameitem = random.randint(lower, upper)
-                    else:
+                    elif ctx.Tozos > randint(0,100):
                         gameitem = item_id_to_game_id[netitem.item] + 20
+                    else:
+                        gameitem = item_id_to_game_id[netitem.item]
                 elif netitem.flags & 0b001 == 1:
                     gameitem = 102 #
                 else:

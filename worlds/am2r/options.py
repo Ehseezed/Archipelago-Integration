@@ -1,3 +1,4 @@
+from random import choice
 from typing import Union, List, Dict, TYPE_CHECKING
 from Options import Choice, Range, Toggle, PerGameCommonOptions, DeathLink, FreeText, OptionList
 from dataclasses import dataclass
@@ -98,9 +99,14 @@ class TrapSprites(Choice):
     option_Evil = 4
     option_Vanilla = 5
 
-class Tozos(Toggle):
-    """Enable Tozo items"""
+class Tozos(Range):
+    """Enable dynamic Tozo items"""
     display_name = "Tozo Items"
+    special_range_names = {True: 100, False: 0}
+    range_start = 0
+    range_end = 100
+    default = 0
+
 
 class CustomDeathLinkMessages(OptionList):
     """Custom DeathLink Messages
@@ -108,7 +114,7 @@ class CustomDeathLinkMessages(OptionList):
     You can use {enemy} to include the name of the enemy that killed them.
     You can use {rand_player} to include the name of a random player in the game."""
     display_name = "Custom DeathLink Messages"
-    default = [""]
+    default = ["That was totally your fault"]
 
 class DeathlinkMessagePacks(OptionList):
     """Predefined DeathLink Message Packs
