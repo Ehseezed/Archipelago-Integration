@@ -1,6 +1,6 @@
 from . import MCTestBase
 from ..Constants import region_info
-from .. import Options
+from .. import options
 
 from BaseClasses import ItemClassification
 
