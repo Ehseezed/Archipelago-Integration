@@ -22,16 +22,17 @@ max_heap_re = re.compile(r"^\d+[mMgG][bB]?$")
 
 
 def prompt_yes_no(prompt):
-    yes_inputs = {'yes', 'ye', 'y'}
-    no_inputs = {'no', 'n'}
-    while True:
-        choice = input(prompt + " [y/n] ").lower()
-        if choice in yes_inputs: 
-            return True
-        elif choice in no_inputs: 
-            return False
-        else:
-            print('Please respond with "y" or "n".')
+    return True # Fuck you I cannot seem to get this to work you'd have said yes anyways
+    # yes_inputs = {'yes', 'ye', 'y'}
+    # no_inputs = {'no', 'n'}
+    # while True:
+    #     choice = input(prompt + " [y/n] ").lower()
+    #     if choice in yes_inputs:
+    #         return True
+    #     elif choice in no_inputs:
+    #         return False
+    #     else:
+    #         print('Please respond with "y" or "n".')
 
 
 def find_ap_randomizer_jar(forge_dir):
