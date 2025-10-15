@@ -13,7 +13,7 @@ import logging
 import requests
 
 import Utils
-from Utils import is_windows
+from Utils import is_windows, is_linux, is_macos
 
 atexit.register(input, "Press enter to exit.")
 
@@ -220,6 +220,17 @@ def run_forge_server(forge_dir: str, java_version: str, heap_arg: str, forge_ver
     args = [java_exe, heap_arg, *forge_args, "-nogui"]
     logging.info(f"Running Forge server: {args}")
     os.chdir(forge_dir)
+
+    if is_windows:
+        return Popen(args)
+    elif is_linux:
+        terminals = ['x-terminal-emulator', 'gnome-terminal', 'konsole', 'xfce4-terminal', 'xterm']
+        for term in terminals:
+            if shutil.which(term):
+                return Popen([term, '--'] + args)
+        return Popen(args)
+    elif is_macos:
+        return Popen(['open', '-a', 'Terminal.app', '--args'] + args)
     return Popen(args)
 
 
