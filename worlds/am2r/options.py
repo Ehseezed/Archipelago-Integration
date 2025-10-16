@@ -104,8 +104,6 @@ class Tozos(Range):
     display_name = "Tozo Items"
     default = 0
     special_range_names = {
-        True: 100,
-        False: 0,
         'true': 100,
         'false': 0
     }
