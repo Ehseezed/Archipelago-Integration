@@ -102,14 +102,9 @@ class TrapSprites(Choice):
 class Tozos(Range):
     """Enable dynamic Tozo items"""
     display_name = "Tozo Items"
-    default = 0
-    special_range_names = {
-        'true': 100,
-        'false': 0
-    }
     range_start = 0
     range_end = 100
-
+    default = 0
 
 
 class CustomDeathLinkMessages(OptionList):
