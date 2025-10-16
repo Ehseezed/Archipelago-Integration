@@ -308,7 +308,7 @@ class AM2RContext(CommonContext):
 
             def menu_open(self, button):
                 import urllib.request, json
-                with urllib.request.urlopen("https://raw.githubusercontent.com/Ehseezed/Archipelago-Integration/refs/heads/8th-Aniversary/worlds/am2r/data/websites.json") as websites:
+                with urllib.request.urlopen("https://raw.githubusercontent.com/Ehseezed/Archipelago-Integration/refs/heads/8th-Aniversary/Gotchas/websites.json") as websites:
                     websites = json.loads(websites.read().decode())
                 menu_items = [
                     {"text": "Save Custom Messages", "on_release": lambda: save_custom_messages_to_file()},
