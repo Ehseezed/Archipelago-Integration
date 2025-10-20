@@ -1,5 +1,6 @@
 import logging
-from typing import Dict
+from collections import Counter
+from typing import Dict, TextIO, List
 
 from .items import item_table, item_name_groups, item_name_to_id, create_item, create_all_items
 from .locations import get_location_datas, EventId
@@ -52,6 +53,17 @@ class AM2RWorld(World):
 
     item_name_groups = item_name_groups
     data_version = 1
+
+    def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
+        spoiler_handle.write("\nAM2R Archipelago Debug Spoiler Header\n")
+        spoiler_handle.write("=====================================\n\n")
+        items = self.multiworld.itempool
+        items = Counter(items)
+        spoiler_handle.write("Item Pool:\n")
+        for item_name, count in items.items():
+            spoiler_handle.write(f"  {item_name}: {count}\n")
+        spoiler_handle.write("\n")
+
 
     def fill_slot_data(self) -> Dict[str, object]:
         return {

@@ -84,14 +84,46 @@ def create_trap_items(world: AM2RWorld, locations_to_trap: int) -> List[str]:
     )
 
 
-def create_random_items(world: AM2RWorld, random_count: int) -> List[str]:
-    filler_pool = filler_weights.copy()
+def create_random_items(world: AM2RWorld, remaining_items: int, current_items: dict) -> List[str]:
+    items = current_items.copy()
+    super_total = (int(remaining_items * (10 / 74)))
+    e_total = (int(remaining_items * (10 / 74)))
+    pb_count = (int(remaining_items * (10 / 74)))
 
-    return world.random.choices(
-        population=list(filler_pool.keys()),
-        weights=list(filler_pool.values()),
-        k=random_count
-    )
+
+    print(f"Remaining items to fill: {remaining_items}\n"
+          f"PBs to create: {pb_count}, Es to create: {e_total}, Supers to create: {super_total}")
+
+    super_total -= 1
+    e_total -= 1
+    pb_count -= 3
+    missile_count =  remaining_items - (super_total + e_total + pb_count)
+
+    items_to_create = []
+
+    for _ in range(pb_count):
+        items_to_create.append("Power Bomb")
+    for _ in range(e_total):
+        items_to_create.append("Energy Tank")
+    for _ in range(super_total):
+        items_to_create.append("Super Missile")
+    for _ in range(missile_count):
+        items_to_create.append("Missile")
+
+    return items_to_create
+
+    # print(f"Remaining items to fill: {remaining_items}\n"
+    #       f"PBs to create: {pb_count}, Es to create: {e_total}, Supers to create: {super_total} missiles to create: {missile_count}")
+    # input("This info will now do nothing good day\nAlso press enter to continue")
+    #
+    #
+    # filler_pool = filler_weights.copy()
+    #
+    # return world.random.choices(
+    #     population=list(filler_pool.keys()),
+    #     weights=list(filler_pool.values()),
+    #     k=remaining_items
+    # )
 
 
 def create_all_items(world: AM2RWorld) -> None:
@@ -102,6 +134,8 @@ def create_all_items(world: AM2RWorld) -> None:
         create_fixed_item_pool()
         + create_metroid_items(world.options.MetroidsRequired, world.options.MetroidsInPool, world.options.LocationSettings)
     )
+    print(f"Fixed Items: {itempool}")
+    print(Counter(itempool))
 
     trap_percentage = world.options.TrapFillPercentage
     trap_fill = trap_percentage / 100
@@ -111,7 +145,8 @@ def create_all_items(world: AM2RWorld) -> None:
     itempool += create_trap_items(world, locations_to_trap)
 
     random_count = sum_locations - len(itempool)
-    itempool += create_random_items(world, random_count)
+    random_items = create_random_items(world, random_count, Counter(itempool))
+    itempool += random_items
 
     world.multiworld.itempool += [create_item(player, name) for name in itempool]
 
