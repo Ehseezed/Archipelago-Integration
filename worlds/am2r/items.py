@@ -91,8 +91,8 @@ def create_random_items(world: AM2RWorld, remaining_items: int, current_items: d
     pb_count = (int(remaining_items * (10 / 74)))
 
 
-    print(f"Remaining items to fill: {remaining_items}\n"
-          f"PBs to create: {pb_count}, Es to create: {e_total}, Supers to create: {super_total}")
+    # print(f"Remaining items to fill: {remaining_items}\n"
+    #       f"PBs to create: {pb_count}, Es to create: {e_total}, Supers to create: {super_total}")
 
     super_total -= 1
     e_total -= 1
@@ -134,8 +134,8 @@ def create_all_items(world: AM2RWorld) -> None:
         create_fixed_item_pool()
         + create_metroid_items(world.options.MetroidsRequired, world.options.MetroidsInPool, world.options.LocationSettings)
     )
-    print(f"Fixed Items: {itempool}")
-    print(Counter(itempool))
+    # print(f"Fixed Items: {itempool}")
+    # print(Counter(itempool))
 
     trap_percentage = world.options.TrapFillPercentage
     trap_fill = trap_percentage / 100
