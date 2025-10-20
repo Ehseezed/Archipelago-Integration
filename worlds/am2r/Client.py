@@ -267,8 +267,7 @@ class AM2RContext(CommonContext):
     
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
-        self.version = [1, 3, 2]
-        self.error = False
+        self.version = [1, 3, 4]
         self.error_message = []
         self.waiting_for_client = False
         self.am2r_streams: (StreamReader, StreamWriter) = None
@@ -354,29 +353,31 @@ class AM2RContext(CommonContext):
             except KeyError:
                 rolled_version = 0
 
+            print(f"Rolled Version: {rolled_version}")
+            print(f"my Version: {self.version}")
+
             if self.version !=  rolled_version:
+                self.error_message = ["0"]
                 if self.version < rolled_version:
                     self.error_message.append("your seed might have extra features that your current client version does not support please update to the latest version of the world to match what was used to generate the seed")
                 else:
                     if rolled_version == 0:
-                        version_message = ("Whoever rolled this seed is using a version of the randomizer older than 1.3.3 \n"
+                        self.error_message[0] = ("Whoever rolled this seed is using a version of the randomizer older than 1.3.3 \n"
                                            "Please be aware that some of the settings you have intended to use may not work as expected\n"
                                            "Actually I'm shocked that this made it past generation so please let me know if you ever manage to see this")
-                        self.error_message.append("Settings you could be missing from an unknow version are\n"
-                                   "Trap Sprites, Tozo Chance, Wrong Warp Traps, and DeathLink\n"
+                        self.error_message.append("From an update older than 1.3.3: you will miss out on Wrong Warps, Trap Sprites, Tozo Chance, and Deathlink\n"
                                    "Fortunately Deathlink is handled client side so you should be fine there but if you had custom messages you will need to re-add them")
                     else:
-                        version_message = f"Whoever rolled this seed is using AM2R Multiworld Randomizer version {rolled_version}\n"
+                        self.error_message[0] = f"Whoever rolled this seed is using AM2R Multiworld Randomizer version {rolled_version}\n"
 
                     if rolled_version < [1, 3, 3]:
-                        self.error_message.append("From 1.3.3: you will miss out on Ice Traps")
+                        self.error_message.append("From update 1.3.3: you will miss out on Ice Traps")
 
-                    if rolled_version == [1, 3, 3]:
-                        message = ""
-                        self.error_message.append(message)
+                    # if rolled_version < [1, 3, 3]:
+                    #     message = ""
+                    #     self.error_message.append(message)
 
-                    self.error_message.append(version_message)
-                self.error = True
+                print(self.error_message)
 
 
             try:
@@ -418,12 +419,13 @@ class AM2RContext(CommonContext):
 
         elif cmd == "LocationInfo":
             logger.info("Received Location Info")
-            if self.error:
+            if self.error_message is not None:
                 self.error_message = list(tuple(self.error_message))
                 for message in self.error_message:
                     self.ui.print_json([{"text": message,
                                          "type": "color",
                                          "color": "red"}])
+                self.error_message = None
 
 
     def on_deathlink(self, data: dict):
@@ -797,6 +799,9 @@ async def am2r_sync_task(ctx: AM2RContext):
 
                     if reason == "":
                         reason = "Ehseezed has made an error in their code and you should probably alert them\nUnless you have no messages enabled in which case its your fault"
+                        if not (enable_default or enable_ror2 or enable_copypastas or enable_enemy or enable_randplayer):
+                            logger.info("Hey its me this one is your fault not mine you disabled all the message categories")
+
 
                     ctx.ui.print_json([{"text": f"Deathlink Message: {reason}",
                                         "type": "color",
@@ -819,6 +824,7 @@ async def am2r_sync_task(ctx: AM2RContext):
 
             if ctx.am2r_status == CONNECTION_TENTATIVE_STATUS:
                 if not error_status:
+                    logger.info("Slot name: " + ctx.auth)
                     logger.info("Successfully Connected to AM2R")
                     ctx.am2r_status = CONNECTION_CONNECTED_STATUS
                 else:
