@@ -57,7 +57,7 @@ class AM2RWorld(World):
     def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
         spoiler_handle.write("\nAM2R Archipelago Debug Spoiler Header\n")
         spoiler_handle.write("=====================================\n\n")
-        items = self.multiworld.itempool
+        items = self.itempool.player
         items = Counter(items)
         spoiler_handle.write("Item Pool:\n")
         for item_name, count in items.items():
