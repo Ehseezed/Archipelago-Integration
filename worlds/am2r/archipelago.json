@@ -2,8 +2,8 @@
     "compatible_version": 5,
     "version": 6,
     "game": "AM2R",
-    "world_version_full": "1.3.0",
-    "world_version": "1.3.0",
+    "world_version_full": "1.3.3",
+    "world_version": "1.3.3",
     "description": "",
     "minimum_ap_version": "0.5.0"
 }
