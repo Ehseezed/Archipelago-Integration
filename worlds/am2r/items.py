@@ -119,7 +119,7 @@ def create_all_items(world: AM2RWorld) -> None:
 item_table: Dict[str, ItemData] = {
     "Missile":                  ItemData(108678000, "Ammo", ItemClassification.filler, 15),
     "Super Missile":            ItemData(108678001, "Ammo", ItemClassification.progression, 16, 1),
-    "Power Bomb":               ItemData(108678002, "Ammo", ItemClassification.progression, 18, 2),
+    "Power Bomb":               ItemData(108678002, "Ammo", ItemClassification.progression, 18, 3),
     "Energy Tank":              ItemData(108678003, "Ammo", ItemClassification.useful, 17, 1),
     "Bombs":                    ItemData(108678007, "Equipment", ItemClassification.progression, 0, 1),
     "Spider Ball":              ItemData(108678008, "Equipment", ItemClassification.progression, 2, 1),
