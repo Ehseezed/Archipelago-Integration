@@ -74,6 +74,9 @@ def create_trap_items(world: AM2RWorld, locations_to_trap: int) -> List[str]:
     if world.options.RemoveWrongWarpTrap == 1:
         del trap_pool["Wrong Warp"]
 
+    if world.options.RemoveIceTrap.value == 1:
+        del trap_pool["Ice Trap"]
+
     return world.random.choices(
         population=list(trap_pool.keys()),
         weights=list(trap_pool.values()),
@@ -139,6 +142,7 @@ item_table: Dict[str, ItemData] = {
     "OHKO Trap":                ItemData(108678026, "Trap", ItemClassification.trap, 25),
     "Touhou Trap":              ItemData(108678027, "Trap", ItemClassification.trap, 26),
     "Wrong Warp":               ItemData(108678028, "Trap", ItemClassification.trap, 27),
+    "Ice Trap":                 ItemData(108678029, "Trap", ItemClassification.trap, 28),
     "Metroid":                  ItemData(108678025, "MacGuffin", ItemClassification.progression_skip_balancing, 19),
   # "AP Item":                  ItemData(None     , "AP", ItemClassification.progression_skip_balancing, 100),
   # "Unimportant Item":         ItemData(None     , "AP", ItemClassification.progression_skip_balancing, 101),
@@ -158,7 +162,8 @@ trap_weights: Dict[str, int] = {
     "EMP Trap":             1,
     "Touhou Trap":          1,
     "OHKO Trap":            1,
-    "Wrong Warp":           1
+    "Wrong Warp":           1,
+    "Ice Trap":             1
 }
 
 

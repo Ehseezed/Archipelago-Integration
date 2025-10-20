@@ -55,18 +55,19 @@ class AM2RWorld(World):
 
     def fill_slot_data(self) -> Dict[str, object]:
         return {
-            "Version": [1, 3, 2],
+            "Version": [1, 3, 3],
             "MetroidsRequired": self.options.MetroidsRequired.value,
-            "MetroidsInPool": self.options.MetroidsInPool.value,
-            "LocationSettings": self.options.LocationSettings.value,
-            "TrapFillPercentage": self.options.TrapFillPercentage.value,
-            "RemoveFloodTrap": self.options.RemoveFloodTrap.value,
-            "RemoveTossTrap": self.options.RemoveTossTrap.value,
-            "RemoveShortBeam": self.options.RemoveShortBeam.value,
-            "RemoveEMPTrap": self.options.RemoveEMPTrap.value,
-            "RemoveTouhouTrap": self.options.RemoveTouhouTrap.value,
-            "RemoveOHKOTrap": self.options.RemoveOHKOTrap.value,
-            "RemoveWrongWarpTrap": self.options.RemoveWrongWarpTrap.value,
+            # "MetroidsInPool": self.options.MetroidsInPool.value,  # I never pull this
+            # "LocationSettings": self.options.LocationSettings.value, # I never pull this
+            "TrapFillPercentage": self.options.TrapFillPercentage.value, # I never pull this
+            # "RemoveFloodTrap": self.options.RemoveFloodTrap.value, # I never pull this
+            # "RemoveTossTrap": self.options.RemoveTossTrap.value, # I never pull this
+            # "RemoveShortBeam": self.options.RemoveShortBeam.value, # I never pull this
+            # "RemoveEMPTrap": self.options.RemoveEMPTrap.value, # I never pull this
+            # "RemoveTouhouTrap": self.options.RemoveTouhouTrap.value, # I never pull this
+            # "RemoveOHKOTrap": self.options.RemoveOHKOTrap.value, # I never pull this
+            # "RemoveWrongWarpTrap": self.options.RemoveWrongWarpTrap.value, # I never pull this
+            # "RemoveIceTrap": self.options.RemoveIceTrap.value, # I never pull this
             "TrapSprites": self.options.TrapSprites.value,
             "Tozos": self.options.Tozos.value,
             "CustomDeathLinkMessages": list(self.options.CustomDeathLinkMessages.value),

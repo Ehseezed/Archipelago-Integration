@@ -80,6 +80,10 @@ class RemoveWrongWarpTrap(Toggle):
     """Removes Wrong Warp Traps from trap fill"""
     display_name = "Remove Wrong Warp Trap"
 
+class RemoveIceTrap(Toggle):
+    """Removes Ice Traps from trap fill"""
+    display_name = "Remove Ice Trap"
+
 
 class TrapSprites(Choice):
     """Change what sprites are used for traps.
@@ -135,6 +139,7 @@ class AM2ROptions(PerGameCommonOptions):
     RemoveTouhouTrap: RemoveTouhouTrap
     RemoveOHKOTrap: RemoveOHKOTrap
     RemoveWrongWarpTrap: RemoveWrongWarpTrap
+    RemoveIceTrap: RemoveIceTrap
     TrapSprites: TrapSprites
     Tozos: Tozos
     CustomDeathLinkMessages: CustomDeathLinkMessages
