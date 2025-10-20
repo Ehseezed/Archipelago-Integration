@@ -44,7 +44,7 @@ def save_custom_messages_to_file():
             custom_messages.extend(storage["Custom_Messages"])
             custom_messages = list(set(custom_messages))
     except Exception as e:
-        logger.error(f"Error loading custom messages: {e}")
+        logger.version(f"Error loading custom messages: {e}")
         pass
 
     persistent_store("Custom_Messages", "AM2R", custom_messages)
@@ -267,7 +267,9 @@ class AM2RContext(CommonContext):
     
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
-        self.error = 0
+        self.version = [1, 3, 2]
+        self.error = False
+        self.error_message = []
         self.waiting_for_client = False
         self.am2r_streams: (StreamReader, StreamWriter) = None
         self.am2r_sync_task = None
@@ -346,20 +348,52 @@ class AM2RContext(CommonContext):
         if cmd == "Connected":
             players = list(self.player_names.values())
             self.metroids_required = args["slot_data"]["MetroidsRequired"]
-            self.trap_list = generate_transitions(args["slot_data"]["TrapSeed"])
+
+            try:
+                rolled_version = args["slot_data"]["Version"]
+            except KeyError:
+                rolled_version = 0
+
+            if self.version !=  rolled_version:
+                if self.version < rolled_version:
+                    self.error_message.append("your seed might have extra features that your current client version does not support please update to the latest version of the world to match what was used to generate the seed")
+                else:
+                    if rolled_version == 0:
+                        version_message = ("Whoever rolled this seed is using a version of the randomizer older than 1.3.3 \n"
+                                           "Please be aware that some of the settings you have intended to use may not work as expected\n"
+                                           "Actually I'm shocked that this made it past generation so please let me know if you ever manage to see this")
+                        self.error_message.append("Settings you could be missing from an unknow version are\n"
+                                   "Trap Sprites, Tozo Chance, Wrong Warp Traps, and DeathLink\n"
+                                   "Fortunately Deathlink is handled client side so you should be fine there but if you had custom messages you will need to re-add them")
+                    else:
+                        version_message = f"Whoever rolled this seed is using AM2R Multiworld Randomizer version {rolled_version}\n"
+
+                    if rolled_version < [1, 3, 3]:
+                        self.error_message.append("From 1.3.3: you will miss out on Ice Traps")
+
+                    if rolled_version == [1, 3, 3]:
+                        message = ""
+                        self.error_message.append(message)
+
+                    self.error_message.append(version_message)
+                self.error = True
+
+
+            try:
+                self.trap_list = generate_transitions(args["slot_data"]["TrapSeed"])
+            except KeyError:
+                self.trap_list = generate_transitions(0)
             try:
                 self.Tozos = args["slot_data"]["Tozos"]
                 self.TrapSprites = args["slot_data"]["TrapSprites"]
             except KeyError:
                 self.Tozos = 0
                 self.TrapSprites = 5
-                self.error += 10
             try:
                 if args["slot_data"]["DeathLink"]:
                     self.set_deathLink = True
             except KeyError:
                 self.set_deathLink = False
-                self.error += 1
 
             try:
                 custom_messages = args["slot_data"]["CustomDeathLinkMessages"]
@@ -384,12 +418,13 @@ class AM2RContext(CommonContext):
 
         elif cmd == "LocationInfo":
             logger.info("Received Location Info")
-            if self.error // 10 == 1:
-                self.ui.print_json([{"text": "Seed rolled on version without Tozos or Trap Sprites options, defaulting to old behavior", "type": "color", "color": "salmon"}])
-                self.ui.print_json([{"text": "Everything is fine just convince the host to update their AM2R for next time", "type": "color", "color": "salmon"}])
-            if self.error % 10 == 1:
-                self.ui.print_json([{"text": "Seed rolled on version without DeathLink option, Dethlink is still functional you just will need to manually add enable it", "type": "color", "color": "salmon"}])
-                self.ui.print_json([{"text": "Everything is fine just convince the host to update their AM2R for next time", "type": "color", "color": "salmon"}])
+            if self.error:
+                self.error_message = list(tuple(self.error_message))
+                for message in self.error_message:
+                    self.ui.print_json([{"text": message,
+                                         "type": "color",
+                                         "color": "red"}])
+
 
     def on_deathlink(self, data: dict):
         self.deathlink_pending = "whatkillsyou"

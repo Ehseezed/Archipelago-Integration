@@ -55,6 +55,7 @@ class AM2RWorld(World):
 
     def fill_slot_data(self) -> Dict[str, object]:
         return {
+            "Version": [1, 3, 2],
             "MetroidsRequired": self.options.MetroidsRequired.value,
             "MetroidsInPool": self.options.MetroidsInPool.value,
             "LocationSettings": self.options.LocationSettings.value,
