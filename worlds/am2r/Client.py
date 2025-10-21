@@ -267,7 +267,7 @@ class AM2RContext(CommonContext):
     
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
-        self.version = [1, 3, 4]
+        self.version = [1, 3, 3]
         self.error_message = []
         self.waiting_for_client = False
         self.am2r_streams: (StreamReader, StreamWriter) = None
