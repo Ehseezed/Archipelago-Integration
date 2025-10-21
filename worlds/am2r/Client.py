@@ -315,6 +315,7 @@ class AM2RContext(CommonContext):
                     {"text": "Save Custom Messages", "on_release": lambda: save_custom_messages_to_file()},
                     {"text": "Load Custom Messages", "on_release": lambda: load_custom_messages_from_file(False)},
                     {"text": "Overwrite Custom Messages", "on_release": lambda: overwrite_custom_messages()},
+                    {"text": "Help!", "on_release": lambda: webbrowser.open("https://github.com/Ehseezed/Archipelago-Integration/blob/8th-Aniversary/Gotchas%2FGotchas.md")},
                     {"text": "Thursday", "on_release": lambda: webbrowser.open(random.choice(websites))},
                 ]
                 MDDropdownMenu(caller=button, items=menu_items, width_mult=3).open()
