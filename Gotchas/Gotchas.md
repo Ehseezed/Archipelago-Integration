@@ -21,3 +21,11 @@ With the above in mind it is possible that you need to enter Distribution Center
 There is a low% shortcut in the underwater section of the Distribution Center that allows you to skip needing gravity suit and speed booster.
 
 ![A5 without Gravity Suit and Speed](A5.webp)
+
+### Why is this a gotcha?
+![Reason](Reason.png)
+Taking one of either the Red or Blue (sorry colorblind people) paths can be expected in logic and thus is why the low% shortcut is the most common gotcha in AM2R Multiworlds.
+
+The Blue is the A5 with Ice Beam path
+
+The Red is the A5 Screw Attack path
