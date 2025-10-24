@@ -24,6 +24,33 @@ components.append(
 )
 
 
+def get_version():
+    import urllib.request
+    import os
+    import json
+    try:
+        with urllib.request.urlopen(
+                "https://raw.githubusercontent.com/Ehseezed/Archipelago-Integration/refs/heads/8th-Aniversary/worlds/am2r/archipelago.json") as metadata_resp:
+            metadata_json = json.loads(metadata_resp.read().decode())
+    except Exception as e:
+        logger.warning(f"Failed to fetch remote metadata: {e}")
+        metadata_json = {}
+
+    dirpath = os.path.dirname(os.path.abspath(__file__))
+    full_path = os.path.join(dirpath, "archipelago.json")
+
+    try:
+        with open(full_path, "r", encoding="utf-8") as f:
+            local_json = json.load(f)
+    except Exception as e:
+        logger.warning(f"Failed to read local metadata: {e}")
+        local_json = {}
+
+    web_version = metadata_json.get("world_version") if metadata_json else None
+    local_version = local_json.get("world_version") if local_json else None
+    return local_version, web_version
+
+
 class AM2RWeb(WebWorld):
     theme = "partyTime"
     tutorials = [Tutorial(
@@ -66,12 +93,22 @@ class AM2RWorld(World):
 
 
     def fill_slot_data(self) -> Dict[str, object]:
+        local_version, web_version = get_version()
+        if local_version < web_version:
+            input(f'A new version of AM2R is available most recent release is version {web_version} and you are using {local_version}, '
+                  f'consider updating to the latest version'
+                  f'\npress enter to continue.')
+        elif local_version > web_version:
+            input(f"Hi there developer! It looks like you are running a development version of AM2R {local_version} ahead of the latest release {web_version}."
+                  f"\nIf you are seeing this message and are not a developer, I dont know how you managed that, but consider switching to the latest release version."
+                  f"\npress enter to continue.")
+
         return {
-            "Version": [1, 4, 0],
+            "Version": local_version,
             "MetroidsRequired": self.options.MetroidsRequired.value,
             # "MetroidsInPool": self.options.MetroidsInPool.value,  # I never pull this
             # "LocationSettings": self.options.LocationSettings.value, # I never pull this
-            "TrapFillPercentage": self.options.TrapFillPercentage.value, # I never pull this
+            "TrapFillPercentage": self.options.TrapFillPercentage.value,
             # "RemoveFloodTrap": self.options.RemoveFloodTrap.value, # I never pull this
             # "RemoveTossTrap": self.options.RemoveTossTrap.value, # I never pull this
             # "RemoveShortBeam": self.options.RemoveShortBeam.value, # I never pull this
@@ -85,7 +122,7 @@ class AM2RWorld(World):
             "CustomDeathLinkMessages": list(self.options.CustomDeathLinkMessages.value),
             "DeathlinkMessagePacks": list(self.options.DeathlinkMessagePacks.value),
             "DeathLink": self.options.DeathLink.value,
-            "TrapSeed": int(self.random.randint(0, (2**32)-1))
+            "TrapSeed": int(self.random.randint(0, 2**64 - 1)),
         }
 
     def create_regions(self) -> None:

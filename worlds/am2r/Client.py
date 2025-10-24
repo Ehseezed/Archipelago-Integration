@@ -36,6 +36,21 @@ enable_randplayer = True
 enable_custom = True
 
 
+def get_version():
+    import os
+    dirpath = os.path.dirname(os.path.abspath(__file__))
+    full_path = os.path.join(dirpath, "archipelago.json")
+
+    try:
+        with open(full_path, "r", encoding="utf-8") as f:
+            local_json = json.load(f)
+    except Exception as e:
+        logger.warning(f"Failed to read local metadata: {e}")
+        local_json = {}
+
+    local_version = local_json.get("world_version") if local_json else None
+    return local_version
+
 def save_custom_messages_to_file():
     global custom_messages
     try:
@@ -267,7 +282,6 @@ class AM2RContext(CommonContext):
     
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
-        self.version = [1, 4, 0]
         self.error_message = []
         self.waiting_for_client = False
         self.am2r_streams: (StreamReader, StreamWriter) = None
@@ -349,36 +363,36 @@ class AM2RContext(CommonContext):
             players = list(self.player_names.values())
             self.metroids_required = args["slot_data"]["MetroidsRequired"]
 
+            local_version = get_version()
+
             try:
                 rolled_version = args["slot_data"]["Version"]
             except KeyError:
-                rolled_version = 0
+                rolled_version = "0"
 
-            print(f"Rolled Version: {rolled_version}")
-            print(f"my Version: {self.version}")
-
-            if self.version !=  rolled_version:
+            if local_version !=  rolled_version:
                 self.error_message = ["0"]
-                if self.version < rolled_version:
-                    self.error_message.append("your seed might have extra features that your current client version does not support please update to the latest version of the world to match what was used to generate the seed")
+                if local_version < rolled_version:
+                    self.error_message.append(f"your seed might have extra features that your current client version does not support please update to at least version {rolled_version} of the world to match what was used to generate the seed")
                 else:
-                    if rolled_version == 0:
+                    if rolled_version == "0":
                         self.error_message[0] = ("Whoever rolled this seed is using a version of the randomizer older than 1.3.2 \n"
                                            "Please be aware that some of the settings you have intended to use may not work as expected\n"
                                            "Actually I'm shocked that this made it past generation so please let me know if you ever manage to see this")
-                        self.error_message.append("From an update older than 1.3.2: you will miss out on Wrong Warps, Trap Sprites, Tozo Chance, and Deathlink\n"
+                        self.error_message.append("From updates older than 1.4.0: you will miss out on Wrong Warps, Trap Sprites, Tozo Chance, and Deathlink\n"
                                    "Fortunately Deathlink is handled client side so you should be fine there but if you had custom messages you will need to re-add them")
                     else:
                         self.error_message[0] = f"Whoever rolled this seed is using AM2R Multiworld Randomizer version {rolled_version}\n"
 
-                    if rolled_version < [1, 4, 0]:
+                    if rolled_version < "1.5.0":
                         self.error_message.append("From update 1.4.0: you will miss out on Ice Traps")
 
                     # if rolled_version < []:
                     #     message = ""
                     #     self.error_message.append(message)
 
-                print(self.error_message)
+                if self.error_message[0] == "0":
+                    self.error_message.pop(0)
 
 
             try:
@@ -804,7 +818,7 @@ async def am2r_sync_task(ctx: AM2RContext):
                             logger.info("Hey its me this one is your fault not mine you disabled all the message categories")
 
 
-                    ctx.ui.print_json([{"text": f"Deathlink Message: {reason}",
+                    ctx.ui.print_json([{"text": f"Sent Deathlink Message: \n{reason}",
                                         "type": "color",
                                         "color": "cyan"}])
 
