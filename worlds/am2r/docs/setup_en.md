@@ -2,7 +2,7 @@
 
 ## Required Software
 - [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases/latest)
-- One of the Current Mods (currently should be version 1.3.x)
+- One of the Current Mods (currently should be version 1.4.x)
   - [AM2R Multiworld(²)](https://github.com/rm-steele/AM2R-Multisquared/releases/latest)
   - [AM2R Multiworld: Resplashed](https://github.com/AbyssalCreature/AM2R-Re-Splashed/releases?q=multiworld&expanded=true)
 - [AM2R Launcher](https://github.com/AM2R-Community-Developers/AM2RLauncher/releases/latest)
