@@ -38,17 +38,39 @@ enable_custom = True
 
 def get_version():
     import os
+    import json
+    import zipfile
+    from pathlib import Path
     dirpath = os.path.dirname(os.path.abspath(__file__))
     full_path = os.path.join(dirpath, "archipelago.json")
+    local_json = {}
 
     try:
         with open(full_path, "r", encoding="utf-8") as f:
             local_json = json.load(f)
-    except Exception as e:
-        logger.warning(f"Failed to read local metadata: {e}")
-        local_json = {}
-
-    local_version = local_json.get("world_version") if local_json else None
+    except Exception:
+        # If direct read fails, check if this module is inside a .apworld archive and try to open it as a zip
+        try:
+            p = Path(dirpath)
+            parts = p.parts
+            # find the first ancestor element that ends with .apworld
+            ap_index = next((i for i, part in enumerate(parts) if part.lower().endswith(".apworld")), None)
+            if ap_index is not None:
+                archive_path = Path(*parts[: ap_index + 1])
+                # internal path is everything after the .apworld element plus the filename
+                internal_parts = parts[ap_index + 1 :]
+                internal_path = os.path.join(*(internal_parts + ("archipelago.json",))) if internal_parts else "archipelago.json"
+                try:
+                    with zipfile.ZipFile(archive_path, "r") as z:
+                        with z.open(internal_path) as f:
+                            local_json = json.load(f)
+                except Exception as e:
+                    logger.warning(f"Failed to read metadata from archive {archive_path}: {e}")
+            else:
+                logger.warning(f"Failed to read local metadata: file not found at {full_path}")
+        except Exception as e:
+            logger.warning(f"Failed to locate .apworld archive for local metadata: {e}")
+    local_version = local_json.get("world_version") if local_json else "unknown"
     return local_version
 
 def save_custom_messages_to_file():
@@ -370,29 +392,36 @@ class AM2RContext(CommonContext):
             except KeyError:
                 rolled_version = "0"
 
-            if local_version !=  rolled_version:
-                self.error_message = ["0"]
-                if local_version < rolled_version:
-                    self.error_message.append(f"your seed might have extra features that your current client version does not support please update to at least version {rolled_version} of the world to match what was used to generate the seed")
-                else:
-                    if rolled_version == "0":
-                        self.error_message[0] = ("Whoever rolled this seed is using a version of the randomizer older than 1.3.2 \n"
-                                           "Please be aware that some of the settings you have intended to use may not work as expected\n"
-                                           "Actually I'm shocked that this made it past generation so please let me know if you ever manage to see this")
-                        self.error_message.append("From updates older than 1.4.0: you will miss out on Wrong Warps, Trap Sprites, Tozo Chance, and Deathlink\n"
-                                   "Fortunately Deathlink is handled client side so you should be fine there but if you had custom messages you will need to re-add them")
+            if local_version !=  rolled_version or "unknown" in (local_version, rolled_version):
+                if not(rolled_version == "unknown" or local_version is None):
+                    self.error_message = ["0"]
+                    if local_version < rolled_version:
+                        self.error_message.append(f"your seed might have extra features that your current client version does not support please update to at least version {rolled_version} of the world to match what was used to generate the seed")
                     else:
-                        self.error_message[0] = f"Whoever rolled this seed is using AM2R Multiworld Randomizer version {rolled_version}\n"
+                        if rolled_version == "0":
+                            self.error_message[0] = ("Whoever rolled this seed is using a version of the randomizer older than 1.3.2 \n"
+                                               "Please be aware that some of the settings you have intended to use may not work as expected\n"
+                                               "Actually I'm shocked that this made it past generation so please let me know if you ever manage to see this")
+                            self.error_message.append("From updates older than 1.4.0: you will miss out on Wrong Warps, Trap Sprites, Tozo Chance, and Deathlink\n"
+                                       "Fortunately Deathlink is handled client side so you should be fine there but if you had custom messages you will need to re-add them")
+                        else:
+                            self.error_message[0] = f"Whoever rolled this seed is using AM2R Multiworld Randomizer version {rolled_version}\n"
 
-                    if rolled_version < "1.5.0":
-                        self.error_message.append("From update 1.4.0: you will miss out on Ice Traps")
+                        if rolled_version < "1.5.0":
+                            self.error_message.append("From update 1.4.0: you will miss out on Ice Traps")
 
-                    # if rolled_version < []:
-                    #     message = ""
-                    #     self.error_message.append(message)
+                        # if rolled_version < []:
+                        #     message = ""
+                        #     self.error_message.append(message)
 
-                if self.error_message[0] == "0":
-                    self.error_message.pop(0)
+                    if self.error_message[0] == "0":
+                        self.error_message.pop(0)
+                else:
+                    if local_version == "unknown":
+                        a = "the client"
+                    if rolled_version == "unknown":
+                        a = "the server"
+                    self.error_message[0] = f"Could not determine version mismatch due to unknown version on {a}."
 
 
             try:

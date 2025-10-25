@@ -28,6 +28,9 @@ def get_version():
     import urllib.request
     import os
     import json
+    import zipfile
+    from pathlib import Path
+
     try:
         with urllib.request.urlopen(
                 "https://raw.githubusercontent.com/Ehseezed/Archipelago-Integration/refs/heads/8th-Aniversary/worlds/am2r/archipelago.json") as metadata_resp:
@@ -38,13 +41,34 @@ def get_version():
 
     dirpath = os.path.dirname(os.path.abspath(__file__))
     full_path = os.path.join(dirpath, "archipelago.json")
+    local_json = {}
 
+    # Try to read the file directly first
     try:
         with open(full_path, "r", encoding="utf-8") as f:
             local_json = json.load(f)
-    except Exception as e:
-        logger.warning(f"Failed to read local metadata: {e}")
-        local_json = {}
+    except Exception:
+        # If direct read fails, check if this module is inside a .apworld archive and try to open it as a zip
+        try:
+            p = Path(dirpath)
+            parts = p.parts
+            # find the first ancestor element that ends with .apworld
+            ap_index = next((i for i, part in enumerate(parts) if part.lower().endswith(".apworld")), None)
+            if ap_index is not None:
+                archive_path = Path(*parts[: ap_index + 1])
+                # internal path is everything after the .apworld element plus the filename
+                internal_parts = parts[ap_index + 1 :]
+                internal_path = os.path.join(*(internal_parts + ("archipelago.json",))) if internal_parts else "archipelago.json"
+                try:
+                    with zipfile.ZipFile(archive_path, "r") as z:
+                        with z.open(internal_path) as f:
+                            local_json = json.load(f)
+                except Exception as e:
+                    logger.warning(f"Failed to read metadata from archive {archive_path}: {e}")
+            else:
+                logger.warning(f"Failed to read local metadata: file not found at {full_path}")
+        except Exception as e:
+            logger.warning(f"Failed to locate .apworld archive for local metadata: {e}")
 
     web_version = metadata_json.get("world_version") if metadata_json else None
     local_version = local_json.get("world_version") if local_json else None
@@ -94,14 +118,24 @@ class AM2RWorld(World):
 
     def fill_slot_data(self) -> Dict[str, object]:
         local_version, web_version = get_version()
-        if local_version < web_version:
-            input(f'A new version of AM2R is available most recent release is version {web_version} and you are using {local_version}, '
-                  f'consider updating to the latest version'
-                  f'\npress enter to continue.')
-        elif local_version > web_version:
-            input(f"Hi there developer! It looks like you are running a development version of AM2R {local_version} ahead of the latest release {web_version}."
-                  f"\nIf you are seeing this message and are not a developer, I dont know how you managed that, but consider switching to the latest release version."
-                  f"\npress enter to continue.")
+        try:
+            if local_version < web_version:
+                input(f'A new version of AM2R is available most recent release is version {web_version} and you are using {local_version}, '
+                      f'consider updating to the latest version'
+                      f'\npress enter to continue.')
+            elif local_version > web_version:
+                input(f"Hi there developer! It looks like you are running a development version of AM2R {local_version} ahead of the latest release {web_version}."
+                      f"\nIf you are seeing this message and are not a developer, I dont know how you managed that, but consider switching to the latest release version."
+                      f"\npress enter to continue.")
+        except Exception as e:
+            err =  f"Failed to validate version data beacuse: "
+            if local_version == None:
+                err += "local version is invalid. "
+            if web_version == None:
+                err += "web version is invalid. "
+            print(err + str(e))
+        local_version = "unknown" if local_version is None else local_version
+
 
         return {
             "Version": local_version,
