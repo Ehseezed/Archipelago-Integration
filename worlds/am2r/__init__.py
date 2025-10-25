@@ -129,7 +129,6 @@ class AM2RWorld(World):
         try:
             if local_version is None or web_version is None:
                 raise ValueError("One or both version values are not valid")
-                loca
             elif local_version < web_version:
                 input(f'A new version of AM2R is available most recent release is version {web_version} and you are using {local_version}, '
                       f'consider updating to the latest version'
