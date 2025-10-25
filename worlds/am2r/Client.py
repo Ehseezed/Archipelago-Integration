@@ -41,10 +41,13 @@ def get_version():
     import json
     import zipfile
     from pathlib import Path
+    from io import TextIOWrapper
+
     dirpath = os.path.dirname(os.path.abspath(__file__))
     full_path = os.path.join(dirpath, "archipelago.json")
     local_json = {}
 
+    # Try to read the file directly first
     try:
         with open(full_path, "r", encoding="utf-8") as f:
             local_json = json.load(f)
@@ -53,24 +56,30 @@ def get_version():
         try:
             p = Path(dirpath)
             parts = p.parts
-            # find the first ancestor element that ends with .apworld
             ap_index = next((i for i, part in enumerate(parts) if part.lower().endswith(".apworld")), None)
             if ap_index is not None:
                 archive_path = Path(*parts[: ap_index + 1])
-                # internal path is everything after the .apworld element plus the filename
                 internal_parts = parts[ap_index + 1 :]
-                internal_path = os.path.join(*(internal_parts + ("archipelago.json",))) if internal_parts else "archipelago.json"
+                # candidate internal path using forward slashes
+                candidate = "/".join((*internal_parts, "archipelago.json")) if internal_parts else "archipelago.json"
                 try:
-                    with zipfile.ZipFile(archive_path, "r") as z:
-                        with z.open(internal_path) as f:
-                            local_json = json.load(f)
+                    with zipfile.ZipFile(str(archive_path), "r") as z:
+                        namelist = z.namelist()
+                        target = candidate if candidate in namelist else next((n for n in namelist if n.lower().endswith("archipelago.json")), None)
+                        if target:
+                            with z.open(target) as bf:
+                                with TextIOWrapper(bf, encoding="utf-8") as f:
+                                    local_json = json.load(f)
+                        else:
+                            logger.warning(f"No archipelago.json found inside archive {archive_path} (checked {candidate})")
                 except Exception as e:
                     logger.warning(f"Failed to read metadata from archive {archive_path}: {e}")
             else:
                 logger.warning(f"Failed to read local metadata: file not found at {full_path}")
         except Exception as e:
             logger.warning(f"Failed to locate .apworld archive for local metadata: {e}")
-    local_version = local_json.get("world_version") if local_json else "unknown"
+
+    local_version = local_json.get("world_version") if local_json else None
     return local_version
 
 def save_custom_messages_to_file():
