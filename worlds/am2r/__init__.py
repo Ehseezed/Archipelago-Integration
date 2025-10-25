@@ -65,6 +65,8 @@ def get_version():
                             local_json = json.load(f)
                 except Exception as e:
                     logger.warning(f"Failed to read metadata from archive {archive_path}: {e}")
+                    input(f"Archive path: {archive_path}, internal path: {internal_parts} Archive Path: {archive_path}\n"
+                          f"Press Enter to continue...")
             else:
                 logger.warning(f"Failed to read local metadata: file not found at {full_path}")
         except Exception as e:
@@ -119,7 +121,10 @@ class AM2RWorld(World):
     def fill_slot_data(self) -> Dict[str, object]:
         local_version, web_version = get_version()
         try:
-            if local_version < web_version:
+            if local_version is None or web_version is None:
+                raise ValueError("One or both version values are not valid")
+                loca
+            elif local_version < web_version:
                 input(f'A new version of AM2R is available most recent release is version {web_version} and you are using {local_version}, '
                       f'consider updating to the latest version'
                       f'\npress enter to continue.')
