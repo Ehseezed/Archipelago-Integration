@@ -1,23 +1,11 @@
-# This workflow will build a release-like distribution when manually dispatched
+# This workflow will create a release and store builds to it when an x.y.z tag is pushed
 
-name: Build
+name: Release
 
 on:
   push:
-    paths:
-      - '.github/workflows/build.yml'
-      - 'setup.py'
-      - 'requirements.txt'
-      - '*.iss'
-      - 'worlds/*/archipelago.json'
-  pull_request:
-    paths:
-      - '.github/workflows/build.yml'
-      - 'setup.py'
-      - 'requirements.txt'
-      - '*.iss'
-      - 'worlds/*/archipelago.json'
-  workflow_dispatch:
+    tags:
+      - 'v?[0-9]+.[0-9]+.[0-9]*'
 
 env:
   ENEMIZER_VERSION: 7.1
@@ -31,14 +19,34 @@ env:
 permissions:  # permissions required for attestation
   id-token: 'write'
   attestations: 'write'
+  contents: 'write'  # additionally required for release
 
 jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV  # tag x.y.z will become "Archipelago x.y.z"
+      - name: Create Release
+        uses: softprops/action-gh-release@975c1b265e11dd76618af1c374e7981f9a6ff44a
+        with:
+          draft: true  # don't publish right away, especially since windows build is added by hand
+          prerelease: false
+          name: Archipelago ${{ env.RELEASE_VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   # build-release-macos: # LF volunteer
 
-  build-win: # RCs and releases may still be built and signed by hand
+  build-release-win:
     runs-on: windows-latest
+    if: ${{ true }}  # change to false to skip if release is built by hand
+    needs: create-release
     steps:
-      # - copy code below to release.yml -
+      - name: Set env
+        shell: bash
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      # - code below copied from build.yml -
       - uses: actions/checkout@v4
       - name: Install python
         uses: actions/setup-python@v5
@@ -77,9 +85,8 @@ jobs:
           $contents = Get-ChildItem -Path setups/*.exe -Force -Recurse
           $SETUP_NAME=$contents[0].Name
           echo "SETUP_NAME=$SETUP_NAME" >> $Env:GITHUB_ENV
-      # - copy code above to release.yml -
+      # - code above copied from build.yml -
       - name: Attest Build
-        if: ${{ github.event_name == 'workflow_dispatch' }}
         uses: actions/attest-build-provenance@v2
         with:
           subject-path: |
@@ -87,46 +94,25 @@ jobs:
             build/exe.*/ArchipelagoLauncherDebug.exe
             build/exe.*/ArchipelagoGenerate.exe
             build/exe.*/ArchipelagoServer.exe
-            dist/${{ env.ZIP_NAME }}
-            setups/${{ env.SETUP_NAME }}
-      - name: Check build loads expected worlds
-        shell: bash
-        run: |
-          cd build/exe*
-          mv Players/Templates/meta.yaml .
-          ls -1 Players/Templates | sort > setup-player-templates.txt
-          rm -R Players/Templates
-          timeout 30 ./ArchipelagoLauncher "Generate Template Options" || true
-          ls -1 Players/Templates | sort > generated-player-templates.txt
-          cmp setup-player-templates.txt generated-player-templates.txt \
-            || diff setup-player-templates.txt generated-player-templates.txt
-          mv meta.yaml Players/Templates/
-      - name: Test Generate
-        shell: bash
-        run: |
-          cd build/exe*
-          cp Players/Templates/VVVVVV.yaml Players/
-          timeout 30 ./ArchipelagoGenerate
-      - name: Store 7z
-        uses: actions/upload-artifact@v4
+            setups/*
+      - name: Add to Release
+        uses: softprops/action-gh-release@975c1b265e11dd76618af1c374e7981f9a6ff44a
         with:
-          name: ${{ env.ZIP_NAME }}
-          path: dist/${{ env.ZIP_NAME }}
-          compression-level: 0  # .7z is incompressible by zip
-          if-no-files-found: error
-          retention-days: 7  # keep for 7 days, should be enough
-      - name: Store Setup
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.SETUP_NAME }}
-          path: setups/${{ env.SETUP_NAME }}
-          if-no-files-found: error
-          retention-days: 7  # keep for 7 days, should be enough
+          draft: true  # see above
+          prerelease: false
+          name: Archipelago ${{ env.RELEASE_VERSION }}
+          files: |
+            setups/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build-ubuntu2204:
+  build-release-ubuntu2204:
     runs-on: ubuntu-22.04
+    needs: create-release
     steps:
-      # - copy code below to release.yml -
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      # - code below copied from build.yml -
       - uses: actions/checkout@v4
       - name: Install base dependencies
         run: |
@@ -168,51 +154,22 @@ jobs:
           (cd build && DIR_NAME="`ls | grep exe`" && mv "$DIR_NAME" Archipelago && tar -cv Archipelago | gzip -8 > ../dist/$TAR_NAME && mv Archipelago "$DIR_NAME")
           echo "APPIMAGE_NAME=$APPIMAGE_NAME" >> $GITHUB_ENV
           echo "TAR_NAME=$TAR_NAME" >> $GITHUB_ENV
-      # - copy code above to release.yml -
+      # - code above copied from build.yml -
       - name: Attest Build
-        if: ${{ github.event_name == 'workflow_dispatch' }}
         uses: actions/attest-build-provenance@v2
         with:
           subject-path: |
             build/exe.*/ArchipelagoLauncher
             build/exe.*/ArchipelagoGenerate
             build/exe.*/ArchipelagoServer
-            dist/${{ env.APPIMAGE_NAME }}*
-            dist/${{ env.TAR_NAME }}
-      - name: Build Again
-        run: |
-          source venv/bin/activate
-          python setup.py build_exe --yes
-      - name: Check build loads expected worlds
-        shell: bash
-        run: |
-          cd build/exe*
-          mv Players/Templates/meta.yaml .
-          ls -1 Players/Templates | sort > setup-player-templates.txt
-          rm -R Players/Templates
-          timeout 30 ./ArchipelagoLauncher "Generate Template Options" || true
-          ls -1 Players/Templates | sort > generated-player-templates.txt
-          cmp setup-player-templates.txt generated-player-templates.txt \
-            || diff setup-player-templates.txt generated-player-templates.txt
-          mv meta.yaml Players/Templates/
-      - name: Test Generate
-        shell: bash
-        run: |
-          cd build/exe*
-          cp Players/Templates/VVVVVV.yaml Players/
-          timeout 30 ./ArchipelagoGenerate
-      - name: Store AppImage
-        uses: actions/upload-artifact@v4
+            dist/*
+      - name: Add to Release
+        uses: softprops/action-gh-release@975c1b265e11dd76618af1c374e7981f9a6ff44a
         with:
-          name: ${{ env.APPIMAGE_NAME }}
-          path: dist/${{ env.APPIMAGE_NAME }}
-          if-no-files-found: error
-          retention-days: 7
-      - name: Store .tar.gz
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.TAR_NAME }}
-          path: dist/${{ env.TAR_NAME }}
-          compression-level: 0  # .gz is incompressible by zip
-          if-no-files-found: error
-          retention-days: 7
+          draft: true  # see above
+          prerelease: false
+          name: Archipelago ${{ env.RELEASE_VERSION }}
+          files: |
+            dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
