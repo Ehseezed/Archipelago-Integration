@@ -90,10 +90,6 @@ def create_random_items(world: AM2RWorld, remaining_items: int, current_items: d
     e_total = (int(remaining_items * (10 / 74)))
     pb_count = (int(remaining_items * (10 / 74)))
 
-
-    # print(f"Remaining items to fill: {remaining_items}\n"
-    #       f"PBs to create: {pb_count}, Es to create: {e_total}, Supers to create: {super_total}")
-
     super_total -= 1
     e_total -= 1
     pb_count -= 3
@@ -109,6 +105,8 @@ def create_random_items(world: AM2RWorld, remaining_items: int, current_items: d
         items_to_create.append("Super Missile")
     for _ in range(missile_count):
         items_to_create.append("Missile")
+
+    # print(f'Items to create: {Counter(items_to_create)}')
 
     return items_to_create
 
@@ -147,6 +145,8 @@ def create_all_items(world: AM2RWorld) -> None:
     random_count = sum_locations - len(itempool)
     random_items = create_random_items(world, random_count, Counter(itempool))
     itempool += random_items
+
+    # print(f'Random Items: {Counter(itempool)}')
 
     world.multiworld.itempool += [create_item(player, name) for name in itempool]
 
