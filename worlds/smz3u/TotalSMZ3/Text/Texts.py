@@ -15,7 +15,8 @@ text_folder = Path(__file__).parents[3]
 def openFile(resource: str, mode: str = "r", encoding: str = None):
     filename = sys.modules[__name__].__file__
     apworldExt = ".apworld"
-    game = "smz3/"
+    game = "smz3u/"
+    print(f"Filename: {filename}")
     if apworldExt in filename:
         zip_path = Path(filename[:filename.index(apworldExt) + len(apworldExt)])
         with zipfile.ZipFile(zip_path) as zf:
@@ -25,11 +26,13 @@ def openFile(resource: str, mode: str = "r", encoding: str = None):
             else:
                 return io.TextIOWrapper(zf.open(zipFilePath, 'r'), encoding)
     else:
+        print(f"AAAAAAAAAAAAAAAAAA {os.path.join(text_folder, resource)}")
         return open(os.path.join(text_folder, resource), mode, encoding=encoding)
 
 class Texts:
     @staticmethod
     def ParseYamlScripts(resource: str):
+        print(f"Parsing {resource}")
         with openFile(resource, 'rb') as f:
             yaml = str(f.read(), "utf-8")
         return unsafe_parse_yaml(yaml)
@@ -39,11 +42,11 @@ class Texts:
         with openFile(resource, 'r', encoding="utf-8-sig") as file:
             return [text.rstrip('\n') for text in file.read().replace("\r", "").split("---\n") if text]
 
-    scripts: Any = ParseYamlScripts.__func__("smz3/TotalSMZ3/Text/Scripts/General.yaml")
-    blind: List[str] = ParseTextScript.__func__("smz3/TotalSMZ3/Text/Scripts/Blind.txt")
-    ganon: List[str] = ParseTextScript.__func__("smz3/TotalSMZ3/Text/Scripts/Ganon.txt")
-    tavernMan: List[str] = ParseTextScript.__func__("smz3/TotalSMZ3/Text/Scripts/TavernMan.txt")
-    triforceRoom: List[str] = ParseTextScript.__func__("smz3/TotalSMZ3/Text/Scripts/TriforceRoom.txt")
+    scripts: Any = ParseYamlScripts.__func__("smz3u/TotalSMZ3/Text/Scripts/General.yaml")
+    blind: List[str] = ParseTextScript.__func__("smz3u/TotalSMZ3/Text/Scripts/Blind.txt")
+    ganon: List[str] = ParseTextScript.__func__("smz3u/TotalSMZ3/Text/Scripts/Ganon.txt")
+    tavernMan: List[str] = ParseTextScript.__func__("smz3u/TotalSMZ3/Text/Scripts/TavernMan.txt")
+    triforceRoom: List[str] = ParseTextScript.__func__("smz3u/TotalSMZ3/Text/Scripts/TriforceRoom.txt")
 
     @staticmethod
     def SahasrahlaReveal(dungeon: Region):

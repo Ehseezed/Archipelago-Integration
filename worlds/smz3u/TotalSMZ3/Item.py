@@ -308,7 +308,12 @@ class Item:
         return itemPool
 
     @staticmethod
-    def CreateJunkPool(world):
+    def CreateJunkPool(world, start_with_maps_compasses: bool):
+        rupee_count = 21
+        if not world.Config.Keysanity:
+            rupee_count += 7
+        if start_with_maps_compasses:
+            rupee_count += 23
         itemPool = [
             Item(ItemType.Arrow),
             Item(ItemType.OneHundredRupees)
@@ -321,7 +326,7 @@ class Item:
         Item.AddRange(itemPool, 4, Item(ItemType.BombUpgrade5))
         Item.AddRange(itemPool, 2, Item(ItemType.OneRupee))
         Item.AddRange(itemPool, 4, Item(ItemType.FiveRupees))
-        Item.AddRange(itemPool, 21 if world.Config.Keysanity else 28, Item(ItemType.TwentyRupees))
+        Item.AddRange(itemPool, rupee_count, Item(ItemType.TwentyRupees))
         Item.AddRange(itemPool, 7, Item(ItemType.FiftyRupees))
         Item.AddRange(itemPool, 5, Item(ItemType.ThreeHundredRupees))
 
@@ -340,7 +345,7 @@ class Item:
     def CreateDungeonPool(world):
         itemPool = [Item(ItemType.BigKeyGT)]
         Item.AddRange(itemPool, 4, Item(ItemType.KeyGT))
-        if (not world.Config.Keysanity):
+        if not world.Config.Keysanity:
             itemPool += [
                 Item(ItemType.MapGT),
                 Item(ItemType.CompassGT),
@@ -382,7 +387,7 @@ class Item:
             Item(ItemType.MapMM),
             Item(ItemType.MapTR),
         ]
-        if (not world.Config.Keysanity):
+        if not world.Config.Keysanity:
             itemPool += [
                 Item(ItemType.MapHC),
                 Item(ItemType.CompassEP),
@@ -424,6 +429,7 @@ class Item:
         ]
 
         for item in itemPool:
+            item.Progression = True
             item.World = world
 
         return itemPool
@@ -438,6 +444,7 @@ class Item:
         ]
 
         for item in itemPool:
+            item.Progression = True
             item.World = world
 
         return itemPool
@@ -445,14 +452,14 @@ class Item:
     @staticmethod
     def Get(items, itemType:ItemType):
         item = next((i for i in items if i.Type == itemType), None)
-        if (item == None):
+        if item is None:
             raise Exception(f"Could not find an item of type {itemType}")
         return item
 
     @staticmethod
     def Get(items, itemType:ItemType, world):
         item = next((i for i in items if i.Is(itemType, world)), None)
-        if (item == None):
+        if item is None:
             raise Exception(f"Could not find an item of type {itemType} in world {world.Id}")
         return item
 

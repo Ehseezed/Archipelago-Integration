@@ -1,6 +1,4 @@
-import typing
-
-from Options import Choice, Option, PerGameCommonOptions, Toggle, DefaultOnToggle, Range, ItemsAccessibility, StartInventoryPool
+from Options import Choice, PerGameCommonOptions, Toggle, DefaultOnToggle, Range, ItemsAccessibility, StartInventoryPool
 from dataclasses import dataclass
 
 class SMLogic(Choice):
@@ -128,8 +126,75 @@ class EnergyBeep(DefaultOnToggle):
     """Toggles the low health energy beep in Super Metroid."""
     display_name = "Energy Beep"
 
+# Extra patches options
+
+class SM_LayoutPatches(DefaultOnToggle):
+    """Enhances the game with various layout patches from Varia Randomizer."""
+    display_name = "[SM] Layout Patches"
+
+class SM_InfiniteSpaceJump(DefaultOnToggle):
+    """Infinite Space Jump patch from Varia Randomizer."""
+    display_name = "[SM] Infinite Space Jump"
+
+class SM_Respin(DefaultOnToggle):
+    """Respin patch from Varia Randomizer."""
+    display_name = "[SM] Respin"
+
+class SM_SaveStationRefill(DefaultOnToggle):
+    """Save Station Refill patch from Varia Randomizer. Refills ammo, energy."""
+    display_name = "[SM] Save Station Refill"
+
+class SM_FastDoors(DefaultOnToggle):
+    """Fast doors patch from Varia Randomizer."""
+    display_name = "[SM] Fast Doors"
+
+class SM_FastElevators(DefaultOnToggle):
+    """Fast elevators patch from Varia Randomizer."""
+    display_name = "[SM] Fast Elevators"
+
+class SM_DisableScreenShake(DefaultOnToggle):
+    """Disable screen shake patch from Varia Randomizer."""
+    display_name = "[SM] Disable Screen Shake"
+
+class SM_DisableShinesparkDamage(DefaultOnToggle):
+    """Disable shinespark damage patch from Varia Randomizer."""
+    display_name = "[SM] Disable Shinespark Damage"
+
+class SM_NerfedChargeBeam(DefaultOnToggle):
+    """Starts with a nerfed variant of Charge Beam from Varia Randomizer."""
+    display_name = "[SM] Nerfed Charge Beam"
+
+class SM_BetterReserveTanks(DefaultOnToggle):
+    """
+    This patch (from Varia Randomizer) does a few things:
+
+    - Reserve tanks come filled up
+    - Different color for HUD reserve indicator when full
+    - Prevents heat damage and the loss of invincibility frames when auto reserves activate (no more getting hit twice!)
+    - Makes reserve tanks not empty if Samus is fully healed when they are used in auto or manual mode.
+    - Fix jank where deselecting and reselecting refill button during manual refill causes it to resume.
+    - Can also press A during manual refill at any time to stop refilling."""
+    display_name = "[SM] Better Reserve Tanks"
+
+class Z3_StartWithMapsCompasses(Toggle):
+    """Do we start with maps and compasses?"""
+    display_name = "[Z3] Start With Maps/Compasses"
+
+class Z3_RespawnWithFullHealth(Toggle):
+    """Instead of respawning with full health minus the health piece hearts, you will respawn will full health"""
+    display_name = "[Z3] Respawn With Full Health"
+
+class Z3_MirrorWorksInBothWorlds(Toggle):
+    """This option allows the Mirror to travel from both the Light and Dark Worlds (Light - Dark & Dark - Light),
+    making it so that Link can travel between them at will,
+    instead of only being able to use the Mirror to travel from Dark - Light World.
+
+    /!\\ This is not supported by logic
+    """
+    display_name = "[Z3] Mirror Works In Both Worlds"
+
 @dataclass
-class SMZ3Options(PerGameCommonOptions):
+class SMZ3UOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     accessibility: ItemsAccessibility
     sm_logic: SMLogic
@@ -145,3 +210,15 @@ class SMZ3Options(PerGameCommonOptions):
     heart_color: HeartColor
     quick_swap: QuickSwap
     energy_beep: EnergyBeep
+    sm_layout_patches: SM_LayoutPatches
+    sm_infinite_space_jump: SM_InfiniteSpaceJump
+    sm_respin: SM_Respin
+    sm_save_station_refill: SM_SaveStationRefill
+    sm_fast_doors: SM_FastDoors
+    sm_fast_elevators: SM_FastElevators
+    sm_disable_screen_shake: SM_DisableScreenShake
+    sm_disable_shinespark_damage: SM_DisableShinesparkDamage
+    sm_nerfed_charge_beam: SM_NerfedChargeBeam
+    sm_better_reserve_tanks: SM_BetterReserveTanks
+    z3_start_with_maps_compasses: Z3_StartWithMapsCompasses
+    z3_respawn_with_full_health: Z3_RespawnWithFullHealth

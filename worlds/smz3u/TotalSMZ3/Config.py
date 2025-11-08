@@ -1,5 +1,4 @@
 ﻿from enum import Enum
-from typing import Dict, List
 
 class GameMode(Enum):
         Normal = 0
@@ -76,6 +75,8 @@ class Config:
     OpenTower: OpenTower = OpenTower.SevenCrystals
     GanonVulnerable: GanonVulnerable = GanonVulnerable.SevenCrystals
     OpenTourian: OpenTourian = OpenTourian.FourBosses
+
+    Z3_StartWithMapsCompasses: bool = False
 
     @property
     def SingleWorld(self) -> bool:

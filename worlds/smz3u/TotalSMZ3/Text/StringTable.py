@@ -23,7 +23,7 @@ class StringTable:
             else: raise Exception(f"Did not expect an object of type {type(value)}")
         return result
 
-    template = ParseEntries.__func__("smz3/TotalSMZ3/Text/Scripts/StringTable.yaml")
+    template = ParseEntries.__func__("smz3u/TotalSMZ3/Text/Scripts/StringTable.yaml")
 
     def __init__(self):
         self.entries = copy.deepcopy(StringTable.template)

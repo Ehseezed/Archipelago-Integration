@@ -144,6 +144,7 @@ class Patch:
         self.WriteSeedData()
         self.WriteGameTitle()
         self.WriteCommonFlags()
+        self.WriteStartingItems(config)
 
         return {patch[0]:patch[1] for patch in self.patches}
     
@@ -375,6 +376,101 @@ class Patch:
                 "Nothing": ItemType.Something, "No Energy": ItemType.Something, "Generic": ItemType.Something
             }
             return SMNameToSMZ3Code.get(location.APLocation.item.name, ItemType.Something).value
+
+        elif (location.APLocation.item.game == "Subversion"):
+            SMSVNameToSMZ3Code = {
+                "Energy Tank": ItemType.ETank, "Missile": ItemType.Missile, "Small Ammo": ItemType.BombUpgrade5,
+                "Super Missile": ItemType.Super, "Large Ammo": ItemType.BombUpgrade10, "Speed Booster": ItemType.SpeedBooster,
+                "Power Bomb": ItemType.PowerBomb, "Bomb": ItemType.Bombs, "Hi-Jump Boots": ItemType.HiJump,
+                "Ice Beam": ItemType.Ice, "Charge Beam": ItemType.Charge, "Gravity Boots": ItemType.HiJump,
+                "Wave Beam": ItemType.Wave, "Spazer": ItemType.Spazer, "Plasma Beam": ItemType.Plasma,
+                "Varia Suit": ItemType.Varia, "Aqua Suit": ItemType.Gravity, "Grappling Beam": ItemType.Grapple,
+                "Morph Ball": ItemType.Morph, "Spring Ball": ItemType.SpringBall, "Speed Ball": ItemType.SpeedBooster,
+                "Dark Visor": ItemType.XRay, "Screw Attack": ItemType.ScrewAttack, "Refuel Tank": ItemType.ReserveTank,
+                "X-Ray Scope": ItemType.XRay, "Space Jump": ItemType.SpaceJump, "Space Jump Boost": ItemType.Something,
+                "Nothing": ItemType.Something, "No Energy": ItemType.Something, "Generic": ItemType.Something
+            }
+            return SMSVNameToSMZ3Code.get(location.APLocation.item.name, ItemType.Something).value
+        elif (location.APLocation.item.game == "Super Metroid Map Rando"):
+            SMMRNameToSMZ3Code = {
+                "ETank": ItemType.ETank, "Missile": ItemType.Missile, "ProgMissile": ItemType.Missile,
+                "PowerBomb": ItemType.PowerBomb, "ProgPowerBomb": ItemType.PowerBomb, "Bombs": ItemType.Bombs,
+                "Super Missile": ItemType.Super, "ProgSuper": ItemType.Super, "Charge": ItemType.Charge,
+                "Ice": ItemType.Ice, "HiJump": ItemType.HiJump, "SpeedBooster": ItemType.SpeedBooster,
+                "Wave": ItemType.Wave, "Spazer": ItemType.Spazer, "SpringBall": ItemType.SpringBall,
+                "Varia": ItemType.Varia, "Plasma": ItemType.Plasma, "Grapple": ItemType.Grapple,
+                "Morph": ItemType.Morph, "ReserveTank": ItemType.ReserveTank, "Gravity": ItemType.Gravity,
+                "XRayScope": ItemType.XRay, "SpaceJump": ItemType.SpaceJump, "ScrewAttack": ItemType.ScrewAttack,
+                "Nothing": ItemType.Something, "No Energy": ItemType.Something, "Generic": ItemType.Something
+            }
+            return SMMRNameToSMZ3Code.get(location.APLocation.item.name, ItemType.Something).value
+        elif (location.APLocation.item.game == "AM2R"):
+            AM2RNameToSMZ3Code = {
+                "Energy Tank": ItemType.ETank, "Metroid": ItemType.BigKey,
+                "Missile": ItemType.Missile, "Super Missile": ItemType.Super, "Power Bomb": ItemType.PowerBomb,
+                "Bombs": ItemType.Bombs, "Charge Beam": ItemType.Charge, "Spazer": ItemType.Spazer,
+                "Ice Beam": ItemType.Ice, "Wave Beam": ItemType.Wave, "Plasma Beam": ItemType.Plasma,
+                "Hi Jump": ItemType.HiJump, "Spring Ball": ItemType.SpringBall, "Spider Ball": ItemType.Something,
+                "Varia Suit": ItemType.Varia, "Gravity Suit": ItemType.Gravity, "Speed Booster": ItemType.SpeedBooster,
+                "Space Jump": ItemType.SpaceJump, "Screw Attack": ItemType.ScrewAttack,
+                "Nothing": ItemType.Something, "No Energy": ItemType.Something, "Generic": ItemType.Something
+            }
+            return AM2RNameToSMZ3Code.get(location.APLocation.item.name, ItemType.Something).value
+        elif (location.APLocation.item.game == "Metroid Planets (Zebeth)"):
+            MPZNameToSMZ3Code = {
+                "Energy Tank": ItemType.ETank, "Missile Tank": ItemType.Missile, "Big Missile Tank": ItemType.Super,
+                "Bomb": ItemType.Bombs, "Morph Ball": ItemType.Morph, "Long Beam": ItemType.Something,
+                "Ice Beam": ItemType.Ice, "Wave Beam": ItemType.Wave, "Spazer Beam": ItemType.Spazer,
+                "Hi-Jump Boots": ItemType.HiJump, "Spring Ball": ItemType.SpringBall, "Tourian Key": ItemType.BigKey,
+                "Varia Suit": ItemType.Varia, "Space Jump": ItemType.SpaceJump, "Screw Attack": ItemType.ScrewAttack,
+                "Nothing": ItemType.Something, "No Energy": ItemType.Something, "Generic": ItemType.Something
+            }
+            return MPZNameToSMZ3Code.get(location.APLocation.item.name, ItemType.Something).value
+        elif (location.APLocation.item.game == "Metroid Fusion"):
+            MFNameToSMZ3Code = {
+                "Energy Tank": ItemType.ETank, "Missile Data": ItemType.Missile, "Missile Tank": ItemType.Missile,
+                "Super Missile": ItemType.Super, "Power Bomb Data": ItemType.PowerBomb, "Power Bomb Tank": ItemType.PowerBomb,
+                "Ice Missile": ItemType.Something, "Diffusion Missile": ItemType.Something,
+                "Bomb Data": ItemType.Bombs, "Morph Ball": ItemType.Morph, "Charge Beam": ItemType.Charge,
+                "Ice Beam": ItemType.Ice, "Wave Beam": ItemType.Wave, "Wide Beam": ItemType.Spazer,
+                "Plasma Beam": ItemType.Plasma, "Hi-Jump": ItemType.HiJump, "Speed Booster": ItemType.SpeedBooster,
+                "Varia Suit": ItemType.Varia, "Gravity Suit": ItemType.Gravity,
+                "Space Jump": ItemType.SpaceJump, "Screw Attack": ItemType.ScrewAttack,
+                "Level 1 Keycard": ItemType.Key, "Level 2 Keycard": ItemType.Key,
+                "Level 3 Keycard": ItemType.Key, "Level 4 Keycard": ItemType.Key,
+                "Infant Metroid": ItemType.BigKey,
+                "Nothing": ItemType.Something, "No Energy": ItemType.Something, "Generic": ItemType.Something
+            }
+            return MFNameToSMZ3Code.get(location.APLocation.item.name, ItemType.Something).value
+        elif (location.APLocation.item.game == "Metroid Zero Mission"):
+            ZMNameToSMZ3Code = {
+                "Energy Tank": ItemType.ETank, "Metroid DNA": ItemType.BigKey,
+                "Missile Tank": ItemType.Missile, "Super Missile Tank": ItemType.Super,
+                "Power Bomb Tank": ItemType.PowerBomb, "Space Jump": ItemType.SpaceJump, "Screw Attack": ItemType.ScrewAttack,
+                "Bomb": ItemType.Bombs, "Morph Ball": ItemType.Morph, "Charge Beam": ItemType.Charge,
+                "Ice Beam": ItemType.Ice, "Wave Beam": ItemType.Wave, "Plasma Beam": ItemType.Plasma,
+                "Hi-Jump": ItemType.HiJump, "Spring Ball": ItemType.SpringBall, "Speed Booster": ItemType.SpeedBooster,
+                "Varia Suit": ItemType.Varia, "Gravity Suit": ItemType.Gravity,
+                "Nothing": ItemType.Something, "No Energy": ItemType.Something, "Generic": ItemType.Something
+            }
+            return ZMNameToSMZ3Code.get(location.APLocation.item.name, ItemType.Something).value
+        elif (location.APLocation.item.game == "Metroid Prime"):
+            MP1NameToSMZ3Code = {
+                "Energy Tank": ItemType.ETank, "Missile Launcher": ItemType.Missile, "Missile Expansion": ItemType.Missile,
+                "Power Bomb (Main)": ItemType.PowerBomb, "Power Bomb Expansion": ItemType.PowerBomb,
+                "Morph Ball Bomb": ItemType.Bombs, "Charge Beam": ItemType.Charge, "Space Jump Boots": ItemType.HiJump,
+                "Progressive Power Beam": ItemType.Something, "Power Beam": ItemType.Something, "Super Missile": ItemType.Super,
+                "Progressive Ice Beam": ItemType.Ice, "Ice Beam": ItemType.Ice, "Ice Spreader": ItemType.Something,
+                "Progressive Wave Beam": ItemType.Wave, "Wave Beam": ItemType.Wave, "Wavebuster": ItemType.Something,
+                "Progressive Plasma Beam": ItemType.Plasma, "Plasma Beam": ItemType.Plasma, "Flamethrower": ItemType.Something,
+                "Grapple Beam": ItemType.Grapple, "Scan Visor": ItemType.XRay, "Thermal Visor": ItemType.XRay, "X-Ray Visor": ItemType.XRay,
+                "Varia Suit": ItemType.Varia, "Gravity Suit": ItemType.Gravity, "Phazon Suit": ItemType.Something,
+                "Morph Ball": ItemType.Morph, "Boost Ball": ItemType.SpeedBooster, "Spider Ball": ItemType.Something,
+                "Nothing": ItemType.Something, "No Energy": ItemType.Something, "Generic": ItemType.Something
+            }
+            if location.APLocation.item.name.startswith("Artifact of"):
+                return ItemType.BigKey.value
+            return MP1NameToSMZ3Code.get(location.APLocation.item.name, ItemType.Something).value
         else:
             return ItemType.Something.value
 
@@ -801,6 +897,11 @@ class Patch:
         #/* Defaults to $01 at [asm]/z3/randomizer/tables.asm */
         #// Todo: Z3r major glitches disables this, reconsider extending or dropping with glitched logic later.
         #//patches.Add((Snes(0x3080A3), new byte[] { 0x01 }));
+
+    def WriteStartingItems(self, config: Config):
+        # TODO: find how to implement it
+        pass
+
 
 def Snes(addr: int):
     #/* Redirect hi bank $30 access into ExHiRom lo bank $40 */
