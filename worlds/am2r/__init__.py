@@ -10,8 +10,139 @@ from .options import AM2ROptions, LocationSettings
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, Type, icon_paths, launch
 
+import os
+import ssl
+import json
+import urllib.request
+import zipfile
+from pathlib import Path
+from io import TextIOWrapper
 
 logger = logging.getLogger("AM2R")
+
+# Ensure module-level CA bundle is available to stdlib SSL where possible.
+def _ensure_module_certs() -> None:
+    try:
+        import certifi
+        os.environ.setdefault("SSL_CERT_FILE", certifi.where())
+        logger.debug("AM2R: using certifi CA bundle %s", certifi.where())
+    except Exception:
+        logger.debug("AM2R: certifi not available; will try per-request contexts")
+
+# Call early so stdlib SSL picks it up when possible
+_ensure_module_certs()
+
+def _open_url(url: str, timeout: int = 10) -> dict:
+    """
+    Fetch JSON from `url` with best-effort verification:
+      1) default urllib (may use SSL_CERT_FILE set above)
+      2) explicit certifi-created SSL context
+      3) unverified SSL context (last resort, insecure)
+    Returns parsed JSON or raises the last error.
+    """
+    def _read_with_ctx(ctx):
+        if ctx is None:
+            with urllib.request.urlopen(url, timeout=timeout) as resp:
+                return json.loads(resp.read().decode())
+        else:
+            with urllib.request.urlopen(url, context=ctx, timeout=timeout) as resp:
+                return json.loads(resp.read().decode())
+
+    # 1) default attempt
+    try:
+        return _read_with_ctx(None)
+    except Exception as e_default:
+        logger.debug("AM2R default SSL fetch failed: %s", e_default)
+
+    # 2) try certifi explicitly if available
+    try:
+        import certifi
+        ctx = ssl.create_default_context(cafile=certifi.where())
+        return _read_with_ctx(ctx)
+    except Exception as e_certifi:
+        logger.debug("AM2R certifi-backed fetch failed: %s", e_certifi)
+
+    # 3) last-resort: unverified (insecure)
+    try:
+        ctx = ssl._create_unverified_context()
+        logger.warning("AM2R: falling back to unverified SSL context for remote metadata fetch (insecure).")
+        return _read_with_ctx(ctx)
+    except Exception as e_unverified:
+        logger.warning("AM2R: all attempts to fetch URL failed: %s", e_unverified)
+        raise
+
+def _parse_version(v):
+    if not v:
+        return ()
+    parts = []
+    for p in str(v).split("."):
+        try:
+            parts.append(int(p))
+        except Exception:
+            parts.append(p)
+    return tuple(parts)
+
+def _compare_versions(a, b):
+    pa = _parse_version(a)
+    pb = _parse_version(b)
+    for xa, xb in zip(pa, pb):
+        if xa == xb:
+            continue
+        try:
+            return (xa > xb) - (xa < xb)
+        except Exception:
+            xa_s, xb_s = str(xa), str(xb)
+            return (xa_s > xb_s) - (xa_s < xb_s)
+    return (len(pa) > len(pb)) - (len(pa) < len(pb))
+
+def get_version():
+    metadata_json = {}
+    url = "https://raw.githubusercontent.com/Ehseezed/Archipelago-Integration/refs/heads/8th-Aniversary/worlds/am2r/archipelago.json"
+
+    # Best-effort remote fetch using the module helper
+    try:
+        metadata_json = _open_url(url)
+    except Exception as e:
+        logger.warning("Failed to fetch remote metadata: %s", e)
+        metadata_json = {}
+
+    dirpath = os.path.dirname(os.path.abspath(__file__))
+    full_path = os.path.join(dirpath, "archipelago.json")
+    local_json = {}
+
+    # Try reading the local file directly, otherwise check if inside a .apworld zip
+    try:
+        with open(full_path, "r", encoding="utf-8") as f:
+            local_json = json.load(f)
+    except Exception:
+        try:
+            p = Path(dirpath)
+            parts = p.parts
+            ap_index = next((i for i, part in enumerate(parts) if part.lower().endswith(".apworld")), None)
+            if ap_index is not None:
+                archive_path = Path(*parts[: ap_index + 1])
+                internal_parts = parts[ap_index + 1 :]
+                candidate = "/".join((*internal_parts, "archipelago.json")) if internal_parts else "archipelago.json"
+                try:
+                    with zipfile.ZipFile(str(archive_path), "r") as z:
+                        namelist = z.namelist()
+                        target = candidate if candidate in namelist else next((n for n in namelist if n.lower().endswith("archipelago.json")), None)
+                        if target:
+                            with z.open(target) as bf:
+                                with TextIOWrapper(bf, encoding="utf-8") as f:
+                                    local_json = json.load(f)
+                        else:
+                            logger.warning("No archipelago.json found inside archive %s (checked %s)", archive_path, candidate)
+                except Exception as e:
+                    logger.warning("Failed to read metadata from archive %s: %s", archive_path, e)
+            else:
+                logger.debug("Failed to read local metadata: file not found at %s", full_path)
+        except Exception as e:
+            logger.warning("Failed to locate .apworld archive for local metadata: %s", e)
+
+    web_version = metadata_json.get("world_version") if metadata_json else None
+    local_version = local_json.get("world_version") if local_json else None
+    return local_version, web_version
 
 
 def launch_client():
@@ -24,7 +155,36 @@ components.append(
 )
 
 
-# python
+
+def _parse_version(v):
+    if not v:
+        return ()
+    parts = []
+    for p in str(v).split("."):
+        try:
+            parts.append(int(p))
+        except Exception:
+            # non-numeric parts are compared lexically as backup
+            parts.append(p)
+    return tuple(parts)
+
+def _compare_versions(a, b):
+    pa = _parse_version(a)
+    pb = _parse_version(b)
+    # compare element-wise
+    for xa, xb in zip(pa, pb):
+        if xa == xb:
+            continue
+        try:
+            return (xa > xb) - (xa < xb)
+        except Exception:
+            # fallback to string compare if different types
+            xa_s, xb_s = str(xa), str(xb)
+            return (xa_s > xb_s) - (xa_s < xb_s)
+    # longer version is greater if prefix equal
+    return (len(pa) > len(pb)) - (len(pa) < len(pb))
+
+
 def get_version():
     import urllib.request
     import os
@@ -32,25 +192,47 @@ def get_version():
     import zipfile
     from pathlib import Path
     from io import TextIOWrapper
+    import ssl
+
+    metadata_json = {}
+    url = "https://raw.githubusercontent.com/Ehseezed/Archipelago-Integration/refs/heads/8th-Aniversary/worlds/am2r/archipelago.json"
+
+    def _fetch_with_context(ctx):
+        if ctx is None:
+            with urllib.request.urlopen(url) as metadata_resp:
+                return json.loads(metadata_resp.read().decode())
+        else:
+            with urllib.request.urlopen(url, context=ctx) as metadata_resp:
+                return json.loads(metadata_resp.read().decode())
 
     try:
-        with urllib.request.urlopen(
-                "https://raw.githubusercontent.com/Ehseezed/Archipelago-Integration/refs/heads/8th-Aniversary/worlds/am2r/archipelago.json") as metadata_resp:
-            metadata_json = json.loads(metadata_resp.read().decode())
+        metadata_json = _fetch_with_context(None)
     except Exception as e:
         logger.warning(f"Failed to fetch remote metadata: {e}")
-        metadata_json = {}
+        # Try certifi-provided CA bundle if available
+        try:
+            import certifi
+            ctx = ssl.create_default_context(cafile=certifi.where())
+            metadata_json = _fetch_with_context(ctx)
+        except Exception as e2:
+            logger.warning(f"Retry with certifi failed: {e2}")
+            # Last-resort: unverified context (warn loudly)
+            try:
+                ctx = ssl._create_unverified_context()
+                logger.warning("Falling back to unverified SSL context for remote metadata fetch (not recommended).")
+                metadata_json = _fetch_with_context(ctx)
+            except Exception as e3:
+                logger.warning(f"All remote metadata fetch attempts failed: {e3}")
+                metadata_json = {}
 
     dirpath = os.path.dirname(os.path.abspath(__file__))
     full_path = os.path.join(dirpath, "archipelago.json")
     local_json = {}
 
-    # Try to read the file directly first
     try:
         with open(full_path, "r", encoding="utf-8") as f:
             local_json = json.load(f)
     except Exception:
-        # If direct read fails, check if this module is inside a .apworld archive and try to open it as a zip
         try:
             p = Path(dirpath)
             parts = p.parts
@@ -58,7 +240,6 @@ def get_version():
             if ap_index is not None:
                 archive_path = Path(*parts[: ap_index + 1])
                 internal_parts = parts[ap_index + 1 :]
-                # candidate internal path using forward slashes
                 candidate = "/".join((*internal_parts, "archipelago.json")) if internal_parts else "archipelago.json"
                 try:
                     with zipfile.ZipFile(str(archive_path), "r") as z:
@@ -113,54 +294,36 @@ class AM2RWorld(World):
     item_name_groups = item_name_groups
     data_version = 1
 
-    def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
-        spoiler_handle.write("\nAM2R Archipelago Debug Spoiler Header\n")
-        spoiler_handle.write("=====================================\n\n")
-        items = self.multiworld.itempool
-        items = Counter(items)
-        spoiler_handle.write("Item Pool:\n")
-        for item_name, count in items.items():
-            spoiler_handle.write(f"  {item_name}: {count}\n")
-        spoiler_handle.write("\n")
-
-
     def fill_slot_data(self) -> Dict[str, object]:
         local_version, web_version = get_version()
         try:
             if local_version is None or web_version is None:
                 raise ValueError("One or both version values are not valid")
-            elif local_version < web_version:
-                input(f'A new version of AM2R is available most recent release is version {web_version} and you are using {local_version}, '
-                      f'consider updating to the latest version'
-                      f'\npress enter to continue.')
-            elif local_version > web_version:
-                input(f"Hi there developer! It looks like you are running a development version of AM2R {local_version} ahead of the latest release {web_version}."
-                      f"\nIf you are seeing this message and are not a developer, I dont know how you managed that, but consider switching to the latest release version."
-                      f"\npress enter to continue.")
+            cmp = _compare_versions(local_version, web_version)
+            if cmp < 0:
+                logger.warning(
+                    "A new version of AM2R is available: latest %s, you are using %s. Consider updating.",
+                    web_version, local_version
+                )
+            elif cmp > 0:
+                logger.warning(
+                    "Development version detected: you are running AM2R %s ahead of latest release %s.",
+                    local_version, web_version
+                )
         except Exception as e:
-            err =  f"Failed to validate version data beacuse: "
-            if local_version == None:
+            err = "Failed to validate version data because: "
+            if local_version is None:
                 err += "local version is invalid. "
-            if web_version == None:
+            if web_version is None:
                 err += "web version is invalid. "
-            print(err + str(e))
-        local_version = "unknown" if local_version is None else local_version
+            logger.warning(err + str(e))
 
+        local_version = "unknown" if local_version is None else local_version
 
         return {
             "Version": local_version,
             "MetroidsRequired": self.options.MetroidsRequired.value,
-            # "MetroidsInPool": self.options.MetroidsInPool.value,  # I never pull this
-            # "LocationSettings": self.options.LocationSettings.value, # I never pull this
             "TrapFillPercentage": self.options.TrapFillPercentage.value,
-            # "RemoveFloodTrap": self.options.RemoveFloodTrap.value, # I never pull this
-            # "RemoveTossTrap": self.options.RemoveTossTrap.value, # I never pull this
-            # "RemoveShortBeam": self.options.RemoveShortBeam.value, # I never pull this
-            # "RemoveEMPTrap": self.options.RemoveEMPTrap.value, # I never pull this
-            # "RemoveTouhouTrap": self.options.RemoveTouhouTrap.value, # I never pull this
-            # "RemoveOHKOTrap": self.options.RemoveOHKOTrap.value, # I never pull this
-            # "RemoveWrongWarpTrap": self.options.RemoveWrongWarpTrap.value, # I never pull this
-            # "RemoveIceTrap": self.options.RemoveIceTrap.value, # I never pull this
             "TrapSprites": self.options.TrapSprites.value,
             "Tozos": self.options.Tozos.value,
             "CustomDeathLinkMessages": list(self.options.CustomDeathLinkMessages.value),
