@@ -84,16 +84,18 @@ def create_trap_items(world: AM2RWorld, locations_to_trap: int) -> List[str]:
     )
 
 
-def create_random_items(world: AM2RWorld, remaining_items: int, current_items: dict) -> List[str]:
-    items = current_items.copy()
+def create_random_items(remaining_items: int) -> List[str]:
+    # print(f"Creating {remaining_items} filler items")
     super_total = (int(remaining_items * (10 / 74)))
     e_total = (int(remaining_items * (10 / 74)))
     pb_count = (int(remaining_items * (10 / 74)))
+    # print(f"Filler Items Breakdown - Supers: {super_total}, E Tanks: {e_total}, PBs: {pb_count}")
 
-    super_total -= 1
-    e_total -= 1
-    pb_count -= 3
+    super_total = abs(super_total - 1)
+    e_total = abs(e_total - 1)
+    pb_count = abs(pb_count - 3)
     missile_count =  remaining_items - (super_total + e_total + pb_count)
+    # print(f"Filler Items Breakdown - Missiles: {missile_count}, Supers: {super_total}, E Tanks: {e_total}, PBs: {pb_count}")
 
     items_to_create = []
 
@@ -127,6 +129,7 @@ def create_random_items(world: AM2RWorld, remaining_items: int, current_items: d
 def create_all_items(world: AM2RWorld) -> None:
     player = world.player
     sum_locations = len(world.multiworld.get_unfilled_locations(player))
+    # print(f"Total Locations for Player {player}: {sum_locations}")
 
     itempool = (
         create_fixed_item_pool()
@@ -143,7 +146,7 @@ def create_all_items(world: AM2RWorld) -> None:
     itempool += create_trap_items(world, locations_to_trap)
 
     random_count = sum_locations - len(itempool)
-    random_items = create_random_items(world, random_count, Counter(itempool))
+    random_items = create_random_items(random_count)
     itempool += random_items
 
     # print(f'Random Items: {Counter(itempool)}')
