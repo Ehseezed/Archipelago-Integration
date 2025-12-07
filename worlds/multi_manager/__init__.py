@@ -1,6 +1,6 @@
 from typing import ClassVar
 from settings import Group
-from worlds.LauncherComponents import Component, Type, components, launch_subprocess
+from worlds.LauncherComponents import Component, Type, components, launch_subprocess, icon_paths
 
 from worlds.AutoWorld import World
 
@@ -25,4 +25,7 @@ def launch_client(*args: str) -> None:
     from .client import launch
     launch_subprocess(launch, name="MultiManager", args=args)
 
-components
+
+components.append(Component("MultiManager", component_type=Type.TOOL, func=launch_client, icon="MultiManager"))
+
+icon_paths["MultiManager"] = f"ap:{__name__}/assets/icon.png"

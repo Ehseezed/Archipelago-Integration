@@ -1,15 +1,13 @@
 import re
-import logging
 import json
 import logging
 import os
 import stat
 import subprocess
 import tempfile
-import urllib
 from enum import Enum, auto
 from dataclasses import dataclass, field
-from typing import Optional, List, Dict
+from typing import Optional, List
 from urllib.parse import urlparse, unquote
 from urllib.request import urlopen
 
@@ -22,14 +20,9 @@ from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from kivy.uix.widget import Widget
 from kivy.uix.dropdown import DropDown
 
 import Utils
-from Utils import open_file
-
-if __name__ == "__main__":
-    Utils.init_logging("Multiworld_Manager", exception_logger="Client")
 
 APClient = None
 
@@ -112,6 +105,14 @@ BoxLayout:
                 width: dp(100)
                 disabled: True
                 on_release: app.open_edit_multiworld_dialog()
+                
+            Button:
+                id: delete_mw_btn
+                text: "Delete MW"
+                size_hint_x: None
+                width: dp(100)
+                disabled: True
+                on_release: app.confirm_delete_multiworld(app.selected_multiworld)
 
             Button:
                 id: add_slot_btn
@@ -121,12 +122,12 @@ BoxLayout:
                 disabled: True
                 on_release: app.open_add_slot_dialog()
 
-            Button:
-                id: debug_btn
-                text: "Debug"
-                size_hint_x: None
-                width: dp(80)
-                on_release: app.debug_print_multiworlds()
+            # Button:
+            #     id: debug_btn
+            #     text: "Debug"
+            #     size_hint_x: None
+            #     width: dp(80)
+            #     on_release: app.debug_print_multiworlds()
 
         BoxLayout:
             size_hint_y: None
@@ -173,8 +174,7 @@ class SlotRow(BoxLayout):
         try:
             app.run_clients(self.slot)
         except Exception as e:
-            # keep UI stable on failure; print minimal info for debugging
-            print(e)
+            logging.exception(e)
             pass
 
     def get_app(self):
@@ -218,6 +218,7 @@ class ClientType(Enum):
     Steam_Game = auto()
     NonSteam_Game = auto()
     Patch_File = auto()
+    Website = auto()
     Manual = auto()
     Default = -1
 
@@ -248,15 +249,18 @@ class ClientInfo:
 
     def __post_init__(self):
         if self.client_type == ClientType.AP and self.ap_client_type is None:
-            print("Warning: No AP Client specified for AP client_type this has no actual function.")
+            logging.debug("Warning: No AP Client specified for AP client_type this has no actual function.")
         if self.client_type == ClientType.Steam_Game and not self.steam_app_id:
-            print("Warning: No Steam Game specified this has no actual function.")
+            logging.debug("Warning: No Steam Game specified this has no actual function.")
         if self.client_type == ClientType.NonSteam_Game and not self.executable_path:
-            print("Warning: No Executable specified this has no actual function.")
+            logging.debug("Warning: No Executable specified this has no actual function.")
         if self.client_type == ClientType.Patch_File and not self.executable_path:
-            print("Warning: No file specified for Open_Patch_File client_type.")
+            logging.debug("Warning: No file specified for Open_Patch_File client_type.")
+        if self.client_type == ClientType.Website and not self.executable_path:
+            logging.debug("Warning: No URL specified for Website client_type this has no actual function.")
+
         if self.client_type == ClientType.Default:
-            print("Warning: ClientInfo created with Default client_type this has no actual function.")
+            logging.debug("Warning: ClientInfo created with Default client_type this has no actual function.")
 
 
 @dataclass
@@ -401,62 +405,66 @@ class MultiManagerApp(App):
                 mw_url = ""
 
         for ci in slot.Clients_to_open:
-            if ci.client_type != ClientType.AP:
-                if ci.client_type == ClientType.Steam_Game:
-                    if getattr(ci, "steam_app_id", None):
-                        Utils.open_file(f'steam://rungameid/{ci.steam_app_id}')
+            if ci.client_type == ClientType.Website:
+                if ci.executable_path:
+                    try:
+                        Utils.open_file(ci.executable_path)
+                    except Exception:
+                        logging.exception(f"Failed to open website URL: {ci.executable_path}")
+            if ci.client_type == ClientType.Steam_Game:
+                if getattr(ci, "steam_app_id", None):
+                    Utils.open_file(f'steam://rungameid/{ci.steam_app_id}')
 
-                elif ci.client_type == ClientType.NonSteam_Game:
-                    if ci.executable_path and os.path.exists(ci.executable_path):
-                        try:
-                            launch_nonsteam_game(ci.executable_path)
-                        except Exception as e:
-                            logging.exception(f"Failed to launch NonSteam_Game executable '{ci.executable_path}': {e}")
+            if ci.client_type == ClientType.NonSteam_Game:
+                if ci.executable_path and os.path.exists(ci.executable_path):
+                    try:
+                        launch_nonsteam_game(ci.executable_path)
+                    except Exception as e:
+                        logging.exception(f"Failed to launch NonSteam_Game executable '{ci.executable_path}': {e}")
 
-                elif ci.client_type == ClientType.Patch_File:
-                    if ci.executable_path and os.path.exists(ci.executable_path):
-                        try:
-                            local = normalize_to_local_path(ci.executable_path)
-                            Utils.open_file(local)
-                        except Exception as e:
-                            logging.exception(f"Failed to open patch file '{ci.executable_path}': {e}")
+            if ci.client_type == ClientType.Manual:
+                Utils.open_file(ci.instructions or "")
 
-                elif ci.client_type == ClientType.Manual:
-                    Utils.open_file(ci.instructions or "")
+            if ci.client_type == ClientType.Patch_File:
+                from Launcher import identify, run_component
+                file, component = identify(ci.executable_path or "")
+                if file and component:
+                    run_component(component, file)
 
-            comp = getattr(ci.ap_client_type, "component", None) if ci.ap_client_type else None
-            if not comp:
-                logging.debug("No component attached to AP client choice; skipping.")
-                continue
-
-            try:
-                launch_args = f"archipelago://{slot_name}:None@{mw_url}"
-
-                if get_exe:
-                    exe = get_exe(comp)
-                else:
-                    exe = None
-                    if getattr(comp, "script_name", None):
-                        exe = [comp.script_name]
-
-                if not exe:
-                    logging.warning(f"Unable to determine executable for component {comp}; skipping.")
+            if ci.client_type == ClientType.AP:
+                comp = getattr(ci.ap_client_type, "component", None) if ci.ap_client_type else None
+                if not comp:
+                    logging.debug("No component attached to AP client choice; skipping.")
                     continue
 
-                cmd = [*exe, launch_args]
-                print(cmd)
+                try:
+                    launch_args = f"archipelago://{slot_name}:None@{mw_url}"
 
-                if launcher_launch:
-                    try:
-                        launcher_launch(cmd, getattr(comp, "cli", False))
-                    except Exception:
+                    if get_exe:
+                        exe = get_exe(comp)
+                    else:
+                        exe = None
+                        if getattr(comp, "script_name", None):
+                            exe = [comp.script_name]
+
+                    if not exe:
+                        logging.warning(f"Unable to determine executable for component {comp}; skipping.")
+                        continue
+
+                    cmd = [*exe, launch_args]
+                    logging.debug(cmd)
+
+                    if launcher_launch:
+                        try:
+                            launcher_launch(cmd, getattr(comp, "cli", False))
+                        except Exception:
+                            subprocess.Popen(cmd)
+                    else:
                         subprocess.Popen(cmd)
-                else:
-                    subprocess.Popen(cmd)
-            except Exception:
-                logging.exception(
-                    f"Failed to launch AP client for slot '{getattr(slot, 'name', '')}' with component {comp}")
-                continue
+                except Exception:
+                    logging.exception(
+                        f"Failed to launch AP client for slot '{getattr(slot, 'name', '')}' with component {comp}")
+                    continue
 
     def pick_file_via_dialog(self):
         import os
@@ -486,6 +494,69 @@ class MultiManagerApp(App):
             selection = None
 
         return selection
+
+    def confirm_delete_multiworld(self, mw: Multiworld):
+        if not mw:
+            return
+
+        content = BoxLayout(orientation='vertical', spacing=10, padding=10)
+        content.add_widget(Label(text=f"Delete multiworld '{mw.name}'?\nThis action cannot be undone."))
+
+        btns = BoxLayout(size_hint_y=None, height=dp(40), spacing=8)
+        popup = Popup(title="Confirm Delete Multiworld", content=content, size_hint=(None, None),
+                      size=(dp(360), dp(160)))
+
+        btn_cancel = Button(text="CANCEL", on_release=lambda *a: popup.dismiss())
+        btn_delete = Button(text="DELETE", on_release=lambda *a: self._do_delete_multiworld(mw, popup))
+        btns.add_widget(btn_cancel)
+        btns.add_widget(btn_delete)
+        content.add_widget(btns)
+
+        popup.open()
+
+    def _do_delete_multiworld(self, mw: Multiworld, popup: Popup):
+        try:
+            if getattr(self, "multiworlds", None) and mw in self.multiworlds:
+                self.multiworlds.remove(mw)
+        except Exception:
+            pass
+
+        # If the deleted multiworld was selected, clear selection and disable controls
+        try:
+            if getattr(self, "selected_multiworld", None) is mw:
+                self.selected_multiworld = None
+                try:
+                    self.root.ids.edit_mw_btn.disabled = True
+                except Exception:
+                    pass
+                try:
+                    self.root.ids.add_slot_btn.disabled = True
+                except Exception:
+                    pass
+                try:
+                    # disable Delete MW button as well
+                    self.root.ids.delete_mw_btn.disabled = True
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
+        try:
+            popup.dismiss()
+        except Exception:
+            pass
+
+        # Persist immediately and refresh UI
+        try:
+            Utils.persistent_store("multi_manager_data", "multiworlds", self.multiworlds)
+        except Exception:
+            pass
+
+        try:
+            self.populate_multiworld_list()
+            self.refresh_slots_view()
+        except Exception:
+            pass
 
     def confirm_delete_slot(self, slot: Slot):
         if not slot or not getattr(self, "selected_multiworld", None):
@@ -528,6 +599,14 @@ class MultiManagerApp(App):
     def on_start(self):
         self.multiworlds: List[Multiworld] = []
         self.selected_multiworld: Optional[Multiworld] = None
+
+        try:
+            logging.debug(self._deserialize_multiworlds(Utils.persistent_load().get("multi_manager_data", {}).get("multiworlds", [])))
+            self.multiworlds = self._deserialize_multiworlds(Utils.persistent_load().get("multi_manager_data", {}).get("multiworlds", []))
+        except Exception as e:
+            logging.exception(f"Failed to load multiworld data: {e}")
+            pass
+
 
         global APClient
         try:
@@ -643,9 +722,38 @@ class MultiManagerApp(App):
     def select_multiworld(self, mw: Optional[Multiworld]):
         self.selected_multiworld = mw
         try:
-            self.root.ids.toolbar.text = mw.name if mw else "No multiworld selected"
+            # update toolbar text
+            if mw:
+                try:
+                    self.root.ids.toolbar.text = f"{mw.name}"
+                except Exception:
+                    pass
+            else:
+                try:
+                    self.root.ids.toolbar.text = "No multiworld selected"
+                except Exception:
+                    pass
         except Exception:
             pass
+
+        try:
+            # enable/disable controls according to selection
+            try:
+                self.root.ids.edit_mw_btn.disabled = (mw is None)
+            except Exception:
+                pass
+            try:
+                self.root.ids.add_slot_btn.disabled = (mw is None)
+            except Exception:
+                pass
+            try:
+                # new Delete MW button toggle
+                self.root.ids.delete_mw_btn.disabled = (mw is None)
+            except Exception:
+                pass
+        except Exception:
+            pass
+
         try:
             self.root.ids.edit_mw_btn.disabled = False if mw else True
         except Exception:
@@ -666,6 +774,38 @@ class MultiManagerApp(App):
             row.slot = slot
             row.text = f"{idx + 1}: {slot.name}: {len(slot.Clients_to_open)} function(s)"
             slots_box.add_widget(row)
+
+    def open_add_slot_dialog(self):
+        if getattr(self, "dialog_add", None):
+            self.dialog_add.open()
+            return
+
+        content = BoxLayout(orientation='vertical', spacing=10, padding=10)
+        self._new_slot_name = TextInput(hint_text="Slot name", multiline=False,
+                                        size_hint_y=None, height=dp(40), font_size=dp(16))
+
+        # Client type selector (button + dropdown). _on_add_slot_create expects _new_slot_type.text
+        self._new_slot_type = Button(text="Client Type", size_hint_y=None, height=dp(40))
+        self._new_slot_type_dropdown = DropDown()
+        for opt in (n for n in ClientType.__members__ if n != "Default"):
+            b = Button(text=opt, size_hint_y=None, height=dp(40))
+            b.bind(on_release=lambda btn, val=opt: self._new_slot_type_dropdown.select(val))
+            self._new_slot_type_dropdown.add_widget(b)
+        self._new_slot_type.bind(on_release=self._new_slot_type_dropdown.open)
+        self._new_slot_type_dropdown.bind(on_select=lambda inst, val: setattr(self._new_slot_type, "text", val))
+
+        content.add_widget(self._new_slot_name)
+        content.add_widget(self._new_slot_type)
+
+        btns = BoxLayout(size_hint_y=None, height=dp(40), spacing=8)
+        btn_cancel = Button(text="CANCEL", on_release=lambda *a: self._dismiss_add_dialog())
+        btn_create = Button(text="CREATE", on_release=self._on_add_slot_create)
+        btns.add_widget(btn_cancel)
+        btns.add_widget(btn_create)
+        content.add_widget(btns)
+
+        self.dialog_add = Popup(title="Create Slot", content=content, size_hint=(None, None), size=(dp(420), dp(220)))
+        self.dialog_add.open()
 
     def open_add_slot_details_dialog(self, slot_type: ClientType, name: str, mode: str = "SPEC"):
         if self.dialog_add:
@@ -712,13 +852,20 @@ class MultiManagerApp(App):
             self._ap_select_dropdown.bind(on_select=_on_ap_selected)
             content.add_widget(self._ap_select_btn)
         else:
-            hint = "Primary spec (steam id / exe path / instructions)"
+            # set a helpful hint depending on type (Website like Steam: plain text input, no Browse)
+            if slot_type == ClientType.Steam_Game:
+                hint = "Steam App ID"
+            elif slot_type == ClientType.Website:
+                hint = "Website URL"
+            else:
+                hint = "Primary spec (steam id / exe path / instructions)"
+
             row = BoxLayout(orientation='horizontal', spacing=8, size_hint_y=None, height=dp(40))
             self._details_spec_input = TextInput(hint_text=hint, multiline=False,
                                                  size_hint_y=None, height=dp(40), font_size=dp(16))
             row.add_widget(self._details_spec_input)
 
-            # Keep Browse for NonSteam and Patch/File types only — DO NOT include Steam_Game
+            # Keep Browse for NonSteam and Patch/File types only — DO NOT include Steam_Game or Website
             if slot_type in (ClientType.NonSteam_Game, ClientType.Patch_File):
                 btn_browse = Button(text="Browse", size_hint_x=None, width=dp(100), size_hint_y=None, height=dp(40))
 
@@ -749,42 +896,6 @@ class MultiManagerApp(App):
                                         size_hint=(None, None), size=(dp(420), dp(220)))
         self.dialog_add_details.open()
 
-    def open_add_slot_dialog(self):
-        if getattr(self, "dialog_add", None):
-            try:
-                self.dialog_add.open()
-            except Exception:
-                pass
-            return
-
-        content = BoxLayout(orientation='vertical', spacing=10, padding=10)
-        self._new_slot_name = TextInput(hint_text="Slot name", multiline=False,
-                                        size_hint_y=None, height=dp(40), font_size=dp(16))
-        content.add_widget(self._new_slot_name)
-
-        self._new_slot_type = Button(text="Select Client", size_hint_y=None, height=dp(40))
-        self._new_slot_type_dropdown = DropDown()
-        try:
-            for name in ClientType.__members__:
-                b = Button(text=name, size_hint_y=None, height=dp(40))
-                b.bind(on_release=lambda btn, val=name: self._new_slot_type_dropdown.select(val))
-                self._new_slot_type_dropdown.add_widget(b)
-        except Exception:
-            pass
-        self._new_slot_type.bind(on_release=self._new_slot_type_dropdown.open)
-        self._new_slot_type_dropdown.bind(on_select=lambda inst, val: setattr(self._new_slot_type, "text", val))
-        content.add_widget(self._new_slot_type)
-
-        btns = BoxLayout(size_hint_y=None, height=dp(40), spacing=8)
-        btn_cancel = Button(text="CANCEL", on_release=lambda *a: self._dismiss_add_dialog())
-        btn_create = Button(text="CREATE", on_release=self._on_add_slot_create)
-        btns.add_widget(btn_cancel)
-        btns.add_widget(btn_create)
-        content.add_widget(btns)
-
-        self.dialog_add = Popup(title="Add Slot", content=content, size_hint=(None, None), size=(dp(420), dp(220)))
-        self.dialog_add.open()
-
     def _on_add_slot_create(self, *args):
         from kivy.clock import Clock
         import threading
@@ -809,7 +920,7 @@ class MultiManagerApp(App):
             self.open_add_slot_details_dialog(slot_type, name, mode="SPEC")
             return
 
-        if slot_type == ClientType.Steam_Game:
+        if slot_type in (ClientType.Steam_Game, ClientType.Website):
             self.open_add_slot_details_dialog(slot_type, name, mode="SPEC")
             return
 
@@ -941,6 +1052,8 @@ class MultiManagerApp(App):
             return ClientInfo(client_type=ClientType.NonSteam_Game, executable_path=(spec or ""))
         if ct == ClientType.Patch_File:
             return ClientInfo(client_type=ClientType.Patch_File, executable_path=(spec or ""))
+        if ct == ClientType.Website:
+            return ClientInfo(client_type=ClientType.Website, executable_path=(spec or ""))
         if ct == ClientType.Manual:
             return ClientInfo(client_type=ClientType.Manual, instructions=(spec or ""))
         return ClientInfo(client_type=ClientType.Default)
@@ -1138,7 +1251,7 @@ class MultiManagerApp(App):
             lbl = Label(text=f"Client Type: {existing_ci.client_type.name}", size_hint_y=None, height=dp(30))
             content.add_widget(lbl)
 
-            if existing_ci.client_type == ClientType.AP:
+            if existing_ci.client_type in (ClientType.AP,):
                 self._client_ap_select_btn = Button(text="Select AP client", size_hint_y=None, height=dp(40))
                 self._client_ap_select_dropdown = DropDown()
 
@@ -1179,8 +1292,7 @@ class MultiManagerApp(App):
                 initial = getattr(existing_ci, "executable_path", "") or getattr(existing_ci, "steam_app_id",
                                                                                  "") or getattr(existing_ci,
                                                                                                 "instructions", "")
-                if existing_ci.client_type == ClientType.Steam_Game:
-                    # Steam: plain TextInput (no Browse)
+                if existing_ci.client_type in (ClientType.Steam_Game, ClientType.Website):
                     ti = TextInput(text=initial, multiline=False, size_hint_y=None, height=dp(40))
                     content.add_widget(ti)
                     self._client_spec_input = ti
@@ -1194,7 +1306,7 @@ class MultiManagerApp(App):
             # client type selector sits above the spec input (vertical layout)
             self._client_type_btn = Button(text="Client Type", size_hint_y=None, height=dp(40))
             self._client_type_dropdown = DropDown()
-            for opt in ClientType.__members__:
+            for opt in (n for n in ClientType.__members__ if n != "Default"):
                 b = Button(text=opt, size_hint_y=None, height=dp(40))
                 b.bind(on_release=lambda btn, val=opt: self._client_type_dropdown.select(val))
                 self._client_type_dropdown.add_widget(b)
@@ -1383,6 +1495,93 @@ class MultiManagerApp(App):
 
         pprint.pprint([mw_to_dict(mw) for mw in getattr(self, "multiworlds", [])], width=120)
 
+    def on_stop(self):
+        """Serialize multiworlds into primitives before calling Utils.persistent_store to avoid YAML serialization errors."""
+        try:
+            serialized = self._serialize_multiworlds()
+            # prefer force_store=True to ensure write, but the value is primitives so YAML dump should succeed
+            Utils.persistent_store("multi_manager_data", "multiworlds", serialized, force_store=True)
+        except Exception:
+            logging.exception("Failed to save multiworlds")
+        # call original cleanup
+        try:
+            super().on_stop()
+        except Exception:
+            # in case superclass doesn't implement it or other issues
+            pass
 
-if __name__ == "__main__":
+    def _serialize_multiworlds(self):
+        """Convert in-memory Multiworld/Slot/ClientInfo objects to plain dict/list/str so YAML can write them safely."""
+        out = []
+        for mw in getattr(self, "multiworlds", []) or []:
+            mw_d = {
+                "name": getattr(mw, "name", "") or "",
+                "url": getattr(mw, "url", "") or "",
+                "slots": [],
+            }
+            for s in getattr(mw, "slots", []) or []:
+                s_d = {"name": getattr(s, "name", "") or "", "Clients_to_open": []}
+                for ci in getattr(s, "Clients_to_open", []) or []:
+                    s_d["Clients_to_open"].append({
+                        "client_type": getattr(ci.client_type, "name", None) if ci and getattr(ci, "client_type",
+                                                                                               None) is not None else None,
+                        "ap_client_type": getattr(ci.ap_client_type, "name", None) if getattr(ci, "ap_client_type",
+                                                                                              None) else None,
+                        "launch_options": getattr(ci, "launch_options", "") or "",
+                        "steam_app_id": getattr(ci, "steam_app_id", None),
+                        "executable_path": getattr(ci, "executable_path", None),
+                        "instructions": getattr(ci, "instructions", None),
+                    })
+                mw_d["slots"].append(s_d)
+            out.append(mw_d)
+        return out
+
+    def _deserialize_multiworlds(self, raw_list):
+        """Rebuild Multiworld/Slot/ClientInfo objects from the plain structures produced by _serialize_multiworlds."""
+        result = []
+        for item in raw_list or []:
+            try:
+                name = item.get("name", "") or ""
+                url = item.get("url", "") or ""
+                slots = []
+                for s in item.get("slots", []) or []:
+                    slot_name = s.get("name", "") or ""
+                    slot = Slot(name=slot_name)
+                    for ci in s.get("Clients_to_open", []) or []:
+                        # client_type
+                        ct_name = ci.get("client_type")
+                        if ct_name and ct_name in ClientType.__members__:
+                            ct = ClientType[ct_name]
+                        else:
+                            ct = ClientType.Default
+                        # ap client
+                        ap_name = ci.get("ap_client_type") or ci.get("ap")
+                        ap = None
+                        try:
+                            if ap_name and hasattr(APClient, "__members__") and ap_name in APClient.__members__:
+                                ap = APClient[ap_name]
+                        except Exception:
+                            ap = None
+                        launch_options = ci.get("launch_options", "") or ""
+                        steam_app_id = ci.get("steam_app_id")
+                        executable_path = ci.get("executable_path")
+                        instructions = ci.get("instructions")
+                        slot.Clients_to_open.append(ClientInfo(
+                            client_type=ct,
+                            ap_client_type=ap,
+                            launch_options=launch_options,
+                            steam_app_id=steam_app_id,
+                            executable_path=executable_path,
+                            instructions=instructions
+                        ))
+                    slots.append(slot)
+                result.append(Multiworld(name=name, url=url, slots=slots))
+            except Exception:
+                logging.exception("Failed to deserialize a multiworld entry; skipping it.")
+                continue
+        return result
+
+
+def launch():
+    Utils.init_logging("Multiworld_Manager", exception_logger="Client")
     MultiManagerApp().run()
