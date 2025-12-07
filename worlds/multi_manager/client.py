@@ -545,10 +545,9 @@ class MultiManagerApp(App):
             popup.dismiss()
         except Exception:
             pass
-
-        # Persist immediately and refresh UI
         try:
-            Utils.persistent_store("multi_manager_data", "multiworlds", self.multiworlds)
+            serialized = self._serialize_multiworlds()
+            Utils.persistent_store("multi_manager_data", "multiworlds", serialized, force_store=True)
         except Exception:
             pass
 
@@ -852,7 +851,6 @@ class MultiManagerApp(App):
             self._ap_select_dropdown.bind(on_select=_on_ap_selected)
             content.add_widget(self._ap_select_btn)
         else:
-            # set a helpful hint depending on type (Website like Steam: plain text input, no Browse)
             if slot_type == ClientType.Steam_Game:
                 hint = "Steam App ID"
             elif slot_type == ClientType.Website:
@@ -1297,13 +1295,11 @@ class MultiManagerApp(App):
                     content.add_widget(ti)
                     self._client_spec_input = ti
                 else:
-                    # For other types use spec row with browse where appropriate
                     show_browse = existing_ci.client_type in (ClientType.NonSteam_Game, ClientType.Patch_File)
                     spec_row, spec_input = _create_spec_row(initial, show_browse=show_browse)
                     content.add_widget(spec_row)
                     self._client_spec_input = spec_input
         else:
-            # client type selector sits above the spec input (vertical layout)
             self._client_type_btn = Button(text="Client Type", size_hint_y=None, height=dp(40))
             self._client_type_dropdown = DropDown()
             for opt in (n for n in ClientType.__members__ if n != "Default"):
@@ -1311,23 +1307,19 @@ class MultiManagerApp(App):
                 b.bind(on_release=lambda btn, val=opt: self._client_type_dropdown.select(val))
                 self._client_type_dropdown.add_widget(b)
             self._client_type_btn.bind(on_release=self._client_type_dropdown.open)
-
-            # placeholder container so spec row can be swapped without reordering other children
             spec_holder = BoxLayout(orientation='horizontal', spacing=8, size_hint_y=None, height=dp(40))
-            # default spec row: no browse by default
             spec_row, spec_input = _create_spec_row("", show_browse=False)
             spec_holder.add_widget(spec_row)
             self._client_spec_input = spec_input
             spec_holder.size_hint_x = 1
 
-            def _on_type_selected(instance, value):
+            def _on_type_selected(value):
                 try:
-                    # update button text
                     try:
                         self._client_type_btn.text = value
                     except Exception:
                         pass
-                    # rebuild spec row according to chosen type
+
                     show_browse = value in ("NonSteam_Game", "Patch_File")
                     spec_holder.clear_widgets()
                     new_row, new_input = _create_spec_row("", show_browse=show_browse)
@@ -1338,7 +1330,6 @@ class MultiManagerApp(App):
 
             self._client_type_dropdown.bind(on_select=_on_type_selected)
 
-            # add the type button above the spec holder
             content.add_widget(self._client_type_btn)
             content.add_widget(spec_holder)
 
@@ -1499,7 +1490,6 @@ class MultiManagerApp(App):
         """Serialize multiworlds into primitives before calling Utils.persistent_store to avoid YAML serialization errors."""
         try:
             serialized = self._serialize_multiworlds()
-            # prefer force_store=True to ensure write, but the value is primitives so YAML dump should succeed
             Utils.persistent_store("multi_manager_data", "multiworlds", serialized, force_store=True)
         except Exception:
             logging.exception("Failed to save multiworlds")
