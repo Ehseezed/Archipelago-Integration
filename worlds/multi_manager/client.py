@@ -445,35 +445,37 @@ class MultiManagerApp(App):
                     logging.debug("No component attached to AP client choice; skipping.")
                     continue
 
-                try:
-                    launch_args = f"--connect archipelago://{slot_name}:None@{mw_url}"
-                    run_component(comp, launch_args)
+                launch_args = [f"--connect archipelago://{slot_name}:None@{mw_url}", f'--url {mw_url}', ""]
 
-                    # if get_exe:
-                    #     exe = get_exe(comp)
-                    # else:
-                    #     exe = None
-                    #     if getattr(comp, "script_name", None):
-                    #         exe = [comp.script_name]
-                    #
-                    # if not exe:
-                    #     logging.warning(f"Unable to determine executable for component {comp}; skipping.")
-                    #     continue
-                    #
-                    # cmd = [*exe, launch_args]
-                    # logging.debug(cmd)
-                    #
-                    # if launcher_launch:
-                    #     try:
-                    #         launcher_launch(cmd, getattr(comp, "cli", False))
-                    #     except Exception:
-                    #         subprocess.Popen(cmd)
-                    # else:
-                    #     subprocess.Popen(cmd)
-                except Exception:
-                    logging.exception(
-                        f"Failed to launch AP client for slot '{getattr(slot, 'name', '')}' with component {comp}")
-                    continue
+                for arg in launch_args:
+                    try:
+                        print(f'Launching AP client for slot {slot_name} with component {comp} and arg {arg}')
+                        run_component(comp, arg)
+                        # if get_exe:
+                        #     exe = get_exe(comp)
+                        # else:
+                        #     exe = None
+                        #     if getattr(comp, "script_name", None):
+                        #         exe = [comp.script_name]
+                        #
+                        # if not exe:
+                        #     logging.warning(f"Unable to determine executable for component {comp}; skipping.")
+                        #     continue
+                        #
+                        # cmd = [*exe, launch_args]
+                        # logging.debug(cmd)
+                        #
+                        # if launcher_launch:
+                        #     try:
+                        #         launcher_launch(cmd, getattr(comp, "cli", False))
+                        #     except Exception:
+                        #         subprocess.Popen(cmd)
+                        # else:
+                        #     subprocess.Popen(cmd)
+                    except Exception as e:
+                        print(f'Error launching AP client for slot {slot_name} with component {comp}: {e}')
+                        logging.exception(f"Failed to launch AP client for slot '{getattr(slot, 'name', '')}' with component {comp}")
+                        continue
 
     def pick_file_via_dialog(self):
         import os
@@ -1341,13 +1343,77 @@ class MultiManagerApp(App):
                     # update selected text on the button
                     self._client_type_btn.text = value
 
-                    # update spec input hint depending on selected client type
+                    # rebuild the spec area depending on selected client type
+                    try:
+                        spec_holder.clear_widgets()
+                    except Exception:
+                        pass
+
                     if value == "Steam_Game":
-                        self._client_spec_input.hint_text = "Steam App ID"
+                        ti = TextInput(text="", multiline=False, size_hint_y=None, height=dp(40))
+                        ti.hint_text = "Steam App ID"
+                        spec_holder.add_widget(ti)
+                        self._client_spec_input = ti
+                        # clear any AP selectors
+                        self._client_ap_select_btn = None
+                        self._client_ap_select_dropdown = None
+
                     elif value == "Website":
-                        self._client_spec_input.hint_text = "Website URL"
+                        ti = TextInput(text="", multiline=False, size_hint_y=None, height=dp(40))
+                        ti.hint_text = "Website URL"
+                        spec_holder.add_widget(ti)
+                        self._client_spec_input = ti
+                        self._client_ap_select_btn = None
+                        self._client_ap_select_dropdown = None
+
+                    elif value == "AP":
+                        # create AP selector button + dropdown
+                        btn = Button(text="Select AP client", size_hint_y=None, height=dp(40))
+                        dropdown = DropDown()
+                        members = []
+                        try:
+                            if APClient:
+                                members = [m for m in APClient]
+                        except Exception:
+                            members = []
+
+                        if not members:
+                            b = Button(text="NONE", size_hint_y=None, height=dp(40))
+                            b.bind(on_release=lambda btn, m=None: dropdown.select(m))
+                            dropdown.add_widget(b)
+                        else:
+                            for member in members:
+                                b = Button(text=member.value, size_hint_y=None, height=dp(40))
+                                b.bind(on_release=lambda btn, m=member: dropdown.select(m))
+                                dropdown.add_widget(b)
+
+                        def _on_ap_selected(inst2, val):
+                            try:
+                                if val is None:
+                                    btn.text = "NONE"
+                                    btn._selected_ap = None
+                                else:
+                                    btn.text = val.value
+                                    btn._selected_ap = val
+                            except Exception:
+                                pass
+
+                        dropdown.bind(on_select=_on_ap_selected)
+                        btn.bind(on_release=dropdown.open)
+                        btn._selected_ap = None
+                        spec_holder.add_widget(btn)
+                        self._client_ap_select_btn = btn
+                        self._client_ap_select_dropdown = dropdown
+                        self._client_spec_input = None
+
                     else:
-                        self._client_spec_input.hint_text = "Primary spec (steam id / exe path / instructions)"
+                        # default: spec input with browse button
+                        spec_row, spec_input = _create_spec_row("", show_browse=True)
+                        spec_holder.add_widget(spec_row)
+                        self._client_spec_input = spec_input
+                        self._client_ap_select_btn = None
+                        self._client_ap_select_dropdown = None
+
                 except Exception:
                     pass
 
