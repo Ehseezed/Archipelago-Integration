@@ -1,7 +1,13 @@
+import Utils
+import os
+
+os.chdir(Utils.user_path())
+
+from Launcher import identify, run_component
+
 import re
 import json
 import logging
-import os
 import stat
 import subprocess
 import tempfile
@@ -10,6 +16,8 @@ from dataclasses import dataclass, field
 from typing import Optional, List
 from urllib.parse import urlparse, unquote
 from urllib.request import urlopen
+
+
 
 from kivy.lang import Builder
 from kivy.metrics import dp
@@ -22,7 +30,8 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 
-import Utils
+
+
 
 APClient = None
 
@@ -426,7 +435,6 @@ class MultiManagerApp(App):
                 Utils.open_file(ci.instructions or "")
 
             if ci.client_type == ClientType.Patch_File:
-                from Launcher import identify, run_component
                 file, component = identify(ci.executable_path or "")
                 if file and component:
                     run_component(component, file)
@@ -438,29 +446,30 @@ class MultiManagerApp(App):
                     continue
 
                 try:
-                    launch_args = f"archipelago://{slot_name}:None@{mw_url}"
+                    launch_args = f"--connect archipelago://{slot_name}:None@{mw_url}"
+                    run_component(comp, launch_args)
 
-                    if get_exe:
-                        exe = get_exe(comp)
-                    else:
-                        exe = None
-                        if getattr(comp, "script_name", None):
-                            exe = [comp.script_name]
-
-                    if not exe:
-                        logging.warning(f"Unable to determine executable for component {comp}; skipping.")
-                        continue
-
-                    cmd = [*exe, launch_args]
-                    logging.debug(cmd)
-
-                    if launcher_launch:
-                        try:
-                            launcher_launch(cmd, getattr(comp, "cli", False))
-                        except Exception:
-                            subprocess.Popen(cmd)
-                    else:
-                        subprocess.Popen(cmd)
+                    # if get_exe:
+                    #     exe = get_exe(comp)
+                    # else:
+                    #     exe = None
+                    #     if getattr(comp, "script_name", None):
+                    #         exe = [comp.script_name]
+                    #
+                    # if not exe:
+                    #     logging.warning(f"Unable to determine executable for component {comp}; skipping.")
+                    #     continue
+                    #
+                    # cmd = [*exe, launch_args]
+                    # logging.debug(cmd)
+                    #
+                    # if launcher_launch:
+                    #     try:
+                    #         launcher_launch(cmd, getattr(comp, "cli", False))
+                    #     except Exception:
+                    #         subprocess.Popen(cmd)
+                    # else:
+                    #     subprocess.Popen(cmd)
                 except Exception:
                     logging.exception(
                         f"Failed to launch AP client for slot '{getattr(slot, 'name', '')}' with component {comp}")
@@ -896,7 +905,6 @@ class MultiManagerApp(App):
 
     def _on_add_slot_create(self, *args):
         from kivy.clock import Clock
-        import threading
 
         name = getattr(self, "_new_slot_name", None) and self._new_slot_name.text.strip()
         if not name:
@@ -923,24 +931,20 @@ class MultiManagerApp(App):
             return
 
         if slot_type in (ClientType.NonSteam_Game, ClientType.Patch_File):
-            def worker():
+            # Ensure the file dialog is opened on the main/Kivy thread.
+            def open_picker(dt):
                 try:
                     selection = self.pick_file_via_dialog()
                 except Exception:
                     selection = None
 
-                def finalize_if_selected(dt):
-                    if selection:
-                        try:
-                            self._finalize_create_slot(slot_type, name, spec=selection)
-                        except Exception:
-                            pass
-                    else:
+                if selection:
+                    try:
+                        self._finalize_create_slot(slot_type, name, spec=selection)
+                    except Exception:
                         pass
 
-                Clock.schedule_once(finalize_if_selected, 0)
-
-            threading.Thread(target=worker, daemon=True).start()
+            Clock.schedule_once(open_picker, 0)
             return
 
         if slot_type == ClientType.Default:
@@ -1131,13 +1135,28 @@ class MultiManagerApp(App):
                 ct = getattr(ci, "client_type", None)
                 ct_text = ct.name if ct else "Unknown"
                 extra = ""
+                # print(f'RIGHT HERE is the  stuff ci', ci)
                 if getattr(ci, "executable_path", None):
-                    if not ci.client_type == ClientType.Patch_File:
+                    if ci.client_type == ClientType.NonSteam_Game:
                         extra = os.path.basename(ci.executable_path)
                         extra = extra.split(".")[0]
-                    else:
+
+                    elif ci.client_type == ClientType.Patch_File:
                         extra = re.search(r"(?<=P[0-9]_)[^._]+", ci.executable_path)
                         extra = extra.group(0)
+
+                    elif ci.client_type == ClientType.Website:
+                        import html
+
+                        website = urlopen(ci.executable_path).read()
+                        # print(f'RIGHT HERE is website data', website)
+                        title = str(website).split("<title>")[1].split("</title>")[0]
+                        title = html.unescape(title)
+
+                        extra = title
+
+                    else:
+                        extra = ci.executable_path
 
                 elif getattr(ci, "steam_app_id", None):
                     try:
@@ -1290,6 +1309,9 @@ class MultiManagerApp(App):
                 initial = getattr(existing_ci, "executable_path", "") or getattr(existing_ci, "steam_app_id",
                                                                                  "") or getattr(existing_ci,
                                                                                                 "instructions", "")
+                if initial == None:
+                    initial = ""
+
                 if existing_ci.client_type in (ClientType.Steam_Game, ClientType.Website):
                     ti = TextInput(text=initial, multiline=False, size_hint_y=None, height=dp(40))
                     content.add_widget(ti)
@@ -1313,18 +1335,19 @@ class MultiManagerApp(App):
             self._client_spec_input = spec_input
             spec_holder.size_hint_x = 1
 
-            def _on_type_selected(value):
+            def _on_type_selected(inst, value):
                 try:
-                    try:
-                        self._client_type_btn.text = value
-                    except Exception:
-                        pass
+                    print(f"Selected client type: {value}")
+                    # update selected text on the button
+                    self._client_type_btn.text = value
 
-                    show_browse = value in ("NonSteam_Game", "Patch_File")
-                    spec_holder.clear_widgets()
-                    new_row, new_input = _create_spec_row("", show_browse=show_browse)
-                    spec_holder.add_widget(new_row)
-                    self._client_spec_input = new_input
+                    # update spec input hint depending on selected client type
+                    if value == "Steam_Game":
+                        self._client_spec_input.hint_text = "Steam App ID"
+                    elif value == "Website":
+                        self._client_spec_input.hint_text = "Website URL"
+                    else:
+                        self._client_spec_input.hint_text = "Primary spec (steam id / exe path / instructions)"
                 except Exception:
                     pass
 
@@ -1573,5 +1596,10 @@ class MultiManagerApp(App):
 
 
 def launch():
+    os.chdir(Utils.user_path())
     Utils.init_logging("Multiworld_Manager", exception_logger="Client")
     MultiManagerApp().run()
+
+
+if __name__ == "__main__":
+    launch()

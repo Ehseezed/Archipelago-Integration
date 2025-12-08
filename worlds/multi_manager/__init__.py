@@ -26,6 +26,6 @@ def launch_client(*args: str) -> None:
     launch_subprocess(launch, name="MultiManager", args=args)
 
 
-components.append(Component("MultiManager", component_type=Type.TOOL, func=launch_client, icon="MultiManager"))
+components.append(Component("Multiworld Manager", component_type=Type.TOOL, func=launch_client, icon="MultiManager"))
 
 icon_paths["MultiManager"] = f"ap:{__name__}/assets/icon.png"
