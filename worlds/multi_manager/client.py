@@ -1,7 +1,6 @@
 import Utils
 import os
-
-os.chdir(Utils.user_path())
+import sys
 
 from Launcher import identify, run_component
 
@@ -336,6 +335,10 @@ def _looks_like_native_executable(path: str) -> bool:
 
 
 def launch_nonsteam_game(path: str, args: list | None = None) -> None:
+    current_wd = os.getcwd()
+    print(f'current_wd: {current_wd}')
+    print(f'Path: {os.path.dirname(path)}')
+    os.chdir(os.path.dirname(path))
     args = args or []
     local = normalize_to_local_path(path)
     if not os.path.isfile(local):
@@ -356,6 +359,9 @@ def launch_nonsteam_game(path: str, args: list | None = None) -> None:
             subprocess.Popen(["xdg-open", local], close_fds=True)
         except Exception:
             logging.exception(f"Failed to open {local} with desktop handler")
+
+    os.chdir(current_wd)
+    return
 
 
 class MultiManagerApp(App):
@@ -1662,7 +1668,26 @@ class MultiManagerApp(App):
 
 
 def launch():
-    os.chdir(Utils.user_path())
+    try:
+        if getattr(sys, "frozen", False):
+            bundle_dir = getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
+        else:
+            # Prefer the user's data path if available (Utils.user_path()), otherwise module dir.
+            try:
+                bundle_dir = Utils.user_path()
+            except Exception:
+                bundle_dir = os.path.abspath(os.path.dirname(__file__))
+
+        kivy_data_dir = os.path.join(bundle_dir, "data")
+        kivy_home = os.path.join(bundle_dir, ".kivy")
+
+        # Only set if not already configured; these must be set before importing kivy.
+        os.environ.setdefault("KIVY_DATA_DIR", kivy_data_dir)
+        os.environ.setdefault("KIVY_HOME", kivy_home)
+
+    except Exception:
+        # Fall back silently; avoid crashing the launcher if path computation fails.
+        pass
     Utils.init_logging("Multiworld_Manager", exception_logger="Client")
     MultiManagerApp().run()
 

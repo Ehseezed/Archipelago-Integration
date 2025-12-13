@@ -1,7 +1,7 @@
 {
   "game": "Multi Manager",
   "minimum_ap_version": "0.6.4",
-  "world_version": "0.1.0",
+  "world_version": "0.1.1",
   "authors": ["Ehseezed"],
   "compatible_version": 7,
   "version": 7}
