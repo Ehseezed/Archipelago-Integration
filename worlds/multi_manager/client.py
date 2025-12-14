@@ -1,14 +1,3 @@
-
-try:
-    from worlds.multi_manager import kivy_data_prep as _kdp
-    try:
-        _kdp.ensure_kivy_data_available()
-    except Exception:
-        import logging
-        logging.exception("Failed calling worlds.multi_manager.kivy_data_prep.ensure_kivy_data_available()")
-except Exception:
-    import logging
-    logging.exception("Failed importing worlds.multi_manager.kivy_data_prep (best-effort)")
 import Utils
 import os
 import sys
@@ -17,6 +6,7 @@ from Launcher import identify, run_component
 
 import re
 import json
+import logging
 import stat
 import subprocess
 import tempfile
