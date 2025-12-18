@@ -2,6 +2,30 @@ import Utils
 import os
 import sys
 
+try:
+    if getattr(sys, "frozen", False):
+        bundle_dir = getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
+    else:
+        # Prefer the user's data path if available (Utils.user_path()), otherwise module dir.
+        try:
+            bundle_dir = Utils.user_path()
+        except Exception:
+            bundle_dir = os.path.abspath(os.path.dirname(__file__))
+
+    kivy_data_dir = os.path.join(bundle_dir, "data")
+    kivy_home = os.path.join(bundle_dir, "data")
+
+    print(f"Setting KIVY_DATA_DIR to: {kivy_data_dir}")
+    print(f"Setting KIVY_HOME to: {kivy_home}")
+
+    os.environ.setdefault("KIVY_DATA_DIR", kivy_data_dir)
+    os.environ.setdefault("KIVY_HOME", kivy_home)
+
+except Exception as e:
+    print(f"Failed to set KIVY_DATA_DIR to: {e}")
+    pass
+
+
 from Launcher import identify, run_component
 
 import re
@@ -1668,26 +1692,6 @@ class MultiManagerApp(App):
 
 
 def launch():
-    try:
-        if getattr(sys, "frozen", False):
-            bundle_dir = getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
-        else:
-            # Prefer the user's data path if available (Utils.user_path()), otherwise module dir.
-            try:
-                bundle_dir = Utils.user_path()
-            except Exception:
-                bundle_dir = os.path.abspath(os.path.dirname(__file__))
-
-        kivy_data_dir = os.path.join(bundle_dir, "data")
-        kivy_home = os.path.join(bundle_dir, ".kivy")
-
-        # Only set if not already configured; these must be set before importing kivy.
-        os.environ.setdefault("KIVY_DATA_DIR", kivy_data_dir)
-        os.environ.setdefault("KIVY_HOME", kivy_home)
-
-    except Exception:
-        # Fall back silently; avoid crashing the launcher if path computation fails.
-        pass
     Utils.init_logging("Multiworld_Manager", exception_logger="Client")
     MultiManagerApp().run()
 
