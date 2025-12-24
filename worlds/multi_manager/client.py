@@ -2,28 +2,28 @@ import Utils
 import os
 import sys
 
-try:
-    if getattr(sys, "frozen", False):
-        bundle_dir = getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
-    else:
-        # Prefer the user's data path if available (Utils.user_path()), otherwise module dir.
-        try:
-            bundle_dir = Utils.user_path()
-        except Exception:
-            bundle_dir = os.path.abspath(os.path.dirname(__file__))
-
-    kivy_data_dir = os.path.join(bundle_dir, "data")
-    kivy_home = os.path.join(bundle_dir, "data")
-
-    print(f"Setting KIVY_DATA_DIR to: {kivy_data_dir}")
-    print(f"Setting KIVY_HOME to: {kivy_home}")
-
-    os.environ.setdefault("KIVY_DATA_DIR", kivy_data_dir)
-    os.environ.setdefault("KIVY_HOME", kivy_home)
-
-except Exception as e:
-    print(f"Failed to set KIVY_DATA_DIR to: {e}")
-    pass
+# try:
+#     if getattr(sys, "frozen", False):
+#         bundle_dir = getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
+#     else:
+#         # Prefer the user's data path if available (Utils.user_path()), otherwise module dir.
+#         try:
+#             bundle_dir = Utils.user_path()
+#         except Exception:
+#             bundle_dir = os.path.abspath(os.path.dirname(__file__))
+#
+#     kivy_data_dir = os.path.join(bundle_dir, "data")
+#     kivy_home = os.path.join(bundle_dir, "data")
+#
+#     print(f"Setting KIVY_DATA_DIR to: {kivy_data_dir}")
+#     print(f"Setting KIVY_HOME to: {kivy_home}")
+#
+#     os.environ.setdefault("KIVY_DATA_DIR", kivy_data_dir)
+#     os.environ.setdefault("KIVY_HOME", kivy_home)
+#
+# except Exception as e:
+#     print(f"Failed to set KIVY_DATA_DIR to: {e}")
+#     pass
 
 
 from Launcher import identify, run_component
@@ -1173,17 +1173,60 @@ class MultiManagerApp(App):
                         extra = os.path.basename(ci.executable_path)
                         extra = extra.split(".")[0]
 
+
                     elif ci.client_type == ClientType.Patch_File:
-                        extra = re.search(r"(?<=P[0-9]_)[^._]+", ci.executable_path)
-                        extra = extra.group(0)
+
+                        basename = os.path.basename(ci.executable_path or "")
+
+                        # locate the last "P<digits>_" occurrence
+
+                        last_match = None
+
+                        for m in re.finditer(r'P\d+_', basename):
+                            last_match = m
+
+                        if last_match:
+
+                            remainder = basename[last_match.end():]
+
+                            remainder_no_ext = os.path.splitext(remainder)[0]
+
+                            tokens = remainder_no_ext.split('_')
+
+                            # Heuristic: if the last token is a long alphanumeric blob (likely a random id),
+
+                            # drop it; otherwise keep the full remainder (so underscores inside names are preserved).
+
+                            extra = remainder_no_ext
+
+                            if len(tokens) >= 2:
+
+                                last_tok = tokens[-1]
+
+                                if len(last_tok) >= 8 and re.fullmatch(r'[A-Za-z0-9]+', last_tok) and any(
+                                        ch.isdigit() for ch in last_tok):
+                                    extra = '_'.join(tokens[:-1])
+
+                                    print("Displayed name: " + extra)
+
+                            if not extra:
+                                extra = os.path.splitext(basename)[0] or "Unknown_patch"
+
+                        else:
+
+                            # fallback: filename without extension or a default label
+
+                            extra = os.path.splitext(basename)[0] or "Unknown_patch"
 
                     elif ci.client_type == ClientType.Website:
-                        import html
-
-                        website = urlopen(ci.executable_path).read()
-                        # print(f'RIGHT HERE is website data', website)
-                        title = str(website).split("<title>")[1].split("</title>")[0]
-                        title = html.unescape(title)
+                        try:
+                            import html
+                            website = urlopen(ci.executable_path).read()
+                            # print(f'RIGHT HERE is website data', website)
+                            title = str(website).split("<title>")[1].split("</title>")[0]
+                            title = html.unescape(title)
+                        except ValueError:
+                            title = "Webpage Title Not Found"
 
                         extra = title
 
