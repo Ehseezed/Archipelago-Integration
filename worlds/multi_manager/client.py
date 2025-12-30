@@ -1,29 +1,35 @@
+import shlex
+
 import Utils
 import os
 import sys
 
-# try:
-#     if getattr(sys, "frozen", False):
-#         bundle_dir = getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
-#     else:
-#         # Prefer the user's data path if available (Utils.user_path()), otherwise module dir.
-#         try:
-#             bundle_dir = Utils.user_path()
-#         except Exception:
-#             bundle_dir = os.path.abspath(os.path.dirname(__file__))
-#
-#     kivy_data_dir = os.path.join(bundle_dir, "data")
-#     kivy_home = os.path.join(bundle_dir, "data")
-#
-#     print(f"Setting KIVY_DATA_DIR to: {kivy_data_dir}")
-#     print(f"Setting KIVY_HOME to: {kivy_home}")
-#
-#     os.environ.setdefault("KIVY_DATA_DIR", kivy_data_dir)
-#     os.environ.setdefault("KIVY_HOME", kivy_home)
-#
-# except Exception as e:
-#     print(f"Failed to set KIVY_DATA_DIR to: {e}")
-#     pass
+if __name__ == "__main__":
+    Utils.init_logging("Multiworld_Manager", exception_logger="Client", loglevel="DEBUG")
+
+
+try:
+    if getattr(sys, "frozen", False):
+        bundle_dir = getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
+    else:
+        # Prefer the user's data path if available (Utils.user_path()), otherwise module dir.
+        try:
+            bundle_dir = Utils.user_path()
+        except Exception:
+            bundle_dir = os.path.abspath(os.path.dirname(__file__))
+
+    kivy_data_dir = os.path.join(bundle_dir, "data")
+    kivy_home = os.path.join(bundle_dir, "data")
+
+    print(f"Setting KIVY_DATA_DIR to: {kivy_data_dir}")
+    print(f"Setting KIVY_HOME to: {kivy_home}")
+
+    os.environ.setdefault("KIVY_DATA_DIR", kivy_data_dir)
+    os.environ.setdefault("KIVY_HOME", kivy_home)
+
+except Exception as e:
+    print(f"Failed to set KIVY_DATA_DIR to: {e}")
+    pass
 
 
 from Launcher import identify, run_component
@@ -36,7 +42,7 @@ import subprocess
 import tempfile
 from enum import Enum, auto
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from urllib.parse import urlparse, unquote
 from urllib.request import urlopen
 
@@ -53,6 +59,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 
+logger = logging.getLogger("Client")
 
 
 
@@ -206,7 +213,7 @@ class SlotRow(BoxLayout):
         try:
             app.run_clients(self.slot)
         except Exception as e:
-            logging.exception(e)
+            logger.exception(e)
             pass
 
     def get_app(self):
@@ -281,18 +288,18 @@ class ClientInfo:
 
     def __post_init__(self):
         if self.client_type == ClientType.AP and self.ap_client_type is None:
-            logging.debug("Warning: No AP Client specified for AP client_type this has no actual function.")
+            logger.debug("Warning: No AP Client specified for AP client_type this has no actual function.")
         if self.client_type == ClientType.Steam_Game and not self.steam_app_id:
-            logging.debug("Warning: No Steam Game specified this has no actual function.")
+            logger.debug("Warning: No Steam Game specified this has no actual function.")
         if self.client_type == ClientType.NonSteam_Game and not self.executable_path:
-            logging.debug("Warning: No Executable specified this has no actual function.")
+            logger.debug("Warning: No Executable specified this has no actual function.")
         if self.client_type == ClientType.Patch_File and not self.executable_path:
-            logging.debug("Warning: No file specified for Open_Patch_File client_type.")
+            logger.debug("Warning: No file specified for Open_Patch_File client_type.")
         if self.client_type == ClientType.Website and not self.executable_path:
-            logging.debug("Warning: No URL specified for Website client_type this has no actual function.")
+            logger.debug("Warning: No URL specified for Website client_type this has no actual function.")
 
         if self.client_type == ClientType.Default:
-            logging.debug("Warning: ClientInfo created with Default client_type this has no actual function.")
+            logger.debug("Warning: ClientInfo created with Default client_type this has no actual function.")
 
 
 @dataclass
@@ -374,7 +381,7 @@ def launch_nonsteam_game(path: str, args: list | None = None) -> None:
             subprocess.Popen([local] + args, close_fds=True)
             return
         except OSError as e:
-            logging.exception(f"Direct execute failed for {local}: {e}")
+            logger.exception(f"Direct execute failed for {local}: {e}")
 
     try:
         Utils.open_file(local)
@@ -382,10 +389,179 @@ def launch_nonsteam_game(path: str, args: list | None = None) -> None:
         try:
             subprocess.Popen(["xdg-open", local], close_fds=True)
         except Exception:
-            logging.exception(f"Failed to open {local} with desktop handler")
+            logger.exception(f"Failed to open {local} with desktop handler")
 
     os.chdir(current_wd)
     return
+
+def capture_component_help(comp, timeout: float = 6.0):
+    logger = logging.getLogger("Client")
+
+    # Attempt to resolve base command via Launcher.get_exe if available
+    cmd_base = None
+    try:
+        from Launcher import get_exe as _get_exe  # type: ignore
+    except Exception:
+        _get_exe = None
+
+    if _get_exe:
+        try:
+            maybe = _get_exe(comp)
+            if maybe:
+                cmd_base = maybe
+        except Exception as e:
+            logger.debug("get_exe failed: %s", e)
+
+    # Fallback to common attributes on component
+    if not cmd_base:
+        for attr in ("executable", "path", "script", "file"):
+            try:
+                val = getattr(comp, attr, None)
+                if isinstance(val, str) and val:
+                    cmd_base = val
+                    break
+                if isinstance(val, (list, tuple)) and val:
+                    cmd_base = list(val)
+                    break
+            except Exception:
+                continue
+
+    # If comp itself is a string or list, use it
+    if isinstance(comp, str) and not cmd_base:
+        cmd_base = comp
+    elif isinstance(comp, (list, tuple)) and not cmd_base:
+        cmd_base = list(comp)
+
+    if not cmd_base:
+        logger.debug("No runnable found for component: %r", comp)
+        return None, None
+
+    # Normalize to list of argv parts
+    if isinstance(cmd_base, str):
+        try:
+            parts = shlex.split(cmd_base)
+        except Exception:
+            parts = [cmd_base]
+    else:
+        parts = list(cmd_base)
+
+    # If the command references a .py script, ensure sys.executable is used
+    if any(p.lower().endswith(".py") for p in parts):
+        # If the first element is the script, prefix with python
+        if parts and parts[0].lower().endswith(".py"):
+            parts = [sys.executable] + parts
+        else:
+            # If script appears in later parts, ensure python interpreter is present
+            if parts and not (parts[0].endswith("python") or parts[0].endswith("python3")):
+                parts = [sys.executable] + parts
+
+    help_flags = ["--help", "-h", "/?", "-help", ""]  # try common flags then no-arg
+
+    def _ensure_str(x: bytes | str | None) -> str:
+        if x is None:
+            return ""
+        if isinstance(x, str):
+            return x
+        try:
+            return x.decode("utf-8", errors="replace")
+        except Exception:
+            return str(x)
+
+    def _probe_with_run(cmd, t):
+        # Use binary mode (text=False) so TimeoutExpired stdout/stderr are bytes consistently.
+        try:
+            proc = subprocess.run(cmd, capture_output=True, text=False, timeout=t)
+            out_bytes = (proc.stdout or b"") + (proc.stderr or b"")
+            return _ensure_str(out_bytes), None
+        except subprocess.TimeoutExpired as e:
+            # TimeoutExpired may carry bytes or str; decode safely
+            partial = _ensure_str(getattr(e, "stdout", None)) + _ensure_str(getattr(e, "stderr", None))
+            return partial, "timeout"
+        except FileNotFoundError:
+            raise
+        except Exception as e:
+            logger.debug("Error running %s: %s", cmd, e)
+            return "", str(e)
+
+    def _probe_with_popen(cmd, t, use_shell=False):
+        try:
+            if use_shell and isinstance(cmd, str):
+                proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=False)
+            else:
+                proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=False)
+        except FileNotFoundError:
+            raise
+        except Exception as e:
+            logger.debug("Popen failed for %s: %s", cmd, e)
+            return "", str(e)
+
+        try:
+            outp, errp = proc.communicate(timeout=t)
+            return _ensure_str((outp or b"") + (errp or b"")), None
+        except subprocess.TimeoutExpired:
+            try:
+                proc.kill()
+            except Exception:
+                pass
+            try:
+                outp, errp = proc.communicate(timeout=1)
+            except Exception:
+                outp, errp = b"", b""
+            return _ensure_str((outp or b"") + (errp or b"")), "timeout"
+
+    # Try non-shell invocation first (preferred, safer)
+    for flag in help_flags:
+        cmd = parts + ([flag] if flag else [])
+        try:
+            out, reason = _probe_with_run(cmd, timeout)
+            if out and out.strip():
+                m = re.search(r'(?im)^\s*usage[:\s].*$', out, flags=re.MULTILINE)
+                if m:
+                    return m.group(0).strip(), out
+                return None, out
+            # if timed out but produced partial output, return that
+            if reason == "timeout" and out and out.strip():
+                return None, out
+        except FileNotFoundError:
+            logger.debug("Command not found: %s", cmd[0] if cmd else cmd)
+            break
+
+    # Shell fallback (some launchers only work via shell invocation)
+    try:
+        cmd_str = " ".join(shlex.quote(p) for p in parts)
+        for flag in help_flags:
+            full = f"{cmd_str} {flag}".strip()
+            try:
+                # run in shell in binary mode
+                proc = subprocess.run(full, shell=True, capture_output=True, text=False, timeout=timeout)
+                out = _ensure_str((proc.stdout or b"") + (proc.stderr or b""))
+                if out and out.strip():
+                    m = re.search(r'(?im)^\s*usage[:\s].*$', out, flags=re.MULTILINE)
+                    if m:
+                        return m.group(0).strip(), out
+                    return None, out
+            except subprocess.TimeoutExpired as e:
+                partial_out = _ensure_str(getattr(e, "stdout", None)) + _ensure_str(getattr(e, "stderr", None))
+                if partial_out and partial_out.strip():
+                    return None, partial_out
+                # fallback to Popen strategy to capture any late output
+                out, reason = _probe_with_popen(full, timeout, use_shell=True)
+                if out and out.strip():
+                    m = re.search(r'(?im)^\s*usage[:\s].*$', out, flags=re.MULTILINE)
+                    if m:
+                        return m.group(0).strip(), out
+                    return None, out
+            except FileNotFoundError:
+                logger.debug("Shell command not found for: %s", full)
+                break
+            except Exception as e:
+                logger.debug("Shell probe error for %s: %s", full, e)
+                continue
+    except Exception:
+        pass
+
+    logger.debug("Help probe produced no output for: %r", parts)
+    return None, None
 
 
 class MultiManagerApp(App):
@@ -434,35 +610,41 @@ class MultiManagerApp(App):
                             else:
                                 mw_url = ""
                         except Exception as e:
-                            logging.warning(f"Failed to resolve room URL '{mw_url}': {e}")
+                            logger.warning(f"Failed to resolve room URL '{mw_url}': {e}")
                             mw_url = ""
                     else:
-                        logging.debug(f"Unrecognized multiworld URL format: '{mw_url}'")
+                        logger.debug(f"Unrecognized multiworld URL format: '{mw_url}'")
                         mw_url = ""
             except Exception as e:
-                logging.exception(f"Unexpected error while resolving multiworld URL '{mw_url}': {e}")
+                logger.exception(f"Unexpected error while resolving multiworld URL '{mw_url}': {e}")
                 mw_url = ""
 
+        print(f'Multiworld URL: {mw_url}')
+
         for ci in slot.Clients_to_open:
+            # WEBSITES
             if ci.client_type == ClientType.Website:
                 if ci.executable_path:
                     try:
                         Utils.open_file(ci.executable_path)
                     except Exception:
-                        logging.exception(f"Failed to open website URL: {ci.executable_path}")
+                        logger.exception(f"Failed to open website URL: {ci.executable_path}")
+
+            # Steam Games
             if ci.client_type == ClientType.Steam_Game:
                 if getattr(ci, "steam_app_id", None):
                     Utils.open_file(f'steam://rungameid/{ci.steam_app_id}')
 
+            # Non steam executable
             if ci.client_type == ClientType.NonSteam_Game:
                 if ci.executable_path and os.path.exists(ci.executable_path):
                     try:
                         launch_nonsteam_game(ci.executable_path)
                     except Exception as e:
-                        logging.exception(f"Failed to launch NonSteam_Game executable '{ci.executable_path}': {e}")
+                        logger.exception(f"Failed to launch NonSteam_Game executable '{ci.executable_path}': {e}")
 
             if ci.client_type == ClientType.Manual:
-                Utils.open_file(ci.instructions or "")
+                subprocess.call(["xdg-open", ci.executable_path], close_fds=True)
 
             if ci.client_type == ClientType.Patch_File:
                 file, component = identify(ci.executable_path or "")
@@ -472,40 +654,85 @@ class MultiManagerApp(App):
             if ci.client_type == ClientType.AP:
                 comp = getattr(ci.ap_client_type, "component", None) if ci.ap_client_type else None
                 if not comp:
-                    logging.debug("No component attached to AP client choice; skipping.")
+                    logger.debug("No component attached to AP client choice; skipping.")
                     continue
 
-                launch_args = [f"--connect archipelago://{slot_name}:None@{mw_url}", f'--url {mw_url}', ""]
+                usage, help_text = capture_component_help(comp)
 
-                for arg in launch_args:
+                # try:
+                #     try:
+                #         base_dir = Utils.user_path()
+                #     except Exception:
+                #         base_dir = os.path.join(os.path.expanduser("~"), ".local", "share", "Multiworld_Manager")
+                #     try:
+                #         os.makedirs(base_dir, exist_ok=True)
+                #     except Exception:
+                #         pass
+                #
+                #     import datetime
+                #     safe_name = getattr(comp, "display_name", None) or str(comp) or "component"
+                #     safe_name = re.sub(r'[^A-Za-z0-9_.-]+', '_', safe_name)
+                #     timestamp = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+                #     help_path = os.path.join(base_dir, f"ap_comp_help_{safe_name}_{timestamp}.txt")
+                #
+                #     with open(help_path, "w", encoding="utf-8") as fh:
+                #         fh.write(help_text or "")
+                #     logger.debug("Wrote component help to %s", help_path)
+                # except Exception:
+                #     logger.exception("Failed to write component help to file")
+                #     help_path = None
+
+                logger.debug(f"Component: {comp}")
+                logger.debug(f"Usage: {usage}")
+                logger.debug(f"Help_text: {help_text}")
+
+                if "[url]" in help_text:
+                    launch_args = f"archipelago://{slot_name}:@{mw_url}"
+                elif "[--connect CONNECT]" in help_text:
+                    launch_args = f"--connect {mw_url}"
+                else:
+                    launch_args = ""
+
+                exe = None
+                try:
+                    from Launcher import get_exe
+                    exe = get_exe(comp)
+                except Exception:
+                    exe = None
+
+                logger.debug(
+                    "Launching AP client for slot %s with component %s -> exe=%r, launch_args=%r, help_present=%s",
+                    slot_name, comp, exe, launch_args, bool(help_text))
+                print(f'Resolved exe: {exe}, args list: {shlex.split(launch_args) if launch_args else []}')
+
+                args_list = shlex.split(launch_args) if launch_args else []
+                try:
+                    if get_exe:
+                        exe = get_exe(comp)
+                    else:
+                        exe = None
+                except Exception:
+                    exe = None
+
+                if exe:
+                    argv = [*exe, *args_list]
                     try:
-                        print(f'Launching AP client for slot {slot_name} with component {comp} and arg {arg}')
-                        run_component(comp, arg)
-                        # if get_exe:
-                        #     exe = get_exe(comp)
-                        # else:
-                        #     exe = None
-                        #     if getattr(comp, "script_name", None):
-                        #         exe = [comp.script_name]
-                        #
-                        # if not exe:
-                        #     logging.warning(f"Unable to determine executable for component {comp}; skipping.")
-                        #     continue
-                        #
-                        # cmd = [*exe, launch_args]
-                        # logging.debug(cmd)
-                        #
-                        # if launcher_launch:
-                        #     try:
-                        #         launcher_launch(cmd, getattr(comp, "cli", False))
-                        #     except Exception:
-                        #         subprocess.Popen(cmd)
-                        # else:
-                        #     subprocess.Popen(cmd)
-                    except Exception as e:
-                        print(f'Error launching AP client for slot {slot_name} with component {comp}: {e}')
-                        logging.exception(f"Failed to launch AP client for slot '{getattr(slot, 'name', '')}' with component {comp}")
-                        continue
+                        if launcher_launch:
+                            # Launcher.launch uses subprocess.Popen internally (non-blocking)
+                            launcher_launch(argv)
+                        else:
+                            subprocess.Popen(argv, close_fds=True)
+                    except Exception:
+                        logger.exception("Failed to launch AP client %r with argv=%r", comp, argv)
+
+                # try:
+                #     print(f'Launching AP client for slot {slot_name} with component {comp} and arg {launch_args}')
+                #     run_component(comp, launch_args)
+                #
+                # except Exception as e:
+                #     print(f'Error launching AP client for slot {slot_name} with component {comp}: {e}')
+                #     logger.exception(f"Failed to launch AP client for slot '{getattr(slot, 'name', '')}' with component {comp}")
+                #     continue
 
     def pick_file_via_dialog(self):
         import os
@@ -641,10 +868,10 @@ class MultiManagerApp(App):
         self.selected_multiworld: Optional[Multiworld] = None
 
         try:
-            Utils.logging.debug(self._deserialize_multiworlds(Utils.persistent_load().get("multi_manager_data", {}).get("multiworlds", [])))
+            logger.debug(self._deserialize_multiworlds(Utils.persistent_load().get("multi_manager_data", {}).get("multiworlds", [])))
             self.multiworlds = self._deserialize_multiworlds(Utils.persistent_load().get("multi_manager_data", {}).get("multiworlds", []))
         except Exception as e:
-            Utils.logging.exception(f"Failed to load multiworld data: {e}")
+            logger.exception(f"Failed to load multiworld data: {e}")
             pass
 
 
@@ -1654,7 +1881,7 @@ class MultiManagerApp(App):
             serialized = self._serialize_multiworlds()
             Utils.persistent_store("multi_manager_data", "multiworlds", serialized, force_store=True)
         except Exception:
-            logging.exception("Failed to save multiworlds")
+            logger.exception("Failed to save multiworlds")
         # call original cleanup
         try:
             super().on_stop()
@@ -1729,13 +1956,13 @@ class MultiManagerApp(App):
                     slots.append(slot)
                 result.append(Multiworld(name=name, url=url, slots=slots))
             except Exception:
-                logging.exception("Failed to deserialize a multiworld entry; skipping it.")
+                logger.exception("Failed to deserialize a multiworld entry; skipping it.")
                 continue
         return result
 
 
 def launch():
-    Utils.init_logging("Multiworld_Manager", exception_logger="Client")
+    Utils.init_logging("Multiworld_Manager", exception_logger="Client", loglevel="DEBUG")
     MultiManagerApp().run()
 
 
