@@ -137,7 +137,7 @@ if apworlds:
             try:
                 apworld.read()
             except InvalidDataError as e:
-                if version_tuple < (0, 7, 0):
+                if version_tuple < (0, 7, 0) or True:
                     logging.error(
                         f"Invalid or missing manifest file for {apworld_source.resolved_path}. "
                         "This apworld will stop working with Archipelago 0.7.0."
