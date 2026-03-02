@@ -6,6 +6,16 @@ The [player options page for this game](../player-options) contains all the opti
 ## How do I set up a multiworld game?
 The setup guide can be found [here](/tutorial/AM2R/setup_en).
 
+## Help Im stuck but the tracker says I should be able to do this check?
+If you are stuck and the tracker says you should be able to do a check, try looking at [these gotchas](https://github.com/Ehseezed/Archipelago-Integration/blob/8th-Aniversary/Gotchas/Gotchas.md)
+
+I keep updating this list as more people find things I gloss over from playing the game as much as I have.
+
+## Help I'm softlocked
+Well that's unfortunate, fortunately we have added a return to start option in the menu that is dual purpose.  It
+allows you to get out of a true softlock, but it also clears all the traps you had queued up so that you don't 
+have to worry about [this](https://www.youtube.com/watch?v=su3WXsjCrjo) happening anymore.
+
 ## What does this version of the randomizer do to AM2R?
 You will be playing on a slightly modified version of the New Game Plus map.
 
