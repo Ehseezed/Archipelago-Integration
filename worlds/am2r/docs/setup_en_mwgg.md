@@ -1,7 +1,7 @@
-# AM2R Archipelago Setup Guide
+# AM2R Multiworld Setup Guide
 
 ## Required Software
-- [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases/latest)
+- [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases)
 - One of the Current Mods (currently should be versioned 1.4.x)
   - [AM2R Multiworld(²)](https://github.com/rm-steele/AM2R-Multisquared/releases/latest)
   - [AM2R Multiworld: Resplashed](https://github.com/AbyssalCreature/AM2R-Re-Splashed/releases?q=multiworld&expanded=true)
@@ -41,8 +41,7 @@ as well as a team if the server has teams enabled for PvP.
 
 ## Bug Reporting/Feature Requests
 
-If you are playing this world and are encountering bugs **DO NOT** report them to the ***Main Archipelago server*** this is not 
-official support from them, and they may or may not know what to do instead you can report them to the dedicated mod 
+If you are playing this world and are encountering bugs feel free to report them to the dedicated mod 
 thread on the [AM2R Server](https://discord.gg/YTQnkAJ) or on the [Unofficial AP Server/MultiWorld.GG Server](https://discord.gg/Nu4X9gmGDR) and you can always open an issue on the GitHub.
 
 ### Help I don't have enough energy to do this check with 100% trap fill on fusion mode
