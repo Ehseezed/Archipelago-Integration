@@ -1,6 +1,6 @@
 from random import choice
 from typing import Union, List, Dict, TYPE_CHECKING
-from Options import Choice, Range, Toggle, PerGameCommonOptions, DeathLink, FreeText, OptionList
+from Options import Choice, Range, Toggle, PerGameCommonOptions, DeathLink, FreeText, OptionList, NamedRange
 from dataclasses import dataclass
 
 if TYPE_CHECKING:
@@ -84,6 +84,15 @@ class RemoveIceTrap(Toggle):
     """Removes Ice Traps from trap fill"""
     display_name = "Remove Ice Trap"
 
+class WrongWarpTrapSeed(NamedRange):
+    """Seed for Wrong Warp Traps pick an integer from 0 to 2^64-1, or choose random for a random seed.
+
+    Best used with an item link for wrong warp traps to share the maximum amount of random teleports"""
+    display_name = "Wrong Warp Trap Seed"
+    range_start = 0
+    range_end = 2**64-1
+    default = "random"
+
 
 class TrapSprites(Choice):
     """Change what sprites are used for traps.
@@ -140,6 +149,7 @@ class AM2ROptions(PerGameCommonOptions):
     RemoveOHKOTrap: RemoveOHKOTrap
     RemoveWrongWarpTrap: RemoveWrongWarpTrap
     RemoveIceTrap: RemoveIceTrap
+    WrongWarpTrapSeed: WrongWarpTrapSeed
     TrapSprites: TrapSprites
     Tozos: Tozos
     CustomDeathLinkMessages: CustomDeathLinkMessages
