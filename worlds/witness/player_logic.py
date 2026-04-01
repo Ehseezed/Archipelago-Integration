@@ -435,7 +435,7 @@ class WitnessPlayerLogic:
         postgame_adjustments = []
 
         # Make some quick references to some options
-        remote_doors = world.options.shuffle_doors >= 2  # "Panels" mode has no region accessibility implications.
+        remote_doors = world.options.shuffle_doors >= "doors"  # "Panels" mode has no region accessibility implications.
         early_caves = world.options.early_caves
         victory = world.options.victory_condition
         mnt_lasers = world.options.mountain_lasers
@@ -527,7 +527,7 @@ class WitnessPlayerLogic:
             if chal_lasers > 7:
                 postgame_adjustments.append([
                     "Requirement Changes:",
-                    "0xFFF00 - 11 Lasers - True",
+                    "0xFFF00 - 11 Lasers + Redirect - True",
                 ])
 
         if disable_challenge_lasers:
@@ -592,7 +592,7 @@ class WitnessPlayerLogic:
 
         # Make condensed references to some options
 
-        remote_doors = world.options.shuffle_doors >= 2  # "Panels" mode has no overarching region access implications.
+        remote_doors = world.options.shuffle_doors >= "doors"  # "Panels" mode has no region access implications.
         lasers = world.options.shuffle_lasers
         victory = world.options.victory_condition
         mnt_lasers = world.options.mountain_lasers
@@ -640,7 +640,7 @@ class WitnessPlayerLogic:
         if chal_lasers <= 7 or mnt_lasers > 7:
             adjustment_linesets_in_order.append([
                 "Requirement Changes:",
-                "0xFFF00 - 11 Lasers - True",
+                "0xFFF00 - 11 Lasers + Redirect - True",
             ])
 
         if world.options.disable_non_randomized_puzzles:
