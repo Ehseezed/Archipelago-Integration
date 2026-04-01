@@ -33,13 +33,6 @@ def _ensure_module_certs() -> None:
 _ensure_module_certs()
 
 def _open_url(url: str, timeout: int = 10) -> dict:
-    """
-    Fetch JSON from `url` with best-effort verification:
-      1) default urllib (may use SSL_CERT_FILE set above)
-      2) explicit certifi-created SSL context
-      3) unverified SSL context (last resort, insecure)
-    Returns parsed JSON or raises the last error.
-    """
     def _read_with_ctx(ctx):
         if ctx is None:
             with urllib.request.urlopen(url, timeout=timeout) as resp:
@@ -48,13 +41,11 @@ def _open_url(url: str, timeout: int = 10) -> dict:
             with urllib.request.urlopen(url, context=ctx, timeout=timeout) as resp:
                 return json.loads(resp.read().decode())
 
-    # 1) default attempt
     try:
         return _read_with_ctx(None)
     except Exception as e_default:
         logger.debug("AM2R default SSL fetch failed: %s", e_default)
 
-    # 2) try certifi explicitly if available
     try:
         import certifi
         ctx = ssl.create_default_context(cafile=certifi.where())
@@ -62,7 +53,6 @@ def _open_url(url: str, timeout: int = 10) -> dict:
     except Exception as e_certifi:
         logger.debug("AM2R certifi-backed fetch failed: %s", e_certifi)
 
-    # 3) last-resort: unverified (insecure)
     try:
         ctx = ssl._create_unverified_context()
         logger.warning("AM2R: falling back to unverified SSL context for remote metadata fetch (insecure).")
@@ -99,7 +89,6 @@ def get_version():
     metadata_json = {}
     url = "https://raw.githubusercontent.com/Ehseezed/Archipelago-Integration/refs/heads/8th-Aniversary/worlds/am2r/archipelago.json"
 
-    # Best-effort remote fetch using the module helper
     try:
         metadata_json = _open_url(url)
     except Exception as e:
@@ -110,7 +99,6 @@ def get_version():
     full_path = os.path.join(dirpath, "archipelago.json")
     local_json = {}
 
-    # Try reading the local file directly, otherwise check if inside a .apworld zip
     try:
         with open(full_path, "r", encoding="utf-8") as f:
             local_json = json.load(f)
@@ -266,11 +254,13 @@ def get_version():
 
 class AM2RWeb(WebWorld):
     theme = "partyTime"
-    tutorials = [Tutorial(
+    bug_report_page = "https://github.com/Ehseezed/Archipelago-Integration/issues"
+    tutorials = [
+        Tutorial(
         "Multiworld Setup Guide",
-        "A guide to setting up the Archipelago AM2R software on your computer. This guide covers single-player, multiworld, and related software.",
+        "A guide to setting up the Archipelago AM2R software on your computer. This guide covers single-player, multiworld, multitroid, and related software.",
         "English",
-        "setup_en.md",
+        "setup_en_mwgg.md",
         "setup/en",
         ["Zed"]
     )]
