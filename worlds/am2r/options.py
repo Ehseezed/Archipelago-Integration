@@ -123,7 +123,7 @@ class DeathlinkMessagePacks(OptionList):
     """Predefined DeathLink Message Packs
     valid_keys = {"default", "enemy", "ror2", "copypastas", "randplayer", "custom"}"""
     display_name = "Predefined DeathLink Message Packs"
-    valid_keys = {"default", "enemy", "ror2", "copypastas", "randplayer", "custom"}
+    valid_keys = {"default", "enemy", "ror2", "terraria", "copypastas", "randplayer", "custom"}
     default = ["default"]
 
 @dataclass
