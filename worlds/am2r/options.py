@@ -38,6 +38,34 @@ class LocationSettings(Choice):
     option_add_metroids_no_A6 = 2
     option_add_metroids_and_A6 = 3
 
+class MissileWeight(Range):
+    """Change the weight of missiles in the item pool. Higher values will make missiles more common, lower values will make them rarer. Setting this to 0 will remove missiles from the item pool."""
+    display_name = "Missile Weight"
+    range_start = 0
+    range_end = 100
+    default = 44
+
+class SuperMissileWeight(Range):
+    """Change the weight of super missiles in the item pool. Higher values will make super missiles more common, lower values will make them rarer. Setting this to 0 will remove super missiles from the item pool."""
+    display_name = "Super Missile Weight"
+    range_start = 0
+    range_end = 100
+    default = 10
+
+class PowerBombWeight(Range):
+    """Change the weight of power bombs in the item pool. Higher values will make power bombs more common, lower values will make them rarer. Setting this to 0 will remove power bombs from the item pool."""
+    display_name = "Power Bomb Weight"
+    range_start = 0
+    range_end = 100
+    default = 10
+
+class EnergyTankWeight(Range):
+    """Change the weight of energy tanks in the item pool. Higher values will make energy tanks more common, lower values will make them rarer. Setting this to 0 will remove energy tanks from the item pool."""
+    display_name = "Energy Tank Weight"
+    range_start = 0
+    range_end = 100
+    default = 10
+
 
 class TrapFillPercentage(Range):
     """Adds in slightly inconvenient traps into the item pool"""
@@ -140,6 +168,10 @@ class AM2ROptions(PerGameCommonOptions):
     MetroidsRequired: MetroidsRequired
     MetroidsInPool: MetroidsInPool
     LocationSettings: LocationSettings
+    MissileWeight: MissileWeight
+    SuperMissileWeight: SuperMissileWeight
+    PowerBombWeight: PowerBombWeight
+    EnergyTankWeight: EnergyTankWeight
     TrapFillPercentage: TrapFillPercentage
     RemoveFloodTrap: RemoveFloodTrap
     RemoveTossTrap: RemoveTossTrap

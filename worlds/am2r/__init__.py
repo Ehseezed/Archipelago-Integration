@@ -327,7 +327,7 @@ class AM2RWorld(World):
         self.multiworld.get_location("The Last Metroid is in Captivity", self.player).place_locked_item(self.create_event("The Galaxy is at Peace"))
 
     def create_item(self, name: str) -> Item:
-        return create_item(self.player, name)
+        return create_item(self.player, name, True)
 
     def create_event(self, event: str):
         return Item(event, ItemClassification.progression, None, self.player)
