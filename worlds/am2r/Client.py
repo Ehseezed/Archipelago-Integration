@@ -36,6 +36,7 @@ enable_terraria = True
 enable_copypastas = True
 enable_randplayer = True
 enable_custom = True
+AprilFoolsSurprise = False
 
 
 def get_version():
@@ -403,6 +404,7 @@ class AM2RContext(CommonContext):
         global enable_copypastas
         global enable_randplayer
         global enable_custom
+        global AprilFoolsSurprise
 
 
         if cmd == "Connected":
@@ -487,6 +489,12 @@ class AM2RContext(CommonContext):
                 enable_randplayer = False
                 enable_custom = False
 
+            try:
+                if args["slot_data"]["AprilFoolsSurprise"]:
+                    AprilFoolsSurprise = True
+            except:
+                AprilFoolsSurprise = False
+
         elif cmd == "LocationInfo":
             logger.info("Received Location Info")
             if self.error_message is not None:
@@ -556,6 +564,11 @@ def get_payload(ctx: AM2RContext):
             upper = 15
             lower = 0
 
+    if AprilFoolsSurprise:
+        upper = 82
+        lower = 0
+
+
     non_ids = [48,49,63,64,65,66,67,68,69]
 
     # 0b111 = full remote
@@ -583,11 +596,10 @@ def get_payload(ctx: AM2RContext):
                 itemid = randint(lower, upper)
             gamelocation = location_id_to_game_id[locationid]
 
-
             if ctx.Tozos != 0:
                 if netitem.item in item_id_to_game_id:
                     if netitem.flags & 0b100 != 0:
-                        gameitem = random.randint(lower, upper)
+                        gameitem = itemid
                     elif ctx.Tozos > randint(0,100):
                         gameitem = item_id_to_game_id[netitem.item] + 20
                     else:
@@ -599,13 +611,15 @@ def get_payload(ctx: AM2RContext):
             else:
                 if netitem.item in item_id_to_game_id:
                     if netitem.flags & 0b100 != 0:
-                        gameitem = random.randint(lower, upper)
+                        gameitem = itemid
                     else:
                         gameitem = item_id_to_game_id[netitem.item]
                 elif netitem.flags & 0b001 == 1:
                     gameitem = 100
                 else:
                     gameitem = 101
+            if AprilFoolsSurprise:
+                gameitem = itemid
             itemdict[gamelocation] = gameitem
         ret = json.dumps(
             {

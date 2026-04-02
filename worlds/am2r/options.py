@@ -1,6 +1,6 @@
 from random import choice
 from typing import Union, List, Dict, TYPE_CHECKING
-from Options import Choice, Range, Toggle, PerGameCommonOptions, DeathLink, FreeText, OptionList, NamedRange
+from Options import Choice, Range, Toggle, PerGameCommonOptions, DeathLink, FreeText, OptionList, NamedRange, Visibility
 from dataclasses import dataclass
 
 if TYPE_CHECKING:
@@ -163,6 +163,12 @@ class DeathlinkMessagePacks(OptionList):
     valid_keys = {"default", "enemy", "ror2", "terraria", "copypastas", "randplayer", "custom"}
     default = ["default"]
 
+class ForceAprilFoolsSurprise(Toggle):
+    """Forces the April Fools surprise to be active."""
+    display_name = "Force April Fools Surprise"
+    visibility = Visibility.spoiler
+
+
 @dataclass
 class AM2ROptions(PerGameCommonOptions):
     MetroidsRequired: MetroidsRequired
@@ -187,3 +193,4 @@ class AM2ROptions(PerGameCommonOptions):
     CustomDeathLinkMessages: CustomDeathLinkMessages
     DeathlinkMessagePacks: DeathlinkMessagePacks
     DeathLink: DeathLink
+    ForceAprilFoolsSurprise: ForceAprilFoolsSurprise

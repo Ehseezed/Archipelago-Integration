@@ -1,3 +1,4 @@
+import datetime
 import logging
 from collections import Counter
 from typing import Dict, TextIO, List
@@ -309,6 +310,10 @@ class AM2RWorld(World):
             logger.warning(err + str(e))
 
         local_version = "unknown" if local_version is None else local_version
+        if datetime.datetime.now().month == 4 and datetime.datetime.now().day == 1:
+             isAprilFool = True
+        else:
+            isAprilFool = False
 
         return {
             "Version": local_version,
@@ -320,6 +325,7 @@ class AM2RWorld(World):
             "DeathlinkMessagePacks": list(self.options.DeathlinkMessagePacks.value),
             "DeathLink": self.options.DeathLink.value,
             "TrapSeed": self.options.WrongWarpTrapSeed.value,
+            "AprilFoolsSurprise": True if isAprilFool else self.options.ForceAprilFoolsSurprise.value,
         }
 
     def create_regions(self) -> None:
