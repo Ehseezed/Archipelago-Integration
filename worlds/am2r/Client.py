@@ -433,8 +433,11 @@ class AM2RContext(CommonContext):
                         else:
                             self.error_message[0] = f"Whoever rolled this seed is using AM2R Multiworld Randomizer version {rolled_version}\n"
 
-                        if rolled_version < "1.5.0":
+                        if rolled_version < "1.4.0":
                             self.error_message.append("From update 1.4.0: you will miss out on Ice Traps")
+
+                        if rolled_version < "1.4.4":
+                            self.error_message.append("From update 1.4.4: you will miss out on seeded wrong warp traps, fixing the \"fake bombs\" issue that nobody noticed, and weighted minor item fill")
 
                         # if rolled_version < []:
                         #     message = ""
