@@ -372,19 +372,60 @@ def main(args, seed=None, baked_server_options: dict[str, object] | None = None)
                     logger.info(f'Generating output files ({i}/{len(output_file_futures)}).')
                 future.result()
 
-        if args.spoiler > 1:
-            logger.info('Calculating playthrough.')
-            multiworld.spoiler.create_playthrough(create_paths=args.spoiler > 2)
-
-        if args.spoiler:
-            multiworld.spoiler.to_file(os.path.join(temp_dir, '%s_Spoiler.txt' % outfilebase))
-
+        # Create the final archive now WITHOUT the spoiler file. The spoiler can be
+        # expensive to generate, so create the zip first and append the spoiler
+        # later if requested.
         zipfilename = output_path(f"AP_{multiworld.seed_name}.zip")
         logger.info(f"Creating final archive at {zipfilename}")
         with zipfile.ZipFile(zipfilename, mode="w", compression=zipfile.ZIP_DEFLATED,
                              compresslevel=9) as zf:
             for file in os.scandir(temp_dir):
+                # Skip any existing spoiler file to ensure the initial archive
+                # doesn't contain it.
+                if file.name == f"{outfilebase}_Spoiler.txt":
+                    continue
                 zf.write(file.path, arcname=file.name)
+
+        # Now calculate and add the spoiler (if requested). This happens after
+        # the initial archive is created so users can obtain the zip without
+        # waiting for the spoiler generation to finish.
+        if args.spoiler:
+            out_dir = os.path.dirname(zipfilename) or os.getcwd()
+            inprogress_marker = os.path.join(out_dir, f"{outfilebase}_spoiler_in_progress")
+            done_marker = os.path.join(out_dir, f"{outfilebase}")
+            try:
+                # create an in-progress marker so watchers know spoiler generation started
+                try:
+                    with open(inprogress_marker, "w") as m:
+                        m.write(f"started: {time.time()} pid: {os.getpid()}\n")
+                except OSError:
+                    # best-effort: don't fail the whole run if marker can't be written
+                    logger.warning(f"Could not create spoiler progress marker at {inprogress_marker}")
+
+                if args.spoiler > 1:
+                    logger.info('Calculating playthrough.')
+                    multiworld.spoiler.create_playthrough(create_paths=args.spoiler > 2)
+
+                spoiler_path = os.path.join(temp_dir, f"{outfilebase}_Spoiler.txt")
+                multiworld.spoiler.to_file(spoiler_path)
+                # Append the spoiler file into the already-created archive.
+                with zipfile.ZipFile(zipfilename, mode="a", compression=zipfile.ZIP_DEFLATED,
+                                     compresslevel=9) as zf:
+                    zf.write(spoiler_path, arcname=os.path.basename(spoiler_path))
+
+                # write done marker
+                try:
+                    with open(done_marker, "w") as m:
+                        m.write(f"finished: {time.time()} pid: {os.getpid()}\n")
+                except OSError:
+                    logger.warning(f"Could not create spoiler done marker at {done_marker}")
+            finally:
+                # remove in-progress marker if it exists
+                try:
+                    if os.path.exists(inprogress_marker):
+                        os.remove(inprogress_marker)
+                except OSError:
+                    logger.debug(f"Could not remove spoiler progress marker at {inprogress_marker}")
 
     logger.info('Done. Enjoy. Total Time: %s', time.perf_counter() - start)
     return multiworld
