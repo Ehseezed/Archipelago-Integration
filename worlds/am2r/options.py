@@ -1,6 +1,6 @@
 from random import choice
 from typing import Union, List, Dict, TYPE_CHECKING
-from Options import Choice, Range, Toggle, PerGameCommonOptions, DeathLink, FreeText, OptionList
+from Options import Choice, Range, Toggle, PerGameCommonOptions, DeathLink, FreeText, OptionList, NamedRange, Visibility
 from dataclasses import dataclass
 
 if TYPE_CHECKING:
@@ -37,6 +37,34 @@ class LocationSettings(Choice):
     option_items_and_A6 = 1
     option_add_metroids_no_A6 = 2
     option_add_metroids_and_A6 = 3
+
+class MissileWeight(Range):
+    """Change the weight of missiles in the item pool. Higher values will make missiles more common, lower values will make them rarer. Setting this to 0 will remove missiles from the item pool."""
+    display_name = "Missile Weight"
+    range_start = 0
+    range_end = 100
+    default = 44
+
+class SuperMissileWeight(Range):
+    """Change the weight of super missiles in the item pool. Higher values will make super missiles more common, lower values will make them rarer. Setting this to 0 will remove super missiles from the item pool."""
+    display_name = "Super Missile Weight"
+    range_start = 0
+    range_end = 100
+    default = 10
+
+class PowerBombWeight(Range):
+    """Change the weight of power bombs in the item pool. Higher values will make power bombs more common, lower values will make them rarer. Setting this to 0 will remove power bombs from the item pool."""
+    display_name = "Power Bomb Weight"
+    range_start = 0
+    range_end = 100
+    default = 10
+
+class EnergyTankWeight(Range):
+    """Change the weight of energy tanks in the item pool. Higher values will make energy tanks more common, lower values will make them rarer. Setting this to 0 will remove energy tanks from the item pool."""
+    display_name = "Energy Tank Weight"
+    range_start = 0
+    range_end = 100
+    default = 10
 
 
 class TrapFillPercentage(Range):
@@ -84,6 +112,15 @@ class RemoveIceTrap(Toggle):
     """Removes Ice Traps from trap fill"""
     display_name = "Remove Ice Trap"
 
+class WrongWarpTrapSeed(NamedRange):
+    """Seed for Wrong Warp Traps pick an integer from 0 to 2^64-1, or choose random for a random seed.
+
+    Best used with an item link for wrong warp traps to share the maximum amount of random teleports"""
+    display_name = "Wrong Warp Trap Seed"
+    range_start = 0
+    range_end = 2**64-1
+    default = "random"
+
 
 class TrapSprites(Choice):
     """Change what sprites are used for traps.
@@ -123,14 +160,24 @@ class DeathlinkMessagePacks(OptionList):
     """Predefined DeathLink Message Packs
     valid_keys = {"default", "enemy", "ror2", "copypastas", "randplayer", "custom"}"""
     display_name = "Predefined DeathLink Message Packs"
-    valid_keys = {"default", "enemy", "ror2", "copypastas", "randplayer", "custom"}
+    valid_keys = {"default", "enemy", "ror2", "terraria", "copypastas", "randplayer", "custom"}
     default = ["default"]
+
+class ForceAprilFoolsSurprise(Toggle):
+    """Forces the April Fools surprise to be active."""
+    display_name = "Force April Fools Surprise"
+    visibility = Visibility.spoiler
+
 
 @dataclass
 class AM2ROptions(PerGameCommonOptions):
     MetroidsRequired: MetroidsRequired
     MetroidsInPool: MetroidsInPool
     LocationSettings: LocationSettings
+    MissileWeight: MissileWeight
+    SuperMissileWeight: SuperMissileWeight
+    PowerBombWeight: PowerBombWeight
+    EnergyTankWeight: EnergyTankWeight
     TrapFillPercentage: TrapFillPercentage
     RemoveFloodTrap: RemoveFloodTrap
     RemoveTossTrap: RemoveTossTrap
@@ -140,8 +187,10 @@ class AM2ROptions(PerGameCommonOptions):
     RemoveOHKOTrap: RemoveOHKOTrap
     RemoveWrongWarpTrap: RemoveWrongWarpTrap
     RemoveIceTrap: RemoveIceTrap
+    WrongWarpTrapSeed: WrongWarpTrapSeed
     TrapSprites: TrapSprites
     Tozos: Tozos
     CustomDeathLinkMessages: CustomDeathLinkMessages
     DeathlinkMessagePacks: DeathlinkMessagePacks
     DeathLink: DeathLink
+    ForceAprilFoolsSurprise: ForceAprilFoolsSurprise

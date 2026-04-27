@@ -1,3 +1,4 @@
+import datetime
 import logging
 from collections import Counter
 from typing import Dict, TextIO, List
@@ -309,6 +310,10 @@ class AM2RWorld(World):
             logger.warning(err + str(e))
 
         local_version = "unknown" if local_version is None else local_version
+        if datetime.datetime.now().month == 4 and datetime.datetime.now().day == 1:
+             isAprilFool = True
+        else:
+            isAprilFool = False
 
         return {
             "Version": local_version,
@@ -319,7 +324,8 @@ class AM2RWorld(World):
             "CustomDeathLinkMessages": list(self.options.CustomDeathLinkMessages.value),
             "DeathlinkMessagePacks": list(self.options.DeathlinkMessagePacks.value),
             "DeathLink": self.options.DeathLink.value,
-            "TrapSeed": int(self.random.randint(0, 2**64 - 1)),
+            "TrapSeed": self.options.WrongWarpTrapSeed.value,
+            "AprilFoolsSurprise": True if isAprilFool else self.options.ForceAprilFoolsSurprise.value,
         }
 
     def create_regions(self) -> None:
@@ -327,7 +333,7 @@ class AM2RWorld(World):
         self.multiworld.get_location("The Last Metroid is in Captivity", self.player).place_locked_item(self.create_event("The Galaxy is at Peace"))
 
     def create_item(self, name: str) -> Item:
-        return create_item(self.player, name)
+        return create_item(self.player, name, True)
 
     def create_event(self, event: str):
         return Item(event, ItemClassification.progression, None, self.player)

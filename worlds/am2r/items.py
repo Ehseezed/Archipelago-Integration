@@ -1,7 +1,10 @@
 import itertools
+import json
 from collections import Counter
+from textwrap import indent
 from typing import Dict, List, NamedTuple, Set, TYPE_CHECKING
 
+import worlds.am2r.options
 from BaseClasses import Item, ItemClassification
 from .options import LocationSettings ,MetroidsInPool, MetroidsRequired
 
@@ -22,9 +25,15 @@ class AM2RItem(Item):
     game: str = "AM2R"
 
 
-def create_item(player: int, name: str) -> Item:
+def create_item(player: int, name: str, progression: bool) -> Item:
     item_data = item_table[name]
-    return AM2RItem(name, item_data.classification, item_data.code, player)
+    if progression:
+        classification = ItemClassification.progression
+        # print(f"forcing progression item: {name}")
+    else:
+        classification = item_data.classification
+    # input(f"Creating item: {name} with classification {classification}")
+    return AM2RItem(name, classification, item_data.code, player)
 
 
 def create_fixed_item_pool() -> List[str]:
@@ -84,11 +93,12 @@ def create_trap_items(world: AM2RWorld, locations_to_trap: int) -> List[str]:
     )
 
 
-def create_random_items(remaining_items: int) -> List[str]:
+def create_random_items(remaining_items: int, world: AM2RWorld) -> List[str]:
     # print(f"Creating {remaining_items} filler items")
-    super_total = (int(remaining_items * (10 / 74)))
-    e_total = (int(remaining_items * (10 / 74)))
-    pb_count = (int(remaining_items * (10 / 74)))
+    total_weight = world.options.PowerBombWeight.value + world.options.EnergyTankWeight.value + world.options.SuperMissileWeight.value + world.options.MissileWeight
+    super_total = (int(remaining_items * (world.options.SuperMissileWeight.value / total_weight)))
+    e_total = (int(remaining_items * (world.options.EnergyTankWeight.value / total_weight)))
+    pb_count = (int(remaining_items * (world.options.PowerBombWeight / total_weight)))
     # print(f"Filler Items Breakdown - Supers: {super_total}, E Tanks: {e_total}, PBs: {pb_count}")
 
     super_total = abs(super_total - 1)
@@ -127,6 +137,8 @@ def create_random_items(remaining_items: int) -> List[str]:
 
 
 def create_all_items(world: AM2RWorld) -> None:
+    supers = 1
+    PBs = 3
     player = world.player
     sum_locations = len(world.multiworld.get_unfilled_locations(player))
     # print(f"Total Locations for Player {player}: {sum_locations}")
@@ -146,18 +158,27 @@ def create_all_items(world: AM2RWorld) -> None:
     itempool += create_trap_items(world, locations_to_trap)
 
     random_count = sum_locations - len(itempool)
-    random_items = create_random_items(random_count)
+    random_items = create_random_items(random_count, world)
     itempool += random_items
 
     # print(f'Random Items: {Counter(itempool)}')
+    for name in itempool:
+        # print(f"NAME: {name}")
+        progression = False
+        if name == "Super Missile" and supers > 0:
+            supers -= 1
+            progression = True
+        if name == "Power Bomb" and PBs > 0:
+            PBs -= 1
+            progression = True
 
-    world.multiworld.itempool += [create_item(player, name) for name in itempool]
+        world.multiworld.itempool += [create_item(player, name, progression)]
 
 
 item_table: Dict[str, ItemData] = {
     "Missile":                  ItemData(108678000, "Ammo", ItemClassification.filler, 15),
-    "Super Missile":            ItemData(108678001, "Ammo", ItemClassification.progression, 16, 1),
-    "Power Bomb":               ItemData(108678002, "Ammo", ItemClassification.progression, 18, 3),
+    "Super Missile":            ItemData(108678001, "Ammo", ItemClassification.filler, 16, 1),
+    "Power Bomb":               ItemData(108678002, "Ammo", ItemClassification.filler, 18, 3),
     "Energy Tank":              ItemData(108678003, "Ammo", ItemClassification.useful, 17, 1),
     "Bombs":                    ItemData(108678007, "Equipment", ItemClassification.progression, 0, 1),
     "Spider Ball":              ItemData(108678008, "Equipment", ItemClassification.progression, 2, 1),

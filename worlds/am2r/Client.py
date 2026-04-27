@@ -6,6 +6,7 @@ import re
 from asyncio import StreamReader, StreamWriter
 from random import randint
 
+from worlds import terraria
 from worlds.am2r.items import item_table
 from worlds.am2r.locations import get_location_datas
 
@@ -31,9 +32,11 @@ custom_messages = []
 enable_enemy = True
 enable_default = True
 enable_ror2 = True
+enable_terraria = True
 enable_copypastas = True
 enable_randplayer = True
 enable_custom = True
+AprilFoolsSurprise = False
 
 
 def get_version():
@@ -220,6 +223,7 @@ Septoggs (as they feel safe next to the durable Elders)")
         """Toggles what deathlink messages you will send if enabled"""
         global enable_default
         global enable_ror2
+        global enable_terraria
         global enable_copypastas
         global enable_enemy
         global enable_randplayer
@@ -238,6 +242,11 @@ Septoggs (as they feel safe next to the durable Elders)")
                 logger.info("  (currently enabled)")
             else:
                 logger.info("  (currently disabled)")
+
+            if enable_terraria:
+                logger.info("terraria - Messages ripped directly from Terraria")
+                if enable_terraria:
+                    logger.info("  (currently enabled)")
 
             logger.info("copypastas - Various copypastas")
             if enable_copypastas:
@@ -275,6 +284,12 @@ Septoggs (as they feel safe next to the durable Elders)")
                 logger.info("Risk of Rain 2 deathlink messages enabled.")
             else:
                 logger.info("Risk of Rain 2 deathlink messages disabled.")
+        elif type == "terraria":
+            enable_terraria = not enable_terraria
+            if enable_terraria:
+                logger.info("Terraria deathlink messages enabled.")
+            else:
+                logger.info("Terraria deathlink messages disabled.")
         elif type == "copypastas":
             enable_copypastas = not enable_copypastas
             if enable_copypastas:
@@ -302,7 +317,7 @@ Septoggs (as they feel safe next to the durable Elders)")
         else:
             logger.info(f"Unknown category '{type}'. Use /toggle_messages with no arguments to see a list of categories.")
 
-        if not(enable_default or enable_ror2 or enable_copypastas or enable_enemy or enable_randplayer):
+        if not(enable_default or enable_ror2 or enable_terraria or enable_copypastas or enable_enemy or enable_randplayer):
             logger.info("All deathlink message categories are disabled. You will send a generic message when you die.")
 
 
@@ -385,9 +400,11 @@ class AM2RContext(CommonContext):
         global enable_enemy
         global enable_default
         global enable_ror2
+        global enable_terraria
         global enable_copypastas
         global enable_randplayer
         global enable_custom
+        global AprilFoolsSurprise
 
 
         if cmd == "Connected":
@@ -416,8 +433,11 @@ class AM2RContext(CommonContext):
                         else:
                             self.error_message[0] = f"Whoever rolled this seed is using AM2R Multiworld Randomizer version {rolled_version}\n"
 
-                        if rolled_version < "1.5.0":
+                        if rolled_version < "1.4.0":
                             self.error_message.append("From update 1.4.0: you will miss out on Ice Traps")
+
+                        if rolled_version < "1.4.4":
+                            self.error_message.append("From update 1.4.4: you will miss out on seeded wrong warp traps, fixing the \"fake bombs\" issue that nobody noticed, and weighted minor item fill")
 
                         # if rolled_version < []:
                         #     message = ""
@@ -459,6 +479,7 @@ class AM2RContext(CommonContext):
                 enable_enemy = True if "enemy" in message_packs else False
                 enable_default = True if "default" in message_packs else False
                 enable_ror2 = True if "ror2" in message_packs else False
+                enable_terraria = True if "terraria" in message_packs else False
                 enable_copypastas = True if "copypastas" in message_packs else False
                 enable_randplayer = True if "randplayer" in message_packs else False
                 enable_custom = True if "custom" in message_packs else False
@@ -466,9 +487,16 @@ class AM2RContext(CommonContext):
                 enable_enemy = False
                 enable_default =False
                 enable_ror2 = False
+                enable_terraria = False
                 enable_copypastas = False
                 enable_randplayer = False
                 enable_custom = False
+
+            try:
+                if args["slot_data"]["AprilFoolsSurprise"]:
+                    AprilFoolsSurprise = True
+            except:
+                AprilFoolsSurprise = False
 
         elif cmd == "LocationInfo":
             logger.info("Received Location Info")
@@ -539,6 +567,11 @@ def get_payload(ctx: AM2RContext):
             upper = 15
             lower = 0
 
+    if AprilFoolsSurprise:
+        upper = 82
+        lower = 0
+
+
     non_ids = [48,49,63,64,65,66,67,68,69]
 
     # 0b111 = full remote
@@ -566,11 +599,10 @@ def get_payload(ctx: AM2RContext):
                 itemid = randint(lower, upper)
             gamelocation = location_id_to_game_id[locationid]
 
-
             if ctx.Tozos != 0:
                 if netitem.item in item_id_to_game_id:
                     if netitem.flags & 0b100 != 0:
-                        gameitem = random.randint(lower, upper)
+                        gameitem = itemid
                     elif ctx.Tozos > randint(0,100):
                         gameitem = item_id_to_game_id[netitem.item] + 20
                     else:
@@ -582,13 +614,15 @@ def get_payload(ctx: AM2RContext):
             else:
                 if netitem.item in item_id_to_game_id:
                     if netitem.flags & 0b100 != 0:
-                        gameitem = random.randint(lower, upper)
+                        gameitem = itemid
                     else:
                         gameitem = item_id_to_game_id[netitem.item]
                 elif netitem.flags & 0b001 == 1:
                     gameitem = 100
                 else:
                     gameitem = 101
+            if AprilFoolsSurprise:
+                gameitem = itemid
             itemdict[gamelocation] = gameitem
         ret = json.dumps(
             {
@@ -799,6 +833,143 @@ async def am2r_sync_task(ctx: AM2RContext):
                         f"{player} was styled uppon",
                         f"{player} has shattered into innumerable pieces",
                     ]
+                    terraria = [
+                        f"{player} was slain by {enemy}."
+                        f"{player} was eviscerated by {rand_player}'s Speed Booster."
+                        f"{player} was murdered by {rand_player}'s Bad Sense of Humor."
+                        f"{player}'s face was torn off by {enemy}."
+                        f"{player}'s entrails were ripped out by {enemy}."
+                        f"{player} was destroyed by {rand_player}'s Greed."
+                        f"{player}'s skull was crushed by {rand_player}'s Hammer."
+                        f"{player} got massacred by {enemy}."
+                        f"{player} got impaled by {rand_player}'s Super Missile."
+                        f"{player} was torn in half by {enemy}."
+                        f"{player} was decapitaded by {rand_player}'s Gambling Adiction."
+                        f"{player} let their arms get torn off by {enemy}."
+                        f"{player} watched their innards become outards by {rand_player}'s OOL Checks."
+                        f"{player} was brutally dissected by {enemy}."
+                        f"{player}'s extremities were detached by {rand_player}'s Ping Reply."
+                        f"{player}'s body was mangled by {enemy}."
+                        f"{player}'s vital organs were ruptured by {rand_player}'s BK Game."
+                        f"{player} was turned into a pile of flesh by {enemy}."
+                        f"{player} was removed from the multiworld by {rand_player}'s Bad Memory."
+                        f"{player} got snapped in half by {enemy}."
+                        f"{player} was cut down the middle by {enemy}."
+                        f"{player} was chopped up by {rand_player}'s Gen Alpha Slang."
+                        f"{player}'s plea for death was answered by {rand_player}'s Hatred."
+                        f"{player}'s meat was ripped off the bone by {enemy}."
+                        f"{player}'s flailing about was finally stopped by {rand_player}'s Out of Memory Error."
+                        f"{player} had their head removed by {enemy}."
+                        f"{player}'s bowels were unplugged by {rand_player}'s Speech Disorder."
+                        f"{player}'s journey was ended by {enemy}."
+                        f"{player} was sent to Ocram's House by {rand_player}'s Bad Decision Making."
+                        f"{player} was macerated by {enemy}."
+                        f"{player} was exsanguinated by {rand_player}'s Thirsty Aptitude."
+                        f"{player} was sent to the bone zone by {rand_player}'s Guitar Riff."
+                        f"{player} was spontaneously lobotomized by {enemy}."
+                        f"{player} was pressed into a succulent pulp by {rand_player}'s Lack of Checks."
+                        f"{player} was ground into sad meat by {enemy}."
+                        f"{player}'s bones were shattered by {rand_player}'s Bomb."
+                        f"{player} was turned into monster food by {enemy}."
+                        f"{player} had their home remodeled by {rand_player}'s Game Addiction."
+                        f"{player} was voluntold to donate blood by {enemy}."
+                        f"{player} had their cap peeled back by {rand_player}'s YAML Settings."
+                        f"{player}'s top knot was carved off by {enemy}."
+                        f"{player}'s parts were misplaced by {rand_player}'s Generation Error."
+                        f"{player} was blended into a zesty sauce by {rand_player}'s Psychic Powers."
+                        f"{player}'s spine was ripped out by {enemy}."
+                        f"{player}'s living streak was ended by {rand_player}'s Game Choices."
+                        f"{player} received a forced amputation by {enemy}."
+                        f"{player}'s neck was snapped by {rand_player}'s These Hands."
+                        f"{player} was shredded to bits by {enemy}."
+                        f"{player} succumbed to a fatal injury by {enemy}."
+                        f"{player} was informed of their expiration date by {rand_player}'s Credit Card."
+                        f"{player}'s incompetence was put on display by {enemy}."
+                        f"{player}'s soul was extractinated by {rand_player}'s Thirty Scarabs."
+                        f"{player} underwent a merciful euthanasia by {enemy}."
+                        f"{player} was eaten from the bottom up by {enemy}."
+                        f"{player} was deboned by {rand_player}'s 2/7 Children Kills."
+                        f"{player} had both kidneys stolen by {rand_player}'s Lips and Teeth."
+                        f"{player}'s depravity was ended by {enemy}."
+                        f"{player}'s disc was herniated by {enemy}."
+                        f"{player}'s body was donated to science by {rand_player}'s Chiny Tozos."
+                        f"{player} had their brain turned to jam by {rand_player}'s Negative Energy."
+                        f"{player} was turned into a long pig by {enemy}."
+                        f"{player} was sent to the farm by {enemy}."
+                        f"{player}'s clogs were popped by {enemy}."
+                        f"{player}'s ticker was stopped by {rand_player}'s Time Eaters."
+                        f"{player} was whacked in the head by {rand_player}'s Stick."
+                        f"{player} got rubbed out by {rand_player}'s I Use Arch btw."
+                        f"{player} was degloved by {enemy}."
+                        f"{player} was flayed by {enemy}."
+                        f"{player} was ganked by {enemy}."
+                        f"{player} got spanked by {rand_player}'s Hint Cost."
+                        f"{player} got got by {rand_player}'s Horrible Sleep Schedule."
+                        f"{player} got murked by {rand_player}'s Smugness."
+                        f"{player} was put in a glass coffin by {enemy}."
+                        f"{player} was put on the wrong side of the grass by {enemy}."
+                        f"{player} will quickly be forgotten by {rand_player}'s Game Coordination."
+                        f"{player} was smote by {enemy}."
+                        f"{player} fell to their death."
+                        f"{player} didn't bounce."
+                        f"{player} invented gravity."
+                        f"{player} discovered the meaning of defenestration."
+                        f"{player} was freeeee, free-fallin'."
+                        f"{player} tried to ice skate uphill."
+                        f"{player} thought they could fly."
+                        f"{player} left a crater."
+                        f"{player} forgot their happy thought."
+                        f"{player} forgot to breathe."
+                        f"{player} is sleeping with the fish."
+                        f"{player} drowned."
+                        f"{player} is shark food."
+                        f"{player} tried to drink a lake."
+                        f"{player} discovered Atlantis."
+                        f"{player} forgot to bring a towel."
+                        f"{player} got melted."
+                        f"{player} was incinerated."
+                        f"{player} tried to swim in lava."
+                        f"{player} likes to play in magma."
+                        f"{player} is bad at the Floor Is Lava."
+                        f"{player} couldn't put the fire out."
+                        f"{player} was reduced to charcoal."
+                        f"{player} was burnt to a crisp."
+                        f"{player} is a well-done steak."
+                        f"{player} was consumed by the inferno."
+                        f"{player} couldn't find the antidote."
+                        f"{player} couldn't breathe."
+                        f"{player} was buried alive."
+                        f"{player} couldn't contain the watts."
+                        f"{player} was turned into a battery."
+                        f"{player}'s positive lifeforce became negative."
+                        f"{player} became a lightning rod."
+                        f"{player} shattered into pieces."
+                        f"{player} can't be put back together again."
+                        f"{player} needs to be swept up."
+                        f"{player} just became another dirt pile."
+                        f"{player}'s legs appeared where their head should be."
+                        f"{player} didn't materialize."
+                        f"{player} starved to death."
+                        f"{player} couldn't find food."
+                        f"{player} forgot to eat."
+                        f"{player} was licked."
+                        f"{player} got to 1st base with the Wall of Flesh!"
+                        f"{player} tried to escape."
+                        f"{player} died for the team."
+                        f"{player} was slain..."
+                        f"{player} was stabbed."
+                        f"{player} was killed by something in the dark!"
+                        f"{player} became an astronaut."
+                        f"{player} is now space debris."
+                        f"{player} left orbit."
+                        f"{player} has ascended."
+                        f"{player} departed SR388."
+                        f"{player} was never seen again."
+                        f"{player} dug too deep."
+                        f"{player} never stopped falling."
+                        f"{player} entered the abyss."
+                        f"{player} reached the core."
+                    ]
                     copypastas = [
                         (f"{player}, you little fucker.  You made a shit of piece with your trash Isaac. "
                          f"It's fucking bad, this trash game. I will become back my money. "
@@ -827,6 +998,9 @@ async def am2r_sync_task(ctx: AM2RContext):
                     if enable_ror2:
                         reasons.extend(ror2)
 
+                    if enable_terraria:
+                        reasons.extend(terraria)
+
                     if enable_copypastas:
                         reasons.extend(copypastas)
 
@@ -852,7 +1026,7 @@ async def am2r_sync_task(ctx: AM2RContext):
 
                     if reason == "":
                         reason = "Ehseezed has made an error in their code and you should probably alert them\nUnless you have no messages enabled in which case its your fault"
-                        if not (enable_default or enable_ror2 or enable_copypastas or enable_enemy or enable_randplayer):
+                        if not (enable_default or enable_ror2 or enable_terraria or enable_copypastas or enable_enemy or enable_randplayer):
                             logger.info("Hey its me this one is your fault not mine you disabled all the message categories")
 
 
