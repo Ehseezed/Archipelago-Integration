@@ -9,7 +9,7 @@ import Utils
 from Utils import read_snes_rom
 from settings import get_settings
 from worlds.Files import APProcedurePatch, APPatchExtension, APTokenMixin, APTokenTypes
-from worlds.smz3u.ips import IPS_Patch
+from worlds.smz3.ips import IPS_Patch
 
 SMJUHASH = '21f3e98df4780ee1c667b84e57d88675'
 LTTPJPN10HASH = '03a63945398191337e896e5771f77173'

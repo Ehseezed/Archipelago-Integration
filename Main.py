@@ -394,7 +394,6 @@ def main(args, seed=None, baked_server_options: dict[str, object] | None = None)
         if args.spoiler:
             out_dir = os.path.dirname(zipfilename) or os.getcwd()
             inprogress_marker = os.path.join(out_dir, f"{outfilebase}_spoiler_in_progress")
-            done_marker = os.path.join(out_dir, f"{outfilebase}")
             try:
                 # create an in-progress marker so watchers know spoiler generation started
                 try:
@@ -417,10 +416,9 @@ def main(args, seed=None, baked_server_options: dict[str, object] | None = None)
 
                 # write done marker
                 try:
-                    with open(done_marker, "w") as m:
-                        m.write(f"finished: {time.time()} pid: {os.getpid()}\n")
+                    os.remove(inprogress_marker)
                 except OSError:
-                    logger.warning(f"Could not create spoiler done marker at {done_marker}")
+                    logger.warning(f"Could not remove spoiler progress marker at {inprogress_marker}")
             finally:
                 # remove in-progress marker if it exists
                 try:

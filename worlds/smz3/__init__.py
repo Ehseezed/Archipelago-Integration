@@ -504,7 +504,7 @@ class SMZ3uWorld(World):
                 try:
                     multidata["precollected_items"][self.player].remove(item_id)
                 except ValueError as e:
-                    logger.warning(f"Attempted to remove nonexistent item id {item_id} from smz3u precollected items ({item_name})")
+                    logger.warning(f"Attempted to remove nonexistent item id {item_id} from smz3 precollected items ({item_name})")
         if self.smzu3World.Config.Z3_StartWithMapsCompasses:
             maps_compasses = [item_name for item_name in self.item_names if item_name.startswith("Map") or item_name.startswith("Compass")]
             maps_compasses.sort()
