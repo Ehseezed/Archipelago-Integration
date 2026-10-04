@@ -83,7 +83,7 @@ class SMZ3uWorld(World):
     # optimized message queues for 0.4.4
     required_client_version = (0, 4, 4)
 
-    def __init__(self, world: MultiWorld, player: int):
+    def __init__(self, multiworld: MultiWorld, player: int):
         self.rom_name_available_event = threading.Event()
         self.locations: Dict[str, Location] = {}
         self.unreachable = []
@@ -101,7 +101,7 @@ class SMZ3uWorld(World):
             ItemType.Super,
             ItemType.PowerBomb
         ]]
-        super().__init__(world, player)
+        super().__init__(multiworld, player)
 
     @classmethod
     def isProgression(cls, itemType):
@@ -713,8 +713,8 @@ class SMZ3uWorld(World):
             self.locations[name] = newLoc
             self.smzu3World.locationLookup[name].APLocation = newLoc
 
-    def create_region(self, world: MultiWorld, player: int, name: str, locations=None, exits=None):
-        ret = Region(name, player, world)
+    def create_region(self, multiworld: MultiWorld, player: int, name: str, locations=None, exits=None):
+        ret = Region(name, player, multiworld)
         if locations:
             for loc in locations:
                 location = self.locations[loc]
