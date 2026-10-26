@@ -1,0 +1,750 @@
+from .logic.FFTLocation import LocationNames
+from .logic.FFTRegion import FFTRegion
+from .logic.Monsters import monster_locations
+from .logic.regions.Fovoham import fovoham_regions
+from .logic.regions.Gallione import gallione_regions
+from .logic.regions.Jobs import jobs_regions
+from .logic.regions.Lesalia import lesalia_regions
+from .logic.regions.Limberry import limberry_regions
+from .logic.regions.Lionel import lionel_regions
+from .logic.regions.Murond import murond_regions
+from .logic.regions.Zeltennia import zeltennia_regions
+
+world_map_regions: list[FFTRegion] = [
+    *gallione_regions,
+    *fovoham_regions,
+    *lesalia_regions,
+    *lionel_regions,
+    *zeltennia_regions,
+    *limberry_regions,
+    *murond_regions
+]
+
+menu_regions: list[FFTRegion] = [
+    *jobs_regions
+]
+
+all_regions: list[FFTRegion] = [
+    *world_map_regions, *menu_regions
+]
+
+story_battle_locations: list[LocationNames] = [
+    LocationNames.GARILAND_STORY,
+    LocationNames.MANDALIA_STORY,
+    LocationNames.IGROS_STORY,
+    LocationNames.SWEEGY_STORY,
+    LocationNames.DORTER_1_STORY,
+    LocationNames.DORTER_2_STORY,
+    LocationNames.THIEVES_FORT_STORY,
+    LocationNames.LENALIA_STORY,
+    LocationNames.ZEAKDEN_STORY,
+    LocationNames.GROG_STORY,
+    LocationNames.YARDOW_STORY,
+    LocationNames.YUGUO_STORY,
+    LocationNames.RIOVANES_1_STORY,
+    LocationNames.RIOVANES_2_STORY,
+    LocationNames.RIOVANES_3_STORY,
+    LocationNames.FOVOHAM_STORY,
+    LocationNames.ARAGUAY_STORY,
+    LocationNames.ZIREKILE_STORY,
+    LocationNames.ZEKLAUS_STORY,
+    LocationNames.LESALIA_STORY,
+    LocationNames.GOLAND_STORY,
+    LocationNames.ZALAND_STORY,
+    LocationNames.BARIAUS_HILL_STORY,
+    LocationNames.LIONEL_1_STORY,
+    LocationNames.LIONEL_2_STORY,
+    LocationNames.ZIGOLIS_STORY,
+    LocationNames.GOLGORAND_STORY,
+    LocationNames.BARIAUS_VALLEY_STORY,
+    LocationNames.DOGUOLA_STORY,
+    LocationNames.BERVENIA_CITY_STORY,
+    LocationNames.FINATH_STORY,
+    LocationNames.ZELTENNIA_STORY,
+    LocationNames.GERMINAS_STORY,
+    LocationNames.BETHLA_NORTH_STORY,
+    LocationNames.BETHLA_SOUTH_STORY,
+    LocationNames.BETHLA_SLUICE_STORY,
+    LocationNames.BED_STORY,
+    LocationNames.LIMBERRY_1_STORY,
+    LocationNames.LIMBERRY_2_STORY,
+    LocationNames.LIMBERRY_3_STORY,
+    LocationNames.POESKAS_STORY,
+    LocationNames.MUROND_TEMPLE_1_STORY,
+    LocationNames.MUROND_TEMPLE_2_STORY,
+    LocationNames.MUROND_TEMPLE_3_STORY,
+    LocationNames.UBS_1_STORY,
+    LocationNames.UBS_2_STORY,
+    LocationNames.UBS_3_STORY,
+    LocationNames.UBS_4_STORY,
+    LocationNames.UBS_5_STORY,
+    LocationNames.GOUG_STORY,
+    LocationNames.MUROND_DEATH_CITY_STORY,
+    LocationNames.PRECINCTS_STORY,
+    LocationNames.AIRSHIPS_1_STORY,
+    LocationNames.AIRSHIPS_2_STORY
+]
+
+story_stone_locations: list[LocationNames] = [
+    LocationNames.GOUG_STONE,
+    LocationNames.LIONEL_2_STONE,
+    LocationNames.RIOVANES_2_STONE,
+    LocationNames.RIOVANES_3_STONE,
+    LocationNames.BETHLA_SLUICE_STONE,
+    LocationNames.LIMBERRY_3_STONE_1,
+    LocationNames.LIMBERRY_3_STONE_2,
+    LocationNames.IGROS_STONE
+]
+
+altima_only_stone_locations: list[LocationNames] = [
+    LocationNames.AIRSHIPS_1_STONE
+]
+
+story_character_recruit_locations: list[LocationNames] = [
+    LocationNames.RAD_RECRUIT,
+    LocationNames.ALICIA_RECRUIT,
+    LocationNames.LAVIAN_RECRUIT,
+    LocationNames.BOCO_RECRUIT,
+    LocationNames.MUSTADIO_RECRUIT,
+    LocationNames.AGRIAS_RECRUIT,
+    LocationNames.RAFA_RECRUIT,
+    LocationNames.MALAK_RECRUIT,
+    LocationNames.ORLANDU_RECRUIT,
+    LocationNames.MELIADOUL_RECRUIT
+]
+
+character_recruit_locations: list[LocationNames] = [
+    LocationNames.RAD_RECRUIT,
+    LocationNames.ALICIA_RECRUIT,
+    LocationNames.LAVIAN_RECRUIT,
+    LocationNames.RAFA_RECRUIT,
+    LocationNames.MALAK_RECRUIT,
+    LocationNames.BOCO_RECRUIT,
+    LocationNames.BEOWULF_RECRUIT,
+    LocationNames.WORKER_8_RECRUIT,
+    LocationNames.AGRIAS_RECRUIT,
+    LocationNames.REIS_DRAGON_RECRUIT,
+    LocationNames.REIS_HUMAN_RECRUIT,
+    LocationNames.CLOUD_RECRUIT,
+    LocationNames.ORLANDU_RECRUIT,
+    LocationNames.MELIADOUL_RECRUIT,
+    LocationNames.MUSTADIO_RECRUIT,
+    LocationNames.BYBLOS_RECRUIT
+]
+
+sidequest_battles: list[LocationNames] = [
+    LocationNames.GOLAND_1_SIDEQUEST,
+    LocationNames.GOLAND_2_SIDEQUEST,
+    LocationNames.GOLAND_3_SIDEQUEST,
+    LocationNames.GOLAND_4_SIDEQUEST,
+    LocationNames.NELVESKA_SIDEQUEST,
+    LocationNames.ZARGHIDAS_SIDEQUEST,
+    LocationNames.NOGIAS_SIDEQUEST,
+    LocationNames.TERMINATE_SIDEQUEST,
+    LocationNames.DELTA_SIDEQUEST,
+    LocationNames.VALKYRIES_SIDEQUEST,
+    LocationNames.MLAPAN_SIDEQUEST,
+    LocationNames.TIGER_SIDEQUEST,
+    LocationNames.BRIDGE_SIDEQUEST,
+    LocationNames.VOYAGE_SIDEQUEST,
+    LocationNames.HORROR_SIDEQUEST,
+    LocationNames.END_SIDEQUEST,
+]
+
+sidequest_stone_locations: list[LocationNames] = [
+    LocationNames.GOLAND_4_STONE,
+    LocationNames.NELVESKA_STONE,
+    LocationNames.END_STONE
+]
+
+dd_locations: list[LocationNames] = [
+    LocationNames.NOGIAS_SIDEQUEST,
+    LocationNames.TERMINATE_SIDEQUEST,
+    LocationNames.DELTA_SIDEQUEST,
+    LocationNames.VALKYRIES_SIDEQUEST,
+    LocationNames.MLAPAN_SIDEQUEST,
+    LocationNames.TIGER_SIDEQUEST,
+    LocationNames.BRIDGE_SIDEQUEST,
+    LocationNames.VOYAGE_SIDEQUEST,
+    LocationNames.HORROR_SIDEQUEST,
+    LocationNames.END_SIDEQUEST,
+]
+
+dd_location_names: list[str] = [location.value for location in dd_locations]
+
+sidequest_battle_locations: list[LocationNames] = [
+    *sidequest_battles,
+    *sidequest_stone_locations,
+    LocationNames.BEOWULF_RECRUIT,
+    LocationNames.WORKER_8_RECRUIT,
+    LocationNames.REIS_DRAGON_RECRUIT,
+    LocationNames.REIS_HUMAN_RECRUIT,
+    LocationNames.CLOUD_RECRUIT,
+    LocationNames.BYBLOS_RECRUIT
+]
+
+rare_battle_locations: list[LocationNames] = [
+    LocationNames.MANDALIA_RARE,
+    LocationNames.SWEEGY_RARE,
+    LocationNames.LENALIA_RARE,
+    LocationNames.GROG_RARE,
+    LocationNames.YUGUO_RARE,
+    LocationNames.FOVOHAM_RARE,
+    LocationNames.ARAGUAY_RARE,
+    LocationNames.ZIREKILE_RARE,
+    LocationNames.ZEKLAUS_RARE,
+    LocationNames.BERVENIA_VOLCANO_RARE,
+    LocationNames.DOGUOLA_RARE,
+    LocationNames.BARIAUS_HILL_RARE,
+    LocationNames.ZIGOLIS_RARE,
+    LocationNames.BARIAUS_VALLEY_RARE,
+    LocationNames.FINATH_RARE,
+    LocationNames.GERMINAS_RARE,
+    LocationNames.BED_RARE,
+    LocationNames.DOLBODAR_RARE,
+    LocationNames.POESKAS_RARE
+]
+
+rare_battle_location_names: list[str] = [location.value for location in rare_battle_locations]
+
+job_unlock_locations: list[LocationNames] = [
+    LocationNames.SQUIRE_UNLOCK,
+    LocationNames.CHEMIST_UNLOCK,
+    LocationNames.KNIGHT_UNLOCK,
+    LocationNames.ARCHER_UNLOCK,
+    LocationNames.THIEF_UNLOCK,
+    LocationNames.MONK_UNLOCK,
+    LocationNames.PRIEST_UNLOCK,
+    LocationNames.WIZARD_UNLOCK,
+    LocationNames.TIME_MAGE_UNLOCK,
+    LocationNames.SUMMONER_UNLOCK,
+    LocationNames.ORACLE_UNLOCK,
+    LocationNames.MEDIATOR_UNLOCK,
+    LocationNames.GEOMANCER_UNLOCK,
+    LocationNames.LANCER_UNLOCK,
+    LocationNames.SAMURAI_UNLOCK,
+    LocationNames.NINJA_UNLOCK,
+    LocationNames.CALCULATOR_UNLOCK,
+    LocationNames.BARD_UNLOCK,
+    LocationNames.DANCER_UNLOCK,
+    LocationNames.MIME_UNLOCK
+]
+
+shop_unlock_locations: list[LocationNames] = [
+    LocationNames.MANDALIA_SHOP,
+    LocationNames.LENALIA_SHOP,
+    LocationNames.ZEAKDEN_SHOP,
+    LocationNames.YARDOW_SHOP,
+    LocationNames.RIOVANES_SHOP,
+    LocationNames.ZIREKILE_SHOP,
+    LocationNames.ZEKLAUS_SHOP,
+    LocationNames.LESALIA_SHOP,
+    LocationNames.BARIAUS_HILL_SHOP,
+    LocationNames.LIONEL_SHOP,
+    LocationNames.BARIAUS_VALLEY_SHOP,
+    LocationNames.BETHLA_SHOP,
+    LocationNames.LIMBERRY_SHOP,
+    LocationNames.ORBONNE_SHOP
+]
+
+ramza_job_unlock_locations: list[LocationNames] = [
+    LocationNames.RAMZA_CHAPTER_2_UNLOCK,
+    LocationNames.RAMZA_CHAPTER_4_UNLOCK
+]
+
+default_murond_fights: list[LocationNames] = [
+    LocationNames.UBS_4_STORY,
+    LocationNames.UBS_5_STORY,
+    LocationNames.MUROND_DEATH_CITY_STORY,
+    LocationNames.PRECINCTS_STORY,
+    LocationNames.AIRSHIPS_1_STORY,
+    LocationNames.AIRSHIPS_1_STONE
+]
+
+main_mfi_locations: list[LocationNames] = [
+    LocationNames.GARILAND_MFI_1,
+    LocationNames.GARILAND_MFI_2,
+    LocationNames.GARILAND_MFI_3,
+    LocationNames.GARILAND_MFI_4,
+    LocationNames.MANDALIA_MFI_1,
+    LocationNames.MANDALIA_MFI_2,
+    LocationNames.MANDALIA_MFI_3,
+    LocationNames.MANDALIA_MFI_4,
+    LocationNames.IGROS_MFI_1,
+    LocationNames.IGROS_MFI_2,
+    LocationNames.IGROS_MFI_3,
+    LocationNames.IGROS_MFI_4,
+    LocationNames.SWEEGY_MFI_1,
+    LocationNames.SWEEGY_MFI_2,
+    LocationNames.SWEEGY_MFI_3,
+    LocationNames.SWEEGY_MFI_4,
+    LocationNames.DORTER_SLUMS_MFI_1,
+    LocationNames.DORTER_SLUMS_MFI_2,
+    LocationNames.DORTER_SLUMS_MFI_3,
+    LocationNames.DORTER_SLUMS_MFI_4,
+    LocationNames.DORTER_CITY_MFI_1,
+    LocationNames.DORTER_CITY_MFI_2,
+    LocationNames.DORTER_CITY_MFI_3,
+    LocationNames.DORTER_CITY_MFI_4,
+    LocationNames.THIEVES_FORT_MFI_1,
+    LocationNames.THIEVES_FORT_MFI_2,
+    LocationNames.THIEVES_FORT_MFI_3,
+    LocationNames.THIEVES_FORT_MFI_4,
+    LocationNames.LENALIA_MFI_1,
+    LocationNames.LENALIA_MFI_2,
+    LocationNames.LENALIA_MFI_3,
+    LocationNames.LENALIA_MFI_4,
+    LocationNames.ZEAKDEN_MFI_1,
+    LocationNames.ZEAKDEN_MFI_2,
+    LocationNames.ZEAKDEN_MFI_3,
+    LocationNames.ZEAKDEN_MFI_4,
+    LocationNames.GROG_MFI_1,
+    LocationNames.GROG_MFI_2,
+    LocationNames.GROG_MFI_3,
+    LocationNames.GROG_MFI_4,
+    LocationNames.YARDOW_MFI_1,
+    LocationNames.YARDOW_MFI_2,
+    LocationNames.YARDOW_MFI_3,
+    LocationNames.YARDOW_MFI_4,
+    LocationNames.YUGUO_MFI_1,
+    LocationNames.YUGUO_MFI_2,
+    LocationNames.YUGUO_MFI_3,
+    LocationNames.YUGUO_MFI_4,
+    LocationNames.RIOVANES_1_MFI_1,
+    LocationNames.RIOVANES_1_MFI_2,
+    LocationNames.RIOVANES_1_MFI_3,
+    LocationNames.RIOVANES_1_MFI_4,
+    LocationNames.RIOVANES_2_MFI_1,
+    LocationNames.RIOVANES_2_MFI_2,
+    LocationNames.RIOVANES_2_MFI_3,
+    LocationNames.RIOVANES_2_MFI_4,
+    LocationNames.RIOVANES_3_MFI_1,
+    LocationNames.RIOVANES_3_MFI_2,
+    LocationNames.RIOVANES_3_MFI_3,
+    LocationNames.RIOVANES_3_MFI_4,
+    LocationNames.FOVOHAM_STORY_MFI_1,
+    LocationNames.FOVOHAM_STORY_MFI_2,
+    LocationNames.FOVOHAM_STORY_MFI_3,
+    LocationNames.FOVOHAM_STORY_MFI_4,
+    LocationNames.FOVOHAM_RANDOM_MFI_1,
+    LocationNames.FOVOHAM_RANDOM_MFI_2,
+    LocationNames.FOVOHAM_RANDOM_MFI_3,
+    LocationNames.FOVOHAM_RANDOM_MFI_4,
+    LocationNames.ARAGUAY_MFI_1,
+    LocationNames.ARAGUAY_MFI_2,
+    LocationNames.ARAGUAY_MFI_3,
+    LocationNames.ARAGUAY_MFI_4,
+    LocationNames.ZIREKILE_MFI_1,
+    LocationNames.ZIREKILE_MFI_2,
+    LocationNames.ZIREKILE_MFI_3,
+    LocationNames.ZIREKILE_MFI_4,
+    LocationNames.ZEKLAUS_STORY_MFI_1,
+    LocationNames.ZEKLAUS_STORY_MFI_2,
+    LocationNames.ZEKLAUS_STORY_MFI_3,
+    LocationNames.ZEKLAUS_STORY_MFI_4,
+    LocationNames.ZEKLAUS_RANDOM_MFI_1,
+    LocationNames.ZEKLAUS_RANDOM_MFI_2,
+    LocationNames.ZEKLAUS_RANDOM_MFI_3,
+    LocationNames.ZEKLAUS_RANDOM_MFI_4,
+    LocationNames.LESALIA_MFI_1,
+    LocationNames.LESALIA_MFI_2,
+    LocationNames.LESALIA_MFI_3,
+    LocationNames.LESALIA_MFI_4,
+    LocationNames.GOLAND_STORY_MFI_1,
+    LocationNames.GOLAND_STORY_MFI_2,
+    LocationNames.GOLAND_STORY_MFI_3,
+    LocationNames.GOLAND_STORY_MFI_4,
+    LocationNames.ZALAND_MFI_1,
+    LocationNames.ZALAND_MFI_2,
+    LocationNames.ZALAND_MFI_3,
+    LocationNames.ZALAND_MFI_4,
+    LocationNames.BARIAUS_HILL_MFI_1,
+    LocationNames.BARIAUS_HILL_MFI_2,
+    LocationNames.BARIAUS_HILL_MFI_3,
+    LocationNames.BARIAUS_HILL_MFI_4,
+    LocationNames.LIONEL_1_MFI_1,
+    LocationNames.LIONEL_1_MFI_2,
+    LocationNames.LIONEL_1_MFI_3,
+    LocationNames.LIONEL_1_MFI_4,
+    LocationNames.LIONEL_2_MFI_1,
+    LocationNames.LIONEL_2_MFI_2,
+    LocationNames.LIONEL_2_MFI_3,
+    LocationNames.LIONEL_2_MFI_4,
+    LocationNames.ZIGOLIS_MFI_1,
+    LocationNames.ZIGOLIS_MFI_2,
+    LocationNames.ZIGOLIS_MFI_3,
+    LocationNames.ZIGOLIS_MFI_4,
+    LocationNames.GOLGORAND_MFI_1,
+    LocationNames.GOLGORAND_MFI_2,
+    LocationNames.GOLGORAND_MFI_3,
+    LocationNames.GOLGORAND_MFI_4,
+    LocationNames.BARIAUS_VALLEY_MFI_1,
+    LocationNames.BARIAUS_VALLEY_MFI_2,
+    LocationNames.BARIAUS_VALLEY_MFI_3,
+    LocationNames.BARIAUS_VALLEY_MFI_4,
+    LocationNames.DOGUOLA_MFI_1,
+    LocationNames.DOGUOLA_MFI_2,
+    LocationNames.DOGUOLA_MFI_3,
+    LocationNames.DOGUOLA_MFI_4,
+    LocationNames.BERVENIA_CITY_MFI_1,
+    LocationNames.BERVENIA_CITY_MFI_2,
+    LocationNames.BERVENIA_CITY_MFI_3,
+    LocationNames.BERVENIA_CITY_MFI_4,
+    LocationNames.FINATH_MFI_1,
+    LocationNames.FINATH_MFI_2,
+    LocationNames.FINATH_MFI_3,
+    LocationNames.FINATH_MFI_4,
+    LocationNames.ZELTENNIA_MFI_1,
+    LocationNames.ZELTENNIA_MFI_2,
+    LocationNames.ZELTENNIA_MFI_3,
+    LocationNames.ZELTENNIA_MFI_4,
+    LocationNames.GERMINAS_MFI_1,
+    LocationNames.GERMINAS_MFI_2,
+    LocationNames.GERMINAS_MFI_3,
+    LocationNames.GERMINAS_MFI_4,
+    LocationNames.BETHLA_NORTH_MFI_1,
+    LocationNames.BETHLA_NORTH_MFI_2,
+    LocationNames.BETHLA_NORTH_MFI_3,
+    LocationNames.BETHLA_NORTH_MFI_4,
+    LocationNames.BETHLA_SOUTH_MFI_1,
+    LocationNames.BETHLA_SOUTH_MFI_2,
+    LocationNames.BETHLA_SOUTH_MFI_3,
+    LocationNames.BETHLA_SOUTH_MFI_4,
+    LocationNames.BETHLA_SLUICE_MFI_1,
+    LocationNames.BETHLA_SLUICE_MFI_2,
+    LocationNames.BETHLA_SLUICE_MFI_3,
+    LocationNames.BETHLA_SLUICE_MFI_4,
+    LocationNames.BED_MFI_1,
+    LocationNames.BED_MFI_2,
+    LocationNames.BED_MFI_3,
+    LocationNames.BED_MFI_4,
+    LocationNames.LIMBERRY_1_MFI_1,
+    LocationNames.LIMBERRY_1_MFI_2,
+    LocationNames.LIMBERRY_1_MFI_3,
+    LocationNames.LIMBERRY_1_MFI_4,
+    LocationNames.LIMBERRY_2_MFI_1,
+    LocationNames.LIMBERRY_2_MFI_2,
+    LocationNames.LIMBERRY_2_MFI_3,
+    LocationNames.LIMBERRY_2_MFI_4,
+    LocationNames.LIMBERRY_3_MFI_1,
+    LocationNames.LIMBERRY_3_MFI_2,
+    LocationNames.LIMBERRY_3_MFI_3,
+    LocationNames.LIMBERRY_3_MFI_4,
+    LocationNames.POESKAS_MFI_1,
+    LocationNames.POESKAS_MFI_2,
+    LocationNames.POESKAS_MFI_3,
+    LocationNames.POESKAS_MFI_4,
+    LocationNames.MUROND_TEMPLE_1_MFI_1,
+    LocationNames.MUROND_TEMPLE_1_MFI_2,
+    LocationNames.MUROND_TEMPLE_1_MFI_3,
+    LocationNames.MUROND_TEMPLE_1_MFI_4,
+    LocationNames.MUROND_TEMPLE_2_MFI_1,
+    LocationNames.MUROND_TEMPLE_2_MFI_2,
+    LocationNames.MUROND_TEMPLE_2_MFI_3,
+    LocationNames.MUROND_TEMPLE_2_MFI_4,
+    #LocationNames.MUROND_TEMPLE_3_MFI_1,
+    #LocationNames.MUROND_TEMPLE_3_MFI_2,
+    #LocationNames.MUROND_TEMPLE_3_MFI_3,
+    #LocationNames.MUROND_TEMPLE_3_MFI_4,
+    LocationNames.UBS_1_MFI_1,
+    LocationNames.UBS_1_MFI_2,
+    LocationNames.UBS_1_MFI_3,
+    LocationNames.UBS_1_MFI_4,
+    LocationNames.UBS_2_MFI_1,
+    LocationNames.UBS_2_MFI_2,
+    LocationNames.UBS_2_MFI_3,
+    LocationNames.UBS_2_MFI_4,
+    LocationNames.UBS_3_MFI_1,
+    LocationNames.UBS_3_MFI_2,
+    LocationNames.UBS_3_MFI_3,
+    LocationNames.UBS_3_MFI_4,
+    LocationNames.UBS_4_MFI_1,
+    LocationNames.UBS_4_MFI_2,
+    LocationNames.UBS_4_MFI_3,
+    LocationNames.UBS_4_MFI_4,
+    LocationNames.UBS_5_MFI_1,
+    LocationNames.UBS_5_MFI_2,
+    LocationNames.UBS_5_MFI_3,
+    LocationNames.UBS_5_MFI_4,
+    LocationNames.GOUG_MFI_1,
+    LocationNames.GOUG_MFI_2,
+    LocationNames.GOUG_MFI_3,
+    LocationNames.GOUG_MFI_4,
+    LocationNames.MUROND_DEATH_CITY_MFI_1,
+    LocationNames.MUROND_DEATH_CITY_MFI_2,
+    LocationNames.MUROND_DEATH_CITY_MFI_3,
+    LocationNames.MUROND_DEATH_CITY_MFI_4,
+    LocationNames.PRECINCTS_MFI_1,
+    LocationNames.PRECINCTS_MFI_2,
+    LocationNames.PRECINCTS_MFI_3,
+    LocationNames.PRECINCTS_MFI_4,
+    LocationNames.AIRSHIPS_MFI_1,
+    LocationNames.AIRSHIPS_MFI_2,
+    LocationNames.AIRSHIPS_MFI_3,
+    LocationNames.AIRSHIPS_MFI_4,
+    LocationNames.BERVENIA_VOLCANO_MFI_1,
+    LocationNames.BERVENIA_VOLCANO_MFI_2,
+    LocationNames.BERVENIA_VOLCANO_MFI_3,
+    LocationNames.BERVENIA_VOLCANO_MFI_4,
+    LocationNames.DOLBODAR_MFI_1,
+    LocationNames.DOLBODAR_MFI_2,
+    LocationNames.DOLBODAR_MFI_3,
+    LocationNames.DOLBODAR_MFI_4,
+]
+
+sidequest_mfi_locations: list[LocationNames] = [
+    LocationNames.GOLAND_1_MFI_1,
+    LocationNames.GOLAND_1_MFI_2,
+    LocationNames.GOLAND_1_MFI_3,
+    LocationNames.GOLAND_1_MFI_4,
+    LocationNames.GOLAND_2_MFI_1,
+    LocationNames.GOLAND_2_MFI_2,
+    LocationNames.GOLAND_2_MFI_3,
+    LocationNames.GOLAND_2_MFI_4,
+    LocationNames.GOLAND_3_MFI_1,
+    LocationNames.GOLAND_3_MFI_2,
+    LocationNames.GOLAND_3_MFI_3,
+    LocationNames.GOLAND_3_MFI_4,
+    LocationNames.GOLAND_4_MFI_1,
+    LocationNames.GOLAND_4_MFI_2,
+    LocationNames.GOLAND_4_MFI_3,
+    LocationNames.GOLAND_4_MFI_4,
+    LocationNames.NELVESKA_MFI_1,
+    LocationNames.NELVESKA_MFI_2,
+    LocationNames.NELVESKA_MFI_3,
+    LocationNames.NELVESKA_MFI_4,
+    LocationNames.ZARGHIDAS_MFI_1,
+    LocationNames.ZARGHIDAS_MFI_2,
+    LocationNames.ZARGHIDAS_MFI_3,
+    LocationNames.ZARGHIDAS_MFI_4,
+    LocationNames.NOGIAS_MFI_1,
+    LocationNames.NOGIAS_MFI_2,
+    LocationNames.NOGIAS_MFI_3,
+    LocationNames.NOGIAS_MFI_4,
+    LocationNames.TERMINATE_MFI_1,
+    LocationNames.TERMINATE_MFI_2,
+    LocationNames.TERMINATE_MFI_3,
+    LocationNames.TERMINATE_MFI_4,
+    LocationNames.DELTA_MFI_1,
+    LocationNames.DELTA_MFI_2,
+    LocationNames.DELTA_MFI_3,
+    LocationNames.DELTA_MFI_4,
+    LocationNames.VALKYRIES_MFI_1,
+    LocationNames.VALKYRIES_MFI_2,
+    LocationNames.VALKYRIES_MFI_3,
+    LocationNames.VALKYRIES_MFI_4,
+    LocationNames.MLAPAN_MFI_1,
+    LocationNames.MLAPAN_MFI_2,
+    LocationNames.MLAPAN_MFI_3,
+    LocationNames.MLAPAN_MFI_4,
+    LocationNames.TIGER_MFI_1,
+    LocationNames.TIGER_MFI_2,
+    LocationNames.TIGER_MFI_3,
+    LocationNames.TIGER_MFI_4,
+    LocationNames.BRIDGE_MFI_1,
+    LocationNames.BRIDGE_MFI_2,
+    LocationNames.BRIDGE_MFI_3,
+    LocationNames.BRIDGE_MFI_4,
+    LocationNames.VOYAGE_MFI_1,
+    LocationNames.VOYAGE_MFI_2,
+    LocationNames.VOYAGE_MFI_3,
+    LocationNames.VOYAGE_MFI_4,
+    LocationNames.HORROR_MFI_1,
+    LocationNames.HORROR_MFI_2,
+    LocationNames.HORROR_MFI_3,
+    LocationNames.HORROR_MFI_4,
+    LocationNames.END_MFI_1,
+    LocationNames.END_MFI_2,
+    LocationNames.END_MFI_3,
+    LocationNames.END_MFI_4
+]
+
+mfi_locations = [*main_mfi_locations, *sidequest_mfi_locations]
+
+story_mfi_location_names: list[str] = [location.value for location in main_mfi_locations]
+sidequest_mfi_location_names: list[str] = [location.value for location in sidequest_mfi_locations]
+
+mfi_location_names = [*story_mfi_location_names, *sidequest_mfi_location_names]
+
+four_jump_mfi_locations: list[str] = [
+    LocationNames.BERVENIA_VOLCANO_MFI_4.value,
+    LocationNames.THIEVES_FORT_MFI_2.value,
+    LocationNames.GOLAND_STORY_MFI_3.value,
+    LocationNames.DORTER_CITY_MFI_1.value,
+    LocationNames.BRIDGE_MFI_2.value,
+    LocationNames.BRIDGE_MFI_3.value,
+    LocationNames.BRIDGE_MFI_4.value,
+    LocationNames.BERVENIA_CITY_MFI_3.value,
+    LocationNames.LIMBERRY_3_MFI_1.value
+]
+
+five_jump_mfi_locations: list[str] = [
+    LocationNames.DORTER_CITY_MFI_4.value,
+    LocationNames.YARDOW_MFI_2.value,
+    LocationNames.YARDOW_MFI_4.value
+]
+
+chocobo_ferry_exclusion_locations = [
+    LocationNames.LIMBERRY_3_MFI_1.value,
+    LocationNames.YARDOW_MFI_4.value
+]
+
+lava_mfi_locations: list[str] = [
+    LocationNames.BERVENIA_VOLCANO_MFI_2.value
+]
+
+linked_rewards: dict[LocationNames, list[LocationNames]] = {
+    LocationNames.MANDALIA_STORY: [
+        LocationNames.MANDALIA_SHOP
+    ],
+    LocationNames.IGROS_STORY: [
+        LocationNames.IGROS_STONE
+    ],
+    LocationNames.LENALIA_STORY: [
+        LocationNames.LENALIA_SHOP,
+    ],
+    LocationNames.ZEAKDEN_STORY: [
+        LocationNames.ZEAKDEN_SHOP,
+        LocationNames.RAMZA_CHAPTER_2_UNLOCK,
+        LocationNames.RAD_RECRUIT,
+        LocationNames.ALICIA_RECRUIT,
+        LocationNames.LAVIAN_RECRUIT
+    ],
+    LocationNames.YARDOW_STORY: [
+        LocationNames.YARDOW_SHOP
+    ],
+    LocationNames.RIOVANES_2_STORY: [
+        LocationNames.RIOVANES_2_STONE
+    ],
+    LocationNames.RIOVANES_3_STORY: [
+        LocationNames.RIOVANES_3_STONE,
+        LocationNames.RIOVANES_SHOP,
+        LocationNames.RAFA_RECRUIT,
+        LocationNames.MALAK_RECRUIT,
+        LocationNames.RAMZA_CHAPTER_4_UNLOCK
+    ],
+    LocationNames.ZIREKILE_STORY: [
+        LocationNames.ZIREKILE_SHOP
+    ],
+    LocationNames.ZEKLAUS_STORY: [
+        LocationNames.ZEKLAUS_SHOP
+    ],
+    LocationNames.ARAGUAY_STORY: [
+        LocationNames.BOCO_RECRUIT
+    ],
+    LocationNames.GOLAND_4_SIDEQUEST: [
+        LocationNames.GOLAND_4_STONE,
+        LocationNames.BEOWULF_RECRUIT,
+        LocationNames.REIS_DRAGON_RECRUIT,
+        LocationNames.WORKER_8_RECRUIT
+    ],
+    LocationNames.LESALIA_STORY: [
+        LocationNames.LESALIA_SHOP
+    ],
+    LocationNames.BARIAUS_HILL_STORY: [
+        LocationNames.BARIAUS_HILL_SHOP
+    ],
+    LocationNames.LIONEL_2_STORY: [
+        LocationNames.LIONEL_2_STONE,
+        LocationNames.LIONEL_SHOP
+    ],
+    LocationNames.BARIAUS_VALLEY_STORY: [
+        LocationNames.BARIAUS_VALLEY_SHOP,
+        LocationNames.AGRIAS_RECRUIT
+    ],
+    LocationNames.NELVESKA_SIDEQUEST: [
+        LocationNames.NELVESKA_STONE,
+        LocationNames.REIS_HUMAN_RECRUIT
+    ],
+    LocationNames.ZARGHIDAS_SIDEQUEST: [
+        LocationNames.CLOUD_RECRUIT
+    ],
+    LocationNames.BETHLA_SLUICE_STORY: [
+        LocationNames.BETHLA_SLUICE_STONE,
+        LocationNames.BETHLA_SHOP,
+        LocationNames.ORLANDU_RECRUIT
+    ],
+    LocationNames.LIMBERRY_3_STORY: [
+        LocationNames.LIMBERRY_3_STONE_1,
+        LocationNames.LIMBERRY_3_STONE_2,
+        LocationNames.LIMBERRY_SHOP,
+        LocationNames.MELIADOUL_RECRUIT
+    ],
+    LocationNames.UBS_1_STORY: [
+        LocationNames.ORBONNE_SHOP
+    ],
+    LocationNames.GOUG_STORY: [
+        LocationNames.GOUG_STONE,
+        LocationNames.MUSTADIO_RECRUIT
+    ],
+    LocationNames.END_SIDEQUEST: [
+        LocationNames.END_STONE,
+        LocationNames.BYBLOS_RECRUIT
+    ],
+    LocationNames.AIRSHIPS_1_STORY: [
+        LocationNames.AIRSHIPS_1_STONE
+    ]
+}
+
+linked_reward_names: dict[str, list[str]] = {}
+for location, value in linked_rewards.items():
+    new_list = []
+    for linked_location in value:
+        new_list.append(linked_location.value)
+    linked_reward_names[location.value] = new_list
+
+
+locations_with_text: list[str] = []
+
+for location in story_battle_locations:
+    locations_with_text.append(location.value)
+
+for location in sidequest_battles:
+    locations_with_text.append(location.value)
+
+for location in rare_battle_locations:
+    locations_with_text.append(location.value)
+
+monster_location_names: list[str] = [f"Poach {monster.monster_name.value}" for monster in monster_locations]
+
+location_sort_list: list[LocationNames] = [
+    *story_stone_locations,
+    *altima_only_stone_locations,
+    *sidequest_stone_locations,
+    *story_battle_locations,
+    *shop_unlock_locations,
+    *ramza_job_unlock_locations,
+    *character_recruit_locations,
+    *sidequest_battles,
+    *rare_battle_locations,
+    *mfi_locations,
+    *job_unlock_locations,
+    LocationNames.MUROND_TEMPLE_3_MFI_1,
+    LocationNames.MUROND_TEMPLE_3_MFI_2,
+    LocationNames.MUROND_TEMPLE_3_MFI_3,
+    LocationNames.MUROND_TEMPLE_3_MFI_4,
+]
+
+location_sort_list_names: list[str] = [
+    location.value for location in location_sort_list
+]
+
+location_groups = {
+    "Story Battles": [
+        location.value for location in [
+            *story_battle_locations,
+            *story_stone_locations,
+            *altima_only_stone_locations,
+            *shop_unlock_locations,
+            *ramza_job_unlock_locations,
+            *story_character_recruit_locations
+        ]
+    ],
+    "Sidequest Battles": [
+        *[location.value for location in sidequest_battles],
+        *[location.value for location in sidequest_stone_locations]
+    ],
+    "Rare Battles": rare_battle_location_names,
+    "Poaches": monster_location_names,
+    "Job Unlocks": [location.value for location in job_unlock_locations]
+}
