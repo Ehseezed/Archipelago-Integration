@@ -26,6 +26,11 @@ class MetroidsInPool(Range):
     default = 46
 
 
+class CombatLogic(Toggle):
+    """Adds combat logic to Metroid Fights and Bosses in order to make them less punishing early in the seed"""
+    display_name = "Combat Logic"
+
+
 class LocationSettings(Choice):
     """Chose what items you want in the pool
     not including checks via the no_A6 will force them to be excluded
@@ -173,6 +178,7 @@ class ForceAprilFoolsSurprise(Toggle):
 class AM2ROptions(PerGameCommonOptions):
     MetroidsRequired: MetroidsRequired
     MetroidsInPool: MetroidsInPool
+    CombatLogic: CombatLogic
     LocationSettings: LocationSettings
     MissileWeight: MissileWeight
     SuperMissileWeight: SuperMissileWeight

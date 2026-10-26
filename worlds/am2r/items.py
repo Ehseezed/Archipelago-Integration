@@ -6,7 +6,7 @@ from typing import Dict, List, NamedTuple, Set, TYPE_CHECKING
 
 import worlds.am2r.options
 from BaseClasses import Item, ItemClassification
-from .options import LocationSettings ,MetroidsInPool, MetroidsRequired
+from .options import LocationSettings ,MetroidsInPool, MetroidsRequired, CombatLogic
 
 if TYPE_CHECKING:
     from . import AM2RWorld
@@ -36,8 +36,13 @@ def create_item(player: int, name: str, progression: bool) -> Item:
     return AM2RItem(name, classification, item_data.code, player)
 
 
-def create_fixed_item_pool() -> List[str]:
+
+def create_fixed_item_pool(world: AM2RWorld) -> List[str]:
     required_items: Dict[str, int] = {name: data.required_num for name, data in item_table.items()}
+    if world.options.CombatLogic:
+        required_items["Super Missile"] = 6
+        required_items["Energy Tank"] = 4
+
     return list(Counter(required_items).elements())
 
 
@@ -102,10 +107,14 @@ def create_random_items(remaining_items: int, world: AM2RWorld) -> List[str]:
 
     super_total = (math.ceil(remaining_items * (world.options.SuperMissileWeight.value / total_weight)))
     e_total = (math.ceil(remaining_items * (world.options.EnergyTankWeight.value / total_weight)))
-    pb_count = (math.ceil(remaining_items * (world.options.PowerBombWeight / total_weight)))
+    pb_count = (math.ceil(remaining_items * (world.options.PowerBombWeight.value / total_weight)))
 
-    super_total = abs(super_total - 1)
-    e_total = abs(e_total - 1)
+    if world.options.CombatLogic:
+        super_total = abs(super_total - 6)
+        e_total = abs(e_total - 4)
+    else:
+        super_total = abs(super_total - 1)
+        e_total = abs(e_total - 1)
     pb_count = abs(pb_count - 3)
     missile_count =  remaining_items - (super_total + e_total + pb_count)
 
@@ -141,11 +150,18 @@ def create_random_items(remaining_items: int, world: AM2RWorld) -> List[str]:
 def create_all_items(world: AM2RWorld) -> None:
     supers = 1
     PBs = 3
+    energy = 0
+    varia = 0
     player = world.player
     sum_locations = len(world.multiworld.get_unfilled_locations(player))
+    if world.options.CombatLogic:
+        supers = 6
+        energy = 4
+        varia = 1
+
 
     itempool = (
-        create_fixed_item_pool()
+        create_fixed_item_pool(world)
         + create_metroid_items(world.options.MetroidsRequired, world.options.MetroidsInPool, world.options.LocationSettings)
     )
 
@@ -168,6 +184,12 @@ def create_all_items(world: AM2RWorld) -> None:
             progression = True
         if name == "Power Bomb" and PBs > 0:
             PBs -= 1
+            progression = True
+        if name == "Energy Tank" and energy > 0:
+            energy -= 1
+            progression = True
+        if name == "Varia Suit" and varia > 0:
+            varia -= 1
             progression = True
 
         world.multiworld.itempool += [create_item(player, name, progression)]
